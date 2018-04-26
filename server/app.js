@@ -1,9 +1,6 @@
-const model = require('./model');
-
-let
-    owner = model.owner,
-    parking = model.parking,
-    parkingtime=model.parkingtime;
+const owner=require('../server/models/owner');
+const parking=require('../server/models/parking');
+const parkingtime=require('../server/models/parkingtime');
 
 (async () => {
     var o = await owner.create({
