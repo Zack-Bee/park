@@ -10,10 +10,30 @@ var conn = mysql.createConnection({
   database:'xcx',   //指定连接的数据库
   port: 3306            //服务器的端口号
 });
-var aa=2
-var bb="daming"
-var cc="23456"
-conn.query('insert into owner (id,name,idcard) values(2,bb,cc)', function(err, result) {
+function addowner(id,name,idcard){
+var aa=id
+var bb="'"+name+"'"
+var cc="'"+idcard+"'"
+sql='insert into owner (id,name,idcard) values('+aa+','+bb+','+cc+')'
+conn.query(sql, function(err, result) {
   if (err) throw err;
   console.log(result);
 })
+}
+function addparking(id,ownerId,name,location,number,lease){
+  var aa=id
+  var bb=ownerId
+  var cc="'"+name+"'"
+  var dd="'"+location+"'"
+  var ee=number
+  var ff="'"+lease+"'"
+  
+  sql='insert into parking (id,ownerId,name,location,number,lease) values('+aa+','+bb+','+cc+','+dd+','+ee+','+ff+')'
+  console.log(sql)
+  conn.query(sql, function(err, result) {
+    if (err) throw err;
+    console.log(result);
+  })
+  }
+  addparking(1,1,"wqxasv","XS","100","agecbhjwaehcyuwhjvxs")
+  

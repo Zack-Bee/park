@@ -11,10 +11,10 @@ connection.connect(function(err) {
     }
     let createtables = `create table if not exists parking(
         id int primary key auto_increment,
-        ownerId int,
+        ownerId INT,
         name varchar(100)not null,
         location varchar(255)not null,
-        number int,
+        number INT,
         lease varchar(255)not null
     )`;
     connection.query(createtables, function(err, results, fields) {
