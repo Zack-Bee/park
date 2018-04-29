@@ -35,7 +35,6 @@ function addparking(id, ownerId, name, location, number, lease) {
     console.log(result);
   })
 }
-//addparking(2,2,"东北大学停车场","东北大学南门","100","agecbhjwaehcyuwhjvxs")
 function addparkingtime(id, parking, time, price) {
   var aa = id
   var bb = parking
@@ -49,7 +48,37 @@ function addparkingtime(id, parking, time, price) {
     console.log(result);
   })
 }
+function changeowner(id, name, idcard) {
+  var modSql = 'UPDATE owner SET name = ?,idcard = ? WHERE Id = ?';
+  var modSqlParams = [name, idcard, id];
+  conn.query(modSql, modSqlParams, function (err, result) {
+    if (err) {
+      console.log('[UPDATE ERROR] - ', err.message);
+      return;
+    }
+  })
+}
+function changeparking(id, ownerId, name, location, number, lease) {
+  var modSql = 'UPDATE parking SET ownerId = ?,name = ?, location=?, number=?, lease=? WHERE Id = ?';
+  var modSqlParams = [ownerId, name, location, number, lease, id];
+  conn.query(modSql, modSqlParams, function (err, result) {
+    if (err) {
+      console.log('[UPDATE ERROR] - ', err.message);
+      return;
+    }
+  })
+}
+function changeparkingtime(id, parking, time, price) {
+  var modSql = 'UPDATE parkingtime SET parking = ?,time = ?,price =? WHERE Id = ?';
+  var modSqlParams = [ parking, time, price, id];
+  conn.query(modSql, modSqlParams, function (err, result) {
+    if (err) {
+      console.log('[UPDATE ERROR] - ', err.message);
+      return;
+    }
+  })
+}
+// changeowner(3, "萌哒哒", "1132rdewqrd221123")
+// changeparking(2,100,"东北大学停车场","东北大学南门","100","agecbhjwaehcyuwhjvxs")
+// changeparkingtime(1, 2, "24:00-12:00", "3")
 
-addparkingtime(2,1,"17:00-7:00","7")
-addparking(3,50,"东北大学停车场","东北大学南门","100","agecbhjwaehcyuwhjvxs")
-console.log("miaomiaomiao")
