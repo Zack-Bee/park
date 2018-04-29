@@ -81,4 +81,35 @@ function changeparkingtime(id, parking, time, price) {
 // changeowner(3, "萌哒哒", "1132rdewqrd221123")
 // changeparking(2,100,"东北大学停车场","东北大学南门","100","agecbhjwaehcyuwhjvxs")
 // changeparkingtime(1, 2, "24:00-12:00", "3")
+function deleteowner(id){
+  var delSql = 'DELETE FROM owner where id='+String(id);
+conn.query(delSql,function (err, result) {
+        if(err){
+          console.log('[DELETE ERROR] - ',err.message);
+          return;
+        }
+      })
+}
 
+function deleteparking(id){
+  var delSql = 'DELETE FROM parking where id='+String(id);
+conn.query(delSql,function (err, result) {
+        if(err){
+          console.log('[DELETE ERROR] - ',err.message);
+          return;
+        }
+      })
+}
+
+function deleteparkingtime(id){
+  var delSql = 'DELETE FROM parkingtime where id='+String(id);
+conn.query(delSql,function (err, result) {
+        if(err){
+          console.log('[DELETE ERROR] - ',err.message);
+          return;
+        }
+      })
+}
+
+deleteparking(2)
+deleteparkingtime(1)
