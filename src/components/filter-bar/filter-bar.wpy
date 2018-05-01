@@ -1,0 +1,75 @@
+<template>
+<view class="filter-bar">
+    <view class="filter-bar-icon">
+        <image style="width: 100%; height: 100%;" src="./icon.png"/>
+    </view>
+    <scroll-view class="filter-bar-list" scroll-x="true">
+        <view class="filter-bar-item" :class="{active: filter === '综合'}" @tap="setFilter('综合')">综合</view>
+        <view class="filter-bar-item" :class="{active: filter === '免费'}" @tap="setFilter('免费')">免费</view>
+        <view class="filter-bar-item" :class="{active: filter === '最近'}" @tap="setFilter('最近')">最近</view>
+    </scroll-view>
+</view>
+</template>
+
+<style scoped>
+.filter-bar {
+    padding: 40rpx 30rpx;
+    box-shadow: 0 2rpx 2rpx 1rpx rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.filter-bar-icon {
+    float: left;
+    width: 40rpx;
+    height: 40rpx;
+    padding-right: 30rpx;
+}
+
+.filter-bar-list {
+    float: left;
+    width: calc(100% - 70rpx);
+    height: 40rpx;
+    font-size: 36rpx;
+    line-height: 40rpx;
+    vertical-align: middle;
+    color: #888;
+}
+
+.filter-bar-item {
+    display: inline-block;
+    padding: 0 20rpx;
+}
+
+.active {
+    color: #09bb07;
+}
+</style>
+
+<script>
+import wepy from 'wepy';
+
+export default class FilterBar extends wepy.component {
+    props = {
+        filter: {
+            type: String,
+            default: '综合',
+            twoWay: true
+        }
+    }
+
+    methods = {
+        setFilter(filter) {
+            console.log("here")
+            console.log(filter)
+            console.log(this.filter)
+            this.filter = filter
+        },
+        isFilterActive(filter) {
+            console.log("judge")
+            console.log(filter)
+            console.log(this.filter === filter)
+            return this.filter === filter
+        }
+    }
+}
+</script>

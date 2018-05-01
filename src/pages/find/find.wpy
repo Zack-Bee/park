@@ -1,0 +1,26 @@
+<style lang="less">
+
+</style>
+<template>
+    <FilterBar :filter.sync="filter"/>
+</template>
+
+<script>
+import wepy from 'wepy';
+import FilterBar from "../../components/filter-bar/filter-bar"
+
+
+
+export default class Index extends wepy.page {
+    components = {
+        FilterBar
+    };
+
+    data = {
+        filter: "综合"
+    }
+
+    onLoad() {
+    }
+}
+</script>
