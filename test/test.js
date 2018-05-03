@@ -2,6 +2,7 @@ const a = require('../server/models/owner');
 const b = require('../server/models/parking');
 const c = require('../server/models/parkingtime');
 let mysql = require('mysql');
+var async = require('async');
 
 var conn = mysql.createConnection({
   host: 'localhost',    //服务器端口
@@ -112,38 +113,52 @@ function deleteparkingtime(id) {
   })
 }
 
-function selectowner(idORnameORidcard,content) {
-  sql = 'select * from owner where '+String(idORnameORidcard)+'='+String(content)
-  var a,b,c;
-  conn.query(sql, function (err, result) {
-    if (err) throw err;
-    console.log(result[0]['id']);
-    console.log(result);
-    a=result[0]['id']
-    b=result[0]['name']
-    c=result[0]['idcard']
-    console.log(result[0]['id'],b,c)
-  })
-  console.log(a,b,c)
-  return [a,b,c]
+function selectowner(idORnameORidcard, content, callback) {
+  var sql = 'select * from owner where ' + String(idORnameORidcard) + '=' + String(content)
+  var option = new Array();
+  var dataStr = "";
+  conn.query(sql, function (err, results) {
+    if (results) {
+      for (var i = 0; i < results.length; i++) {
+        // option[i] = {'label':results[i].id,'value':results[i].name};
+        // console.log(results[i].name);
+        option.push({ 'id': results[i].id, 'name': results[i].name, 'idcard': results[i].idcard });
+      }
+    }
+    callback(err, option);
+  });
 }
 
-function selectparking(idORownerIdORnameORlocationORnumberORlease,content) {
-  sql = 'select * from owner where '+String(idORownerIdORnameORlocationORnumberORlease)+'='+String(content)
-  conn.query(sql, function (err, result) {
-    if (err) throw err;
-    console.log(result);
-  })
+function selectparking(idORownerIdORnameORlocationORnumberORlease, content, callback) {
+  var sql = 'select * from parking where ' + String(idORownerIdORnameORlocationORnumberORlease) + '=' + String(content);
+  var option = new Array();
+  var dataStr = "";
+  conn.query(sql, function (err, results) {
+    if (results) {
+      for (var i = 0; i < results.length; i++) {
+        option.push({ 'id': results[i].id, 'ownerId': results[i].ownerId, 'name': results[i].name, 'location': results[i].location, 'number': results[i].number, 'lease': results[i].lease });
+      }
+    }
+    callback(err, option);
+  });
 }
 
-function selectparkingtime(idORparkingORtimeORprice,content) {
-  sql = 'select * from owner where '+String(idORparkingORtimeORprice)+'='+String(content)
-  conn.query(sql, function (err, result) {
-    if (err) throw err;
-    console.log(result);
-  })
+function selectparkingtime(idORparkingORtimeORprice, content, callback) {
+  var sql = 'select * from parkingtime where ' + String(idORparkingORtimeORprice) + '=' + String(content)
+  var option = new Array();
+  var dataStr = "";
+  conn.query(sql, function (err, results) {
+    if (results) {
+      for (var i = 0; i < results.length; i++) {
+        option.push({ 'id': results[i].id, 'parking': results[i].parking, 'time': results[i].time, 'price': results[i].price});
+      }
+    }
+    callback(err, option);
+  });
 }
+callbacktest = function (err, option) {
+  console.log(option)
+};
+var resf = selectparkingtime("price", 7, callbacktest)
 
-var resf=selectowner("id",1)
-console.log(resf)
 conn.end();
