@@ -144,21 +144,35 @@ function selectparking(idORownerIdORnameORlocationORnumberORlease, content, call
 }
 
 function selectparkingtime(idORparkingORtimeORprice, content, callback) {
-  var sql = 'select * from parkingtime where ' + String(idORparkingORtimeORprice) + '=' + String(content)
+  console.log(1)
+  //var sql = 'select * from parkingtime where ' + String(idORparkingORtimeORprice) + '=' + String(content)
+  var sql = 'select * from parkingtime'
+  console.log(sql)
   var option = new Array();
   var dataStr = "";
   conn.query(sql, function (err, results) {
+    console.log(1.5)
+    console.log(results)
     if (results) {
+      console.log(2)
       for (var i = 0; i < results.length; i++) {
+        console.log(3)
         option.push({ 'id': results[i].id, 'parking': results[i].parking, 'time': results[i].time, 'price': results[i].price});
       }
     }
-    callback(err, option);
+    console.log(4)
+    callback(err, option,callbackk)
+    
   });
 }
-callbacktest = function (err, option) {
-  console.log(option)
-};
-var resf = selectparkingtime("price", 7, callbacktest)
-
+ callbacktest = function (err, option,callback) {
+   console.log(option)
+   callback()
+ };
+ callbackk = function(){
+   console.log("over")
+ }
+ console.log("owner")
+var resf = selectparkingtime("id", 2, callbacktest)
+module.exports = selectparkingtime;
 conn.end();
