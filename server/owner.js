@@ -174,5 +174,4 @@ function selectparkingtime(idORparkingORtimeORprice, content, callback) {
  }
  console.log("owner")
 var resf = selectparkingtime("id", 2, callbacktest)
-module.exports = selectparkingtime;
 conn.end();

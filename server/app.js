@@ -162,5 +162,4 @@ function selectparkingtime(idORparkingORtimeORprice, content, callback) {
  };
 
 var resf = selectparkingtime("id", 2, callbacktest)
-module.exports = selectparkingtime;
 conn.end();
