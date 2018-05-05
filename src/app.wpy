@@ -12,32 +12,35 @@ export default class extends wepy.app {
             navigationBarTextStyle: 'black'
         },
         tabBar: {
-            list: [{
-                pagePath: "pages/find/find",
-                text: "停车",
-                iconPath: "pages/find/icon.png",
-                selectedIconPath: "pages/find/selectedIcon.png"
-            }, {
-                pagePath: "pages/rent/rent",
-                text: "租赁",
-                iconPath: "pages/rent/icon.png",
-                selectedIconPath: "pages/rent/selectedIcon.png"
-            }],
-            selectedColor: "#09bb07"
+            list: [
+                {
+                    pagePath: 'pages/find/find',
+                    text: '停车',
+                    iconPath: 'pages/find/icon.png',
+                    selectedIconPath: 'pages/find/selectedIcon.png'
+                },
+                {
+                    pagePath: 'pages/rent/rent',
+                    text: '租赁',
+                    iconPath: 'pages/rent/icon.png',
+                    selectedIconPath: 'pages/rent/selectedIcon.png'
+                }
+            ],
+            selectedColor: '#09bb07'
         },
         debug: true
-    }
+    };
 
     onLaunch() {
-        console.log("launch")
+        console.log('launch');
         wx.getSystemInfo({
             success(data) {
-                console.log(data)
+                console.log(data);
             },
             fail() {
-                console.log("fail")
+                console.log('fail');
             }
-        })
+        });
     }
 }
 </script>

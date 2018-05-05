@@ -20,7 +20,11 @@ export default class Index extends wepy.page {
         filter: "综合"
     }
 
-    onLoad() {
+    async onLoad() {
+        console.log("load")
+        await wepy.login();
+        let userInfo = await wepy.getUserInfo();
+        console.log(userInfo)
     }
 }
 </script>
