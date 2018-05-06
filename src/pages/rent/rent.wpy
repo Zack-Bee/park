@@ -10,11 +10,19 @@
 import wepy from 'wepy'
 
 export default class Index extends wepy.page {
-    async onLoad() {
-        await wepy.login()
-        let userInfo = await wepy.getUserInfo()
-        // this.userInfo = userInfo
-        // console.log(userInfo)
+    data = {
+        nickName: ""
+    }
+
+    onLoad() {
+        wx.getUserInfo({
+            success: (data) => {
+                let parsedData = JSON.parse(data.rawData)
+                this.$parent.globalData.userInfo = parsedData
+                this.nickName = parsedData.nickName
+                this.$apply()
+            }
+        })
     }
 }
 </script>

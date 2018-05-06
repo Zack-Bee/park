@@ -1,6 +1,8 @@
 <script>
-import wepy from 'wepy';
-import 'wepy-async-function';
+import wepy from 'wepy'
+import 'wepy-async-function'
+import config from './config.js'
+import post from "./common/post.js"
 
 export default class extends wepy.app {
     config = {
@@ -29,18 +31,35 @@ export default class extends wepy.app {
             selectedColor: '#09bb07'
         },
         debug: true
-    };
+    }
+
+    globalData = {
+        userInfo: null,
+        openId: ""
+    }
 
     onLaunch() {
-        console.log('launch');
+        console.log('launch')
         wx.getSystemInfo({
-            success(data) {
-                console.log(data);
+            success: (data) => {
+                console.log(data)
+                this.globalData.systemInfo = data
+                console.log(this)
             },
             fail() {
-                console.log('fail');
+                console.log('fail')
             }
-        });
+        })
+
+        wx.login({
+            success: (res) => {
+                post(config.loginUrl, {code: res.code}).then((res) => {
+                    console.log(res)
+                    this.globalData.openId = res
+                })
+            }
+        })
+
     }
 }
 </script>
