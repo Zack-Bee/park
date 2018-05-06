@@ -1,8 +1,5 @@
 node_modules
-<<<<<<< HEAD
-package.json
 .vscode
-=======
 .DS_Store
 dist
->>>>>>> refs/remotes/origin/master
+client
