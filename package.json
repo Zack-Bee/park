@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/Zack-Bee/park#readme",
   "dependencies": {
+    "express": "^2.5.8",
     "wepy": "^1.6.0",
     "wepy-async-function": "^1.4.4",
     "wepy-com-toast": "^1.0.2"
