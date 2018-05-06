@@ -1,30 +1,39 @@
 <style lang="less">
-
 </style>
 <template>
     <FilterBar :filter.sync="filter"/>
 </template>
 
 <script>
-import wepy from 'wepy';
-import FilterBar from "../../components/filter-bar/filter-bar"
-
-
+import wepy from 'wepy'
+import FilterBar from '../../components/filter-bar/filter-bar'
+import config from "../../config.js"
 
 export default class Index extends wepy.page {
     components = {
         FilterBar
-    };
-
-    data = {
-        filter: "综合"
     }
 
-    async onLoad() {
-        console.log("load")
-        await wepy.login();
-        let userInfo = await wepy.getUserInfo();
-        console.log(userInfo)
+    data = {
+        filter: '综合'
+    }
+
+    onLoad() {
+        var self = this
+        wx.login({
+            success(res) {
+                console.log(res)
+                wx.request({
+                    url: config.modules.loginUrl,
+                    data: {
+                        code: res.code
+                    },
+                    success(res) {
+                        console.log(res)
+                    }
+                })
+            }
+        })
     }
 }
 </script>

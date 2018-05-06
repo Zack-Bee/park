@@ -6,3 +6,4 @@ var config = {
     requestUrl: `${host}/request`
 }
 
+exports.modules = config
