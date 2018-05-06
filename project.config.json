@@ -10,7 +10,10 @@
 	"compileType": "miniprogram",
 	"appid": "wx5fbbb4d25168eb48",
 	"projectname": "park",
+	"client": "./client",
+	"svr": "./server",
 	"miniprogramRoot": "./client",
+	"qcloudRoot": "./server",
 	"condition": {
 		"search": {
 			"current": -1,
