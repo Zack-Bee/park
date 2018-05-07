@@ -59,15 +59,9 @@ export default class FilterBar extends wepy.component {
 
     methods = {
         setFilter(filter) {
-            console.log("here")
-            console.log(filter)
-            console.log(this.filter)
             this.filter = filter
         },
         isFilterActive(filter) {
-            console.log("judge")
-            console.log(filter)
-            console.log(this.filter === filter)
             return this.filter === filter
         }
     }

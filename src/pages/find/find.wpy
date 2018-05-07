@@ -19,11 +19,12 @@ export default class Index extends wepy.page {
     }
 
     data = {
-        filter: '综合'
+        filter: '综合',
+        mapHeight: 355
     }
 
     onLoad() {
-        console.log(this.$parent)
+        this.mapHeight = this.$parent.globalData.mapHeight
     }
 }
 </script>

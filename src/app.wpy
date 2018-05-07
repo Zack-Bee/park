@@ -34,8 +34,9 @@ export default class extends wepy.app {
     }
 
     globalData = {
-        userInfo: null,
-        openId: ""
+        userInfo: {},
+        openId: "",
+        mapHeight: 555
     }
 
     onLaunch() {
@@ -43,11 +44,19 @@ export default class extends wepy.app {
         wx.getSystemInfo({
             success: (data) => {
                 console.log(data)
-                this.globalData.systemInfo = data
-                console.log(this)
+                this.globalData.mapHeight = data.windowHeight - (data.windowWidth * 0.48)
+                console.log(this.globalData)
             },
             fail() {
                 console.log('fail')
+            }
+        })
+
+        wx.getUserInfo({
+            success: (data) => {
+                let parsedData = JSON.parse(data.rawData)
+                this.globalData.userInfo = parsedData
+                console.log(parsedData)
             }
         })
 
