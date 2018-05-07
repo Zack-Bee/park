@@ -1,12 +1,6 @@
 <template>
 <view class="main-map">
-    <view class="map-bar-icon-localme">
-        <image style="width: 100%; height: 100%;" src="./add.png"/>
-    </view>
-    <view class="map-bar-icon-iamhere">
-        <image style="width: 100%; height: 100%;" src="./bitch.png"/>
-    </view>
-    <map id="map-body" >
+    <map id="map-body" longitude="{{longitude}}" latitude="{{latitude}}" scale="{{scale}}" controls="{{controls}}" style="width:100%;height:{{height}}px">
     </map>
 </view>
 
@@ -38,68 +32,57 @@ import wepy from 'wepy'
 
 export default class Map extends wepy.component {
     props = {
-        longitude: {
-            type: String,
-            default:'经度',
-            twoWay: true
+        height: {
+            type: Number,
+            default: 375
         },
         latitude: {
-            type: String,
-            default:'纬度',
-            twoWay: true
+            type: Number,
+            default: 41.6533
         },
-        scale: {
-            type: String,
-            default:'比例',
-            twoWay: true
-        },
-        markers: {
-            type: String,
-            default:'标记',
-            twoWay: true
-        },
-        controls: {
-            type: String,
-            default:'控制图标',
-            twoWay: true
+        longitude: {
+            type: Number,
+            default: 123.42456
         }
     }
 
     data = {
-        Height: 0,
         scale: 18,
         latitude: '',
         longitude: '',
         markers: [],
-        controls: [{
-            id: 1,
-            iconPath: '../add.png',
-            position: {
-            left: 340,
-            top: 100 - 50,
-            width: 20,
-            height: 20
-            },
-            clickable: true
-        }]
-    };
+        controls: [
+            {
+                id: 1,
+                iconPath: './add.png',
+                position: {
+                    left: 340,
+                    top: 100 - 50,
+                    width: 20,
+                    height: 20
+                },
+                clickable: true
+            }
+        ]
+    }
 
-    mounted() {
-        wx.getLocation({
-            type: 'wgs84', 
-            success: function (res) {
-                _this.setData({
-                    latitude: res.latitude,
-                    longitude: res.longitude,
-                    markers: [{
-                        id: "1",
+    onLoad() {
+
+        wepy.getLocation({
+            type: 'wgs84',
+            success: (res) => {
+                this.latitude = res.latitude
+                this.longitude= res.longitude
+                this.markers = [
+                    {
+                        id: '1',
                         latitude: res.latitude,
                         longitude: res.longitude,
                         width: 35,
                         height: 35,
-                        iconPath: '../bitch.png',
-                    }],
-                })
+                        iconPath: './add.png'
+                    }
+                ]
             }
         })
     }
