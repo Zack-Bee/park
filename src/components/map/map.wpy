@@ -1,0 +1,107 @@
+<template>
+<view class="main-map">
+    <view class="map-bar-icon-localme">
+        <image style="width: 100%; height: 100%;" src="./add.png"/>
+    </view>
+    <view class="map-bar-icon-iamhere">
+        <image style="width: 100%; height: 100%;" src="./bitch.png"/>
+    </view>
+    <map id="map-body" >
+    </map>
+</view>
+
+</template>
+
+<style scoped>
+.map-bar {
+    padding: 40rpx 30rpx;
+    box-shadow: 0 2rpx 2rpx 1rpx rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.map-bar-icon-localme {
+    float: left;
+    width: 40rpx;
+    height: 40rpx;
+    padding-right: 30rpx;
+}
+.map-bar-icon-iamhere {
+    float: left;
+    width: 40rpx;
+    height: 40rpx;
+    padding-right: 30rpx;
+}
+</style>
+
+<script>
+import wepy from 'wepy'
+
+export default class Map extends wepy.component {
+    props = {
+        longitude: {
+            type: String,
+            default:'经度',
+            twoWay: true
+        },
+        latitude: {
+            type: String,
+            default:'纬度',
+            twoWay: true
+        },
+        scale: {
+            type: String,
+            default:'比例',
+            twoWay: true
+        },
+        markers: {
+            type: String,
+            default:'标记',
+            twoWay: true
+        },
+        controls: {
+            type: String,
+            default:'控制图标',
+            twoWay: true
+        }
+    }
+
+    data = {
+        Height: 0,
+        scale: 18,
+        latitude: '',
+        longitude: '',
+        markers: [],
+        controls: [{
+            id: 1,
+            iconPath: '../add.png',
+            position: {
+            left: 340,
+            top: 100 - 50,
+            width: 20,
+            height: 20
+            },
+            clickable: true
+        }]
+    };
+
+    mounted() {
+        wx.getLocation({
+            type: 'wgs84', 
+            success: function (res) {
+                _this.setData({
+                    latitude: res.latitude,
+                    longitude: res.longitude,
+                    markers: [{
+                        id: "1",
+                        latitude: res.latitude,
+                        longitude: res.longitude,
+                        width: 35,
+                        height: 35,
+                        iconPath: '../bitch.png',
+                    }],
+                })
+            }
+        })
+    }
+}
+</script>

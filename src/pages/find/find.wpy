@@ -1,16 +1,21 @@
 <style lang="less">
 </style>
 <template>
-    <FilterBar :filter.sync="filter"/>
+    <view>
+        <FilterBar :filter.sync="filter"/>
+        <Map />
+    </view>
 </template>
 
 <script>
 import wepy from 'wepy'
 import FilterBar from '../../components/filter-bar/filter-bar'
+import Map from "../../components/map/map"
 
 export default class Index extends wepy.page {
     components = {
-        FilterBar
+        FilterBar,
+        Map
     }
 
     data = {
