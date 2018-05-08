@@ -1,24 +1,32 @@
 <template>
-
+    <Manager :nickName.sync="nickName" :avatarUrl.sync="avatarUrl"/>
 </template>
 
 <style>
-
 </style>
 
 <script>
 import wepy from 'wepy'
+import Manager from '../../components/manager/manager'
 
 export default class Index extends wepy.page {
+    components = {
+        Manager
+    }
+
     data = {
-        nickName: "",
-        avatarUrl: ""
+        nickName: '',
+        avatarUrl: ''
     }
 
     onLoad() {
         let userInfo = this.$parent.globalData.userInfo
         this.nickName = userInfo.nickName
         this.avatarUrl = userInfo.avatarUrl
+    }
+
+    config = {
+        navigationBarTitleText: "我的停车"
     }
 }
 </script>

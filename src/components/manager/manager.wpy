@@ -1,0 +1,75 @@
+<template>
+<view class="manager">
+    <view class="user">
+        <view class="user-avatar-wraper">
+            <image src="{{avatarUrl || '../../components/manager/user.png'}}" style="width: 100%; height: 100%" />
+        </view>
+        <view class="user-info">
+            <view class="user-nickName"><text space="true">{{avatarUrl ? nickName : '未知'}}</text></view>
+            <view class="user-code">我的邀请码: 123456789</view>
+        </view>
+    </view>
+</view>
+</template>
+
+<style scoped>
+.user {
+    padding: 20rpx 40rpx;
+    box-shadow: 0 2rpx 2rpx 1rpx rgba(0, 0, 0, 0.1);
+}
+
+.user::before, .user::after {
+    display: block;
+    content: "";
+    clear: both;
+}
+
+.user-avatar-wraper {
+    float: left;
+    height: 100rpx;
+    width: 100rpx;
+}
+
+.user-info {
+    float: left;
+    width: 570rpx;
+    text-align: center;
+}
+
+.user-nickName {
+    color: #353535;
+    line-height: 50rpx;
+    font-size: 30rpx;
+}
+
+.user-code {
+    color: #888;
+    line-height: 50rpx;
+    font-size: 30rpx;
+}
+
+</style>
+
+<script>
+import wepy from 'wepy'
+
+export default class Manager extends wepy.component {
+    props = {
+        nickName: {
+            type: String,
+            default: '不知道您叫什么'
+        },
+        avatarUrl: {
+            type: String,
+            default: '../../components/manager/user.png'
+        }
+    }
+
+    data = {}
+
+    methods = {}
+
+    onLoad() {
+    }
+}
+</script>
