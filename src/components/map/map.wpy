@@ -1,6 +1,9 @@
 <template>
 <view class="main-map">
-    <map id="map-body" longitude="{{longitude}}" latitude="{{latitude}}" scale="{{scale}}" controls="{{controls}}" markers="{{markers}}" style="width:100%;height:{{height}}px">
+    <map id="map-body" longitude="{{longitude}}" latitude="{{latitude}}" scale="{{scale}}"
+        bindcontroltap="controltap" controls="{{controls}}" 
+        markers="{{markers}}" 
+        style="width:100%;height:{{height}}px">
     </map>
 </view>
 
@@ -14,7 +17,7 @@
 }
 
 .map-bar-icon-localme {
-    float: left;
+    float: right;
     width: 40rpx;
     height: 40rpx;
     padding-right: 30rpx;
@@ -29,14 +32,6 @@ export default class Map extends wepy.component {
         height: {
             type: Number,
             default: 375
-        },
-        latitude: {
-            type: Number,
-            default: '纬度'
-        },
-        longitude: {
-            type: Number,
-            default: '经度'
         }
     }
 
@@ -48,12 +43,12 @@ export default class Map extends wepy.component {
         controls: [
             {
                 id: 1,
-                iconPath: './add.png',
+                iconPath: '../../components/map/bitch.png',
                 position: {
-                    left: 340,
-                    top: 100 - 50,
-                    width: 20,
-                    height: 20
+                    left: 0,
+                    top: 300 - 50,
+                    width: 50,
+                    height: 50
                 },
                 clickable: true
             }
@@ -61,29 +56,87 @@ export default class Map extends wepy.component {
     }
 
     onLoad() {
-        var latitude
-        var longitude
+        console.log(this)
         wx.getLocation({
+            //获得用户当前位置
             type: 'wgs84',
-            success: (res) => {
+            success: res => {
                 var latitude = res.latitude
                 var longitude = res.longitude
                 this.latitude = latitude
                 this.longitude = longitude
                 this.markers = [
                     {
-                        id: '2',
+                        id: 2,
                         latitude: res.latitude,
                         longitude: res.longitude,
                         width: 35,
                         height: 35,
-                        iconPath: './bitch.png',
-                        text:'i am here'
+                        iconPath: '../../components/map/iamhere.png'
                     }
                 ]
                 this.$apply()
             }
         })
+    }
+    /*onReady() {
+        this.mapCtx = wx.createMapContext('map-body')
+    }
+    mapCtx.getCenterLocation({   //获得用户屏幕中心位置
+        type: 'wgs84',
+        success: (res) => {
+            var latitude = res.latitude
+            var longitude = res.longitude
+            this.latitude = latitude
+            this.longitude = longitude
+            this.markers = [
+                {
+                    id : '3',
+                    latitude: res.latitude,
+                    longitude: res.longitude,
+                    width: 35,
+                    height: 35,
+                    iconPath: './iamhere.png',
+                }
+            ]
+        }
+    })*/
+
+    methods = {
+        controltap() {
+            console.log('111')
+        }
+        /*controltap1() {
+            wx.getLocation({
+                type: 'wgs84',
+                success: res => {
+                    console.log(res)
+                    this.setData = {
+                        latitude: res.latitude,
+                        longitude: res.longitude,
+                        markers: [
+                            {
+                                iconPath: '../../components/map/add.png',
+                                id: 1,
+                                latitude: res.latitude,
+                                longitude: res.longitude,
+                                width: 35,
+                                height: 35,
+                                position: {
+                                    left: 340,
+                                    top: 100 - 50,
+                                    width: 20,
+                                    height: 20
+                                },
+                                clickable: true,
+                                anchor: {}
+                            }
+                        ]
+                    }
+                    this.$apply()
+                }
+            })
+        }*/
     }
 }
 </script>
