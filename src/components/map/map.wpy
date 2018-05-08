@@ -1,6 +1,6 @@
 <template>
 <view class="main-map">
-    <map id="map-body" longitude="{{longitude}}" latitude="{{latitude}}" scale="{{scale}}" controls="{{controls}}" style="width:100%;height:{{height}}px">
+    <map id="map-body" longitude="{{longitude}}" latitude="{{latitude}}" scale="{{scale}}" controls="{{controls}}" markers="{{markers}}" style="width:100%;height:{{height}}px">
     </map>
 </view>
 
@@ -19,12 +19,6 @@
     height: 40rpx;
     padding-right: 30rpx;
 }
-.map-bar-icon-iamhere {
-    float: left;
-    width: 40rpx;
-    height: 40rpx;
-    padding-right: 30rpx;
-}
 </style>
 
 <script>
@@ -38,11 +32,11 @@ export default class Map extends wepy.component {
         },
         latitude: {
             type: Number,
-            default: 41.6533
+            default: '纬度'
         },
         longitude: {
             type: Number,
-            default: 123.42456
+            default: '经度'
         }
     }
 
@@ -67,22 +61,27 @@ export default class Map extends wepy.component {
     }
 
     onLoad() {
-
-        wepy.getLocation({
+        var latitude
+        var longitude
+        wx.getLocation({
             type: 'wgs84',
             success: (res) => {
-                this.latitude = res.latitude
-                this.longitude= res.longitude
+                var latitude = res.latitude
+                var longitude = res.longitude
+                this.latitude = latitude
+                this.longitude = longitude
                 this.markers = [
                     {
-                        id: '1',
+                        id: '2',
                         latitude: res.latitude,
                         longitude: res.longitude,
                         width: 35,
                         height: 35,
-                        iconPath: './add.png'
+                        iconPath: './bitch.png',
+                        text:'i am here'
                     }
                 ]
+                this.$apply()
             }
         })
     }
