@@ -2,7 +2,7 @@
 <view class="manager">
     <view class="user">
         <view class="user-avatar-wraper">
-            <image src="{{avatarUrl || '../../components/manager/user.png'}}" style="width: 100%; height: 100%" />
+            <image src="{{avatarUrl || '../../components/user/user.png'}}" style="width: 100%; height: 100%" />
         </view>
         <view class="user-info">
             <view class="user-nickName"><text space="true">{{avatarUrl ? nickName : '未知'}}</text></view>

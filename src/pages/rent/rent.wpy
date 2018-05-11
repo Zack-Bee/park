@@ -3,10 +3,12 @@
         <view class="padding"/>
         <User :nickName.sync="nickName" :avatarUrl.sync="avatarUrl"/>
         <view class="padding"/>
+        <PlateNumber/>
+        <view class="padding"/>
     </view>
 </template>
 
-<style>
+<style scoped>
 .page {
     background-color: #efeff4;
     min-height: 100vh;
@@ -21,10 +23,12 @@
 <script>
 import wepy from 'wepy'
 import User from '../../components/user/user'
+import PlateNumber from "../../components/plate-number/plate-number"
 
 export default class Index extends wepy.page {
     components = {
-        User
+        User,
+        PlateNumber
     }
 
     data = {
