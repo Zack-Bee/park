@@ -3,7 +3,7 @@
 <template>
     <view>
         <FilterBar :filter.sync="filter"/>
-        <Map :height="mapHeight"/>
+        <Map/>
     </view>
 </template>
 
@@ -20,11 +20,14 @@ export default class Index extends wepy.page {
 
     data = {
         filter: '综合',
-        mapHeight: 355
+        mapHeight: 355,
+        mapWidth: 375
     }
 
     onLoad() {
         this.mapHeight = this.$parent.globalData.mapHeight
+        this.mapWidth = this.$parent.globalData.mapWidth
+        console.log(this.mapHeight, this.mapWidth)
     }
 }
 </script>
