@@ -5,6 +5,7 @@
         <view class="padding"/>
         <PlateNumber/>
         <view class="padding"/>
+        <Parks/>
     </view>
 </template>
 
@@ -24,11 +25,13 @@
 import wepy from 'wepy'
 import User from '../../components/user/user'
 import PlateNumber from "../../components/plate-number/plate-number"
+import Parks from "../../components/parks/parks"
 
 export default class Index extends wepy.page {
     components = {
         User,
-        PlateNumber
+        PlateNumber,
+        Parks
     }
 
     data = {

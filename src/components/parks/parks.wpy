@@ -1,0 +1,95 @@
+<template>
+<view>
+    <view>
+        <view>王邦铮的停车场</view>
+        <view>企业类停车场</view>
+        <view>停车场ID: 123456</view>
+        <view>车位情况: 10/60</view>
+    </view>
+    <view class="park">
+        <view class="park-left">
+            <view class="park-icon-wrapper">
+                <image src="./company.png" style="height: 100%; width: 100%;"/>
+            </view>
+            <view class="park-type">
+                企业类
+            </view>
+        </view>
+        <view class="park-right">
+            <view class="park-name">王邦铮的停车场</view>
+        </view>
+    </view>
+</view>
+</template>
+
+<style scoped>
+.park {
+    margin: 10rpx 20rpx;
+    padding: 10rpx 40rpx;
+    background-color: #fff;
+    border-radius: 20rpx;
+}
+
+.park::before, .park::after {
+    display: block;
+    content: "";
+    clear: both;
+}
+
+.park-left {
+    float: left;
+}
+
+.park-icon-wrapper {
+    width: 60rpx;
+    height: 60rpx;
+}
+
+.park-type {
+    width: 60rpx;
+    line-height: 20rpx;
+    font-size: 16rpx;
+    text-align: center;
+    color: #888;
+}
+
+.park-right {
+    float: left;
+    width: 570rpx;
+}
+
+.park-name {
+    line-height: 30rpx;
+    font-size: 30rpx;
+    color: #353535;
+    text-align: center;
+}
+</style>
+
+<script>
+import wepy from 'wepy'
+
+export default class Parks extends wepy.component {
+    props = {}
+
+    data = {
+        parks: [
+            {
+                parkName: '王邦铮的停车场',
+                kind: 3,
+                allPark: 100,
+                rentPark: 60,
+                parkId: 10086,
+                isOpen: true
+            },
+            {
+                parkName: 'zackbee',
+                kind: 4,
+                parkId: 10087,
+                isOpen: true,
+                isRented: false
+            }
+        ]
+    }
+}
+</script>
