@@ -1,6 +1,8 @@
-const a = require('../server/models/owner');
-const b = require('../server/models/parking');
-const c = require('../server/models/parkingtime');
+// const a = require('../server/models/owner');
+// const b = require('../server/models/parking');
+// const c = require('../server/models/parkingtime');
+// const d = require('../server/models/history');
+// const e = require('../server/models/user');
 let mysql = require('mysql');
 var async = require('async');
 

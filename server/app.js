@@ -1,69 +1,25 @@
-const owner=require('../server/models/owner');
-const parking=require('../server/models/parking');
-const parkingtime=require('../server/models/parkingtime');
-const history=require('../server/models/history');
-const user=require('../server/models/user');
 let mysql = require('mysql');
-const fc=require('./owner.js')
+const fc=require('./function')
 const xcxlogin=require('./login')
 const Koa = require('koa');
 const fs = require('fs');
+const bodyParser = require('koa-bodyparser')
 const router = require('koa-router')();
 const app = new Koa();
-var http = require('http');
-// app.use(async (ctx, next) => {
-//   console.log(ctx.request.path+':'+ctx.request.method);
-//   await next();
-// });
+app.use(async (ctx,next)=>{
+  await next();
+})
 
-// router.get('/hello/:name', async (ctx, next) => {
-//   var name = ctx.params.name;
-//   ctx.response.body = `<h1>Hello, ${name}!</h1>`;
-// });
+//const router = require('./routes')
+router.post('/getname', async (ctx,next)=>{
+  console.log(111)
+})
 
-// router.get('/', async (ctx, next) => {
-//   ctx.response.body = '<a href="/users">个人中心</a>';
-// });
-// router.get('/users', function *(next) {
-//   console.log("11111111111")
-// })
-// app.use(router.routes());
-
-var querystring = require('querystring');
- 
-var postHTML = 
-  '<html><head><meta charset="utf-8"><title>菜鸟教程 Node.js 实例</title></head>' +
-  '<body>' +
-  '<form method="post">' +
-  '网站名： <input name="name"><br>' +
-  '网站 URL： <input name="url"><br>' +
-  '<input type="submit">' +
-  '</form>' +
-  '</body></html>';
- 
-http.createServer(function (req, res) {
-  var body = "";
-  req.on('data', function (chunk) {
-    body += chunk;
-  });
-  req.on('end', function () {
-    // 解析参数
-    body = querystring.parse(body);
-    // 设置响应头部信息及编码
-    res.writeHead(200, {'Content-Type': 'text/html; charset=utf8'});
- 
-    if(body.name && body.url) { // 输出提交的数据
-      console.log(body.name)
-        res.write("网站名：" + body.name);
-        res.write("<br>");
-        res.write("网站 URL：" + body.url);
-    } else {  // 输出表单
-        res.write(postHTML);
-    }
-    res.end();
-  });
-}).listen(3000);
-// 在端口3000监听:
-// app.listen(3000);
-console.log('app started at port 3000...');
-
+app.listen(3000)
+console.log("ok")
+const main = ctx => {
+  ctx.response.type = 'html';
+  ctx.response.body = fs.createReadStream('./server/test.html');
+};
+app.use(router.routes())
+app.use(main)
