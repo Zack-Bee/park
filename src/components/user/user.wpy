@@ -38,7 +38,7 @@
 }
 
 .user-nickName {
-    color: #353535;
+    color: #000;
     line-height: 50rpx;
     font-size: 30rpx;
 }
