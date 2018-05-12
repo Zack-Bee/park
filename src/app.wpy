@@ -36,7 +36,8 @@ export default class extends wepy.app {
     globalData = {
         userInfo: {},
         openId: "",
-        mapHeight: 555
+        mapHeight: 555,
+        mapWidth: 375
     }
 
     onLaunch() {
@@ -45,6 +46,7 @@ export default class extends wepy.app {
             success: (data) => {
                 console.log(data)
                 this.globalData.mapHeight = data.windowHeight - (data.windowWidth * 0.48)
+                this.globalData.mapWidth = data.windowWidth
                 console.log(this.globalData)
             },
             fail() {
