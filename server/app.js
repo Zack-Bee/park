@@ -4,19 +4,15 @@ const xcxlogin=require('./login')
 const Koa = require('koa');
 const fs = require('fs');
 const bodyParser = require('koa-bodyparser')
-const router = require('koa-router')();
+var parse = require('co-body');
 const app = new Koa();
 app.use(async (ctx,next)=>{
   await next();
 })
-
-//const router = require('./routes')
-router.post('/getname', async (ctx,next)=>{
-  console.log(111)
-})
-
+app.use(bodyParser());
+const router = require('./routes/index')
 app.listen(3000)
-console.log("ok")
+console.log("listening 3000")
 const main = ctx => {
   ctx.response.type = 'html';
   ctx.response.body = fs.createReadStream('./server/test.html');

@@ -1,13 +1,13 @@
 /**
  * ajax 服务路由集合
  */
-const router = require('koa-router')({
-    prefix: '/weapp'
-})
+const router = require('koa-router')(
+    //{prefix: '/weapp'}
+)
 
-const login = require('../../server/controllers/login')
+const ct = require('../../server/controllers/controllers')
 
 
-router.post('/login', login)
+router.post('/login', ct.login)
 
 module.exports = router
