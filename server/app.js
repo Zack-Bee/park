@@ -6,35 +6,63 @@ const fc=require('./owner.js')
 const xcxlogin=require('./login')
 const Koa = require('koa');
 const fs = require('fs');
-
+const router = require('koa-router')();
 const app = new Koa();
+var http = require('http');
+// app.use(async (ctx, next) => {
+//   console.log(ctx.request.path+':'+ctx.request.method);
+//   await next();
+// });
 
-const main = ctx => {
-  ctx.response.type = 'html';
-  ctx.response.body = fs.createReadStream('./server/test.html');
-};
-app.use(main)
-// 在端口3000监听:
-app.listen(3000);
-console.log('app started at port 3000...');
-var rows
-function c(option) {
-  //i=0
-  //fc.changeparking(1, 2,rows[i].kind,rows[i].name, rows[i].location,rows[i].lola, rows[i].number, rows[i].kind3_number, rows[i].lease)
-  rows=option
-  console.log(option)
-  app.use(async (ctx, next) => {
-    await next();
-    ctx.response.type = 'text/html';
-    ctx.response.body = '<h1>'+rows[0].id+rows[0].name+'</h1>';
+// router.get('/hello/:name', async (ctx, next) => {
+//   var name = ctx.params.name;
+//   ctx.response.body = `<h1>Hello, ${name}!</h1>`;
+// });
+
+// router.get('/', async (ctx, next) => {
+//   ctx.response.body = '<a href="/users">个人中心</a>';
+// });
+// router.get('/users', function *(next) {
+//   console.log("11111111111")
+// })
+// app.use(router.routes());
+
+var querystring = require('querystring');
+ 
+var postHTML = 
+  '<html><head><meta charset="utf-8"><title>菜鸟教程 Node.js 实例</title></head>' +
+  '<body>' +
+  '<form method="post">' +
+  '网站名： <input name="name"><br>' +
+  '网站 URL： <input name="url"><br>' +
+  '<input type="submit">' +
+  '</form>' +
+  '</body></html>';
+ 
+http.createServer(function (req, res) {
+  var body = "";
+  req.on('data', function (chunk) {
+    body += chunk;
   });
-}
-//fc.selectowner("id",1,c)
+  req.on('end', function () {
+    // 解析参数
+    body = querystring.parse(body);
+    // 设置响应头部信息及编码
+    res.writeHead(200, {'Content-Type': 'text/html; charset=utf8'});
+ 
+    if(body.name && body.url) { // 输出提交的数据
+      console.log(body.name)
+        res.write("网站名：" + body.name);
+        res.write("<br>");
+        res.write("网站 URL：" + body.url);
+    } else {  // 输出表单
+        res.write(postHTML);
+    }
+    res.end();
+  });
+}).listen(3000);
+// 在端口3000监听:
+// app.listen(3000);
+console.log('app started at port 3000...');
 
 
-//小程序根据code换openid操作：
-//xcxlogin.xcxlogin("003oxtka1QSV4R1YDgka1fCyka1oxtk6",c)
-// function c(option) {
-//   rows = JSON.parse(option)
-//   console.log(rows,rows.openid)
-// }
