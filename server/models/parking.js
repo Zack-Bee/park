@@ -17,7 +17,6 @@ connection.connect(function (err) {
         location varchar(255)not null,
         lola varchar(100),
         number INT,
-        kind3_number INT,
         lease varchar(255)not null
     )`;
   connection.query(createtables, function (err, results, fields) {

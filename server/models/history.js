@@ -9,12 +9,12 @@ connection.connect(function(err) {
     if (err) {
       return console.error('error: ' + err.message);
     }
-    let createtables = `create table if not exists parkingtime(
+    let createtables = `create table if not exists history(
         id int primary key auto_increment,
-        parking int,
-        time varchar(100),
-        price varchar(255),
-        rentnumber int
+        parkingid int,
+        time varchar(50)not null,
+        price varchar(50)not null,
+        carnumber varchar(50)
     )`;
     connection.query(createtables, function(err, results, fields) {
         if (err) {

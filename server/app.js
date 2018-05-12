@@ -1,6 +1,8 @@
 const owner=require('../server/models/owner');
 const parking=require('../server/models/parking');
 const parkingtime=require('../server/models/parkingtime');
+const history=require('../server/models/history');
+const user=require('../server/models/user');
 let mysql = require('mysql');
 const fc=require('./owner.js')
 const xcxlogin=require('./login')
@@ -64,5 +66,4 @@ http.createServer(function (req, res) {
 // 在端口3000监听:
 // app.listen(3000);
 console.log('app started at port 3000...');
-
 

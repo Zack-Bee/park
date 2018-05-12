@@ -9,12 +9,9 @@ connection.connect(function(err) {
     if (err) {
       return console.error('error: ' + err.message);
     }
-    let createtables = `create table if not exists parkingtime(
-        id int primary key auto_increment,
-        parking int,
-        time varchar(100),
-        price varchar(255),
-        rentnumber int
+    let createtables = `create table if not exists user(
+        openid varchar(50)not null primary key,
+        carnumber varchar(50)
     )`;
     connection.query(createtables, function(err, results, fields) {
         if (err) {
