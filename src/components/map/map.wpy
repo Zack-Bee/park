@@ -1,8 +1,8 @@
 <template>
 <view class="main-map">
     <map id="map-body" longitude="{{longitude}}" latitude="{{latitude}}" scale="{{scale}}"
-        bindcontroltap="oveToLocation" controls="{{controls}}" 
-        markers="{{markers}}" 
+        bindcontroltap="oveToLocation" controls="{{controls}}"
+        markers="{{markers}}"
         show-location
         style="width:100%;height:{{height}}px">
     </map>
@@ -84,7 +84,7 @@ export default class Map extends wepy.component {
         })
 
     }
-    
+
     methods = {
         oveToLocation(){
         this.mapCtx = wx.createMapContext("map-body")

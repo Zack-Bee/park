@@ -1,4 +1,4 @@
-var host = "https://yffw93wx.qcloud.la"
+var host = "https://www.maocaoqiu.top"
 
 var config = {
     host,

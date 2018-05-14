@@ -1,25 +1,50 @@
 <template>
-<view>
     <view>
-        <view>王邦铮的停车场</view>
-        <view>企业类停车场</view>
-        <view>停车场ID: 123456</view>
-        <view>车位情况: 10/60</view>
-    </view>
-    <view class="park">
-        <view class="park-left">
-            <view class="park-icon-wrapper">
-                <image src="./company.png" style="height: 100%; width: 100%;"/>
+        <view class="park" wx:for="{{parks}}" wx:key="parkId-{{item.parkId}}">
+            <view class="park-left">
+                <view class="park-icon-wrapper">
+                    <image
+                        src="{{(item.kind === 3) ? '../../components/parks/company.png' : '../../components/parks/person.png'}}"
+                        style="height: 100%; width: 100%;" />
+                </view>
+                <view class="park-type">
+                    {{(item.kind === 3) ? "企业类" : "个人类"}}
+                </view>
             </view>
-            <view class="park-type">
-                企业类
+            <view class="park-right">
+                <view class="park-name">{{item.parkName}}</view>
+                <view class="park-detail">
+                    <view wx:if="{{item.isOpen}}" class="park-number">
+                        车位情况:
+                        <text class="park-number-rented">{{item.rentPark}}</text>
+                        <text class="park-number-all">/{{item.allPark}}</text>
+                    </view>
+                    <view></view>
+                </view>
+            </view>
+            <view class="vertical-wrapper">
+                <view class="switcher-wrapper">
+                    <view data-park-id="{{item.parkId}}"
+                        data-is-open="{{item.isOpen}}"
+                        class="zan-switch zan-switch--{{ item.isOpen ? 'on' : 'off' }} {{ disabled ? 'zan-swtich--disabled' : '' }}"
+                        checked="{{ checked }}"
+                        loading="{{ loading }}"
+                        disabled="{{ disabled }}"
+                        @tap="onSwitchChange">
+                        <view class="zan-switch__circle">
+                            <view hidden="{{ true }}" class="zan-switch__loading"></view>
+                        </view>
+                        <view class="zan-switch__bg"></view>
+                    </view>
+                </view>
             </view>
         </view>
-        <view class="park-right">
-            <view class="park-name">王邦铮的停车场</view>
-        </view>
+        <Dialog :show.sync="isDialogShow"
+            :handleButtonClick="onButtonClick"
+            :handleMaskClick="hideDialog"
+            :message.sync="dialogMessage"
+            :buttons.sync="buttons"/>
     </view>
-</view>
 </template>
 
 <style scoped>
@@ -30,9 +55,10 @@
     border-radius: 20rpx;
 }
 
-.park::before, .park::after {
+.park::before,
+.park::after {
     display: block;
-    content: "";
+    content: '';
     clear: both;
 }
 
@@ -55,7 +81,7 @@
 
 .park-right {
     float: left;
-    width: 570rpx;
+    width: 462rpx;
 }
 
 .park-name {
@@ -64,12 +90,94 @@
     color: #353535;
     text-align: center;
 }
+
+.park-number {
+    line-height: 50rpx;
+    font-size: 30rpx;
+    text-align: center;
+    color: #888;
+}
+
+.park-number-rented {
+    color: #09bb07;
+}
+
+.park-number-all {
+}
+
+.vertical-wrapper {
+    line-height: 80rpx;
+    vertical-align: center;
+    font-size: 0;
+}
+
+.switcher-wrapper {
+    float: left;
+}
+
+/*zan switcher*/
+
+.zan-switch {
+    position: relative;
+    display: inline-block;
+    width: 104rpx;
+    height: 64rpx;
+    vertical-align: middle;
+    box-sizing: border-box;
+    border-radius: 32rpx;
+    background: #44db5e;
+    border: 2rpx solid #44db5e;
+}
+.zan-switch__circle {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 60rpx;
+    height: 60rpx;
+    display: inline-block;
+    background: #fff;
+    border-radius: 30rpx;
+    box-sizing: border-box;
+    box-shadow: 0 0 0 2rpx rgba(0, 0, 0, 0.1), 0 6rpx 2rpx 0 rgba(0, 0, 0, 0.05),
+        0 4rpx 4rpx 0 rgba(0, 0, 0, 0.1), 0 6rpx 6rpx 0 rgba(0, 0, 0, 0.05);
+    transition: transform 0.35s cubic-bezier(0.45, 1, 0.4, 1);
+    z-index: 2;
+}
+.zan-switch__bg {
+    position: absolute;
+    top: -2rpx;
+    left: -2rpx;
+    width: 108rpx;
+    height: 66rpx;
+    background: #fff;
+    border-radius: 52rpx;
+    display: inline-block;
+    border: 2rpx solid #e5e5e5;
+    box-sizing: border-box;
+    transition: transform 0.35s cubic-bezier(0.45, 1, 0.4, 1);
+    transform: scale(0);
+    transform-origin: 78rpx 32rpx;
+}
+.zan-switch--on .zan-switch__circle {
+    transform: translateX(40rpx);
+}
+.zan-switch--off .zan-switch__bg {
+    transform: scale(1);
+}
+.zan-swtich--disabled {
+    opacity: 0.4;
+}
 </style>
 
 <script>
 import wepy from 'wepy'
+import Dialog from "../dialog/dialog"
 
 export default class Parks extends wepy.component {
+    components = {
+        Dialog
+    }
+
     props = {}
 
     data = {
@@ -87,9 +195,56 @@ export default class Parks extends wepy.component {
                 kind: 4,
                 parkId: 10087,
                 isOpen: true,
-                isRented: false
+                rentPark: 0,
+                allPark: 1
             }
-        ]
+        ],
+        onButtonClick: (event) => {
+            console.log(event)
+        },
+        hideDialog: (event) => {
+            console.log(event)
+            this.isDialogShow = false
+            this.$apply()
+        },
+        isDialogShow: false,
+        dialogMessage: "你确定要停止发布这个停车位吗",
+        buttons: [
+            {
+                // 按钮文案
+                text: '取消',
+                // 按钮文字颜色
+                color: '#3cc51f',
+                // 按钮类型，用于在 then 中接受点击事件时，判断是哪一个按钮被点击
+                type: 'cancel'
+            },
+            {
+                text: '确定',
+                type: 'confirm'
+            }
+        ],
+        currentParkId: ""
+    }
+
+    methods = {
+        onSwitchChange: (event) => {
+            let data = event.currentTarget.dataset
+            this.currentParkId = data.parkId
+            if (data.isOpen) {
+                let parkName
+                console.log(this.parks)
+                this.parks.forEach((park) => {
+                    if (park.parkId === data.parkId) {
+                        parkName = park.parkName
+                    }
+                })
+                this.dialogMessage = `你确定要停止发布<${parkName}>吗?`
+                this.$apply()
+                this.isDialogShow = true
+                this.$apply()
+            }
+            console.log(event)
+        }
     }
 }
 </script>
