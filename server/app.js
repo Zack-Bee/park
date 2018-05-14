@@ -13,10 +13,7 @@ app.use(bodyParser());
 const router = require('./routes/index')
 app.listen(5757)
 console.log("listening 5757")
-function c(option){
-  console.log(option)
-}
-fc.selectparkingtime("id",6,c)
+
 const main = ctx => {
   ctx.response.type = 'html';
   ctx.response.body = fs.createReadStream('./server/test.html');
