@@ -9,6 +9,6 @@ const ct = require('../../server/controllers/controllers')
 
 
 router.post('/login', ct.login)
-router.post('/selectparking', ct.selectparking)
+router.post('/user/parks',ct.userparks)
 
 module.exports = router

@@ -1,7 +1,6 @@
 console.log("运行server/app.js")
 let mysql = require('mysql');
 const fc=require('./function')
-const xcxlogin=require('./login')
 const Koa = require('koa');
 const fs = require('fs');
 const bodyParser = require('koa-bodyparser')
@@ -14,6 +13,10 @@ app.use(bodyParser());
 const router = require('./routes/index')
 app.listen(5757)
 console.log("listening 5757")
+function c(option){
+  console.log(option)
+}
+fc.selectparkingtime("id",6,c)
 const main = ctx => {
   ctx.response.type = 'html';
   ctx.response.body = fs.createReadStream('./server/test.html');

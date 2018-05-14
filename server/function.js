@@ -50,13 +50,15 @@ exports.addparking = function(id, ownerId,kind, name, location,lola,number, leas
   })
 }
 
-exports.addparkingtime = function(id, parking, time, price,rentnumber) {
+exports.addparkingtime = function(id, parking, time, price,rentnumber,isuse,kind) {
   var aa = id
   var bb = parking
   var cc = "'" + time + "'"
   var dd = "'" + price + "'"
   var ee = rentnumber
-  sql = 'insert into parkingtime (id,parking,time,price,rentnumber) values(' + aa + ',' + bb + ',' + cc + ',' + dd +',' + ee+ ')'
+  var ff = isuse
+  var gg = kind
+  sql = 'insert into parkingtime (id,parking,time,price,rentnumber,isuse,kind) values(' + aa + ',' + bb + ',' + cc + ',' + dd +',' + ee+',' + ff  +',' + gg + ')'
   conn.query(sql, function (err, result) {
     if (err) throw err;
     console.log(result);
@@ -105,9 +107,9 @@ exports.changeparking = function (id, ownerId, kind, name, location, lola, numbe
   })
 }
 
-exports.changeparkingtime = function(id, parking, time, price,rentnumber) {
-  var modSql = 'UPDATE parkingtime SET parking = ?,time = ?,price =?,rentnumber=? WHERE Id = ?';
-  var modSqlParams = [parking, time, price,rentnumber, id];
+exports.changeparkingtime = function(id, parking, time, price,rentnumber,isuse,kind) {
+  var modSql = 'UPDATE parkingtime SET parking = ?,time = ?,price =?,rentnumber=?,isuse=?,kind=? WHERE Id = ?';
+  var modSqlParams = [parking, time, price,rentnumber,isuse,kind,id];
   conn.query(modSql, modSqlParams, function (err, result) {
     if (err) {
       console.log('[UPDATE ERROR] - ', err.message);
@@ -252,17 +254,17 @@ exports.selectparking = function (idORownerIdORkindORnameORlocationORlolaORnumbe
   })
 }
 
-exports.selectparkingtime = function (idORparkingORtimeORpriceORrentnumber, content, callback) {
+exports.selectparkingtime = function (idORparkingORtimeORpriceORrentnumberORisuseORkind, content, callback) {
   return new Promise(function (resolve, reject) {
     var option = new Array();
-    var sql = 'select * from parkingtime where ' + String(idORparkingORtimeORpriceORrentnumber) + '=' + String(content)
+    var sql = 'select * from parkingtime where ' + String(idORparkingORtimeORpriceORrentnumberORisuseORkind) + '=' + String(content)
     execQuery(sql, function (err, rows) {
       if (err) {
         reject(err);
       } else {
         resolve(rows);
         for (var i = 0; i < rows.length; i++) {
-          option.push({ 'id': rows[i].id, 'parking': rows[i].parking, 'time': rows[i].time, 'price': rows[i].price,'rentnumber':rows[i].rentnumber });
+          option.push({ 'id': rows[i].id, 'parking': rows[i].parking, 'time': rows[i].time, 'price': rows[i].price,'rentnumber':rows[i].rentnumber,'isuse':rows[i].isuse,'kind':rows[i].kind });
         }
         callback(option)
       }

@@ -14,7 +14,9 @@ connection.connect(function(err) {
         parking int,
         time varchar(100),
         price varchar(255),
-        rentnumber int
+        rentnumber int,
+        isuse bool,
+        kind int
     )`;
     connection.query(createtables, function(err, results, fields) {
         if (err) {
