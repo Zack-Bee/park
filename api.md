@@ -33,20 +33,19 @@ eg:
 responseDataType: json
 eg:
 [{
-    id:1,
-    ownerId:2,
-    kind:1,
-    name: "王邦铮的停车场",
-    location:"东北大学xxxx",
-    lola（经纬度）: 12,23,
-    number:100,
-    lease（合同图片地址）:xxxx
+    parkName: "王邦铮的停车场",
+    kind: 3,
+    allPark: 100,
+    rentPark: 60,
+    parkId: 10086,
+    isOpen: true
 }, {
-    id:1,
-    parking:1,
-    time: xxx-xxx,
-    price:12,
-    rentnumber: 1
+    parkName: "zackbee",
+    kind: 4,
+    parkId: 10087,
+    isOpen: true,
+    allPark: 1,
+    rentPark: 0
 }]
 ```
 
