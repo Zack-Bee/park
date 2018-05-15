@@ -1,33 +1,19 @@
 <template>
 <view class="main-map">
     <map id="map-body" longitude="{{longitude}}" latitude="{{latitude}}" scale="{{scale}}"
-        bindcontroltap="oveToLocation" controls="{{controls}}"
-        markers="{{markers}}"
+        bindcontroltap="clickcontrols" controls="{{controls}}" 
+        markers="{{markers}}" 
         show-location
         style="width:100%;height:{{height}}px">
     </map>
 </view>
-
 </template>
 
 <style scoped>
-.map-bar {
-    padding: 40rpx 30rpx;
-    box-shadow: 0 2rpx 2rpx 1rpx rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-}
-
-.map-bar-icon-localme {
-    float: right;
-    width: 40rpx;
-    height: 40rpx;
-    padding-right: 30rpx;
-}
 </style>
 
 <script>
 import wepy from 'wepy'
-
 export default class Map extends wepy.component {
     props = {
         height: {
@@ -35,7 +21,6 @@ export default class Map extends wepy.component {
             default: 375
         }
     }
-
     data = {
         scale: 18,
         latitude: '',
@@ -43,36 +28,50 @@ export default class Map extends wepy.component {
         markers: [],
         controls: [
             {
-                id: 1,
+                id: 1, //标记中心位置
                 iconPath: '../../components/map/iamhere.png',
                 position: {
-                    top: 0,
-                    width: 50,
-                    height: 50,
-                    left: 0
+                    left: 177.5 * wx.getStorageSync('MapScreenW'),
+                    top: 177.5 * wx.getStorageSync('MapScreenH'),
+                    width: 30 * wx.getStorageSync('MapScreenW'),
+                    height: 40 * wx.getStorageSync('MapScreenW')
                 },
-                clickable: false,
+                clickable: false
             },
             {
-                id: 2,
+                id: 2, //点击回到当前位置
                 iconPath: '../../components/map/locate.png',
                 position: {
-                    left: 5,
-                    top: 300 - 50,
-                    width: 40,
-                    height: 40
+                    left: 20 * wx.getStorageSync('MapScreenW'),
+                    top: 320 * wx.getStorageSync('MapScreenH'),
+                    width: 40 * wx.getStorageSync('MapScreenW'),
+                    height: 40 * wx.getStorageSync('MapScreenW')
+                },
+                clickable: true
+            },
+            {
+                id: 3, //点击打开搜索界面
+                iconPath: '../../components/map/search_bar.png',
+                position: {
+                    left: 320 * wx.getStorageSync('MapScreenW'),
+                    top: 320 * wx.getStorageSync('MapScreenH'),
+                    width: 40 * wx.getStorageSync('MapScreenW'),
+                    height: 40 * wx.getStorageSync('MapScreenW')
                 },
                 clickable: true
             }
-        ],
+        ]
     }
     onLoad() {
-        let globalData = this.$parent.$parent.globalData
-        this.controls[0].position.top = globalData.mapHeight / 2 -32
-        this.controls[0].position.left = globalData.mapWidth / 2 -25
-
-        this.$apply()
-        wx.getLocation({    //获得用户当前位置
+        /*wx.openSetting({
+            success: res => {
+                res.authSetting = {
+                    'scope.userLocation': true
+                }
+            }
+        })*/
+        wx.getLocation({
+            //获得用户当前位置
             type: 'gcj02',
             success: res => {
                 var latitude = res.latitude
@@ -80,15 +79,23 @@ export default class Map extends wepy.component {
                 this.latitude = latitude
                 this.longitude = longitude
                 this.$apply()
+                console.log(res)
             }
         })
-
     }
-
     methods = {
-        oveToLocation(){
-        this.mapCtx = wx.createMapContext("map-body")
-        this.mapCtx.moveToLocation()
+        clickcontrols(e) {
+            if (e.controlId === 2) {
+                //点击定位按钮回到当前位置
+                this.mapCtx = wx.createMapContext('map-body')
+                this.mapCtx.moveToLocation()
+                scale = 18
+            } else if (e.controlId === 1) {
+                //点击搜索按钮进入搜索界面
+                wx.navigateTo({
+                    url: '../search/search'
+                })
+            }
         }
     }
 }
