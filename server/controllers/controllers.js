@@ -26,3 +26,4 @@ exports.userparks = async (ctx, next) => {
   }
   ctx.body={parking:parking,parkingtime:parkingtime}
 }
+

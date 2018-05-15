@@ -21,6 +21,7 @@ eg:
 ### /user/parks
 #### Method: POST
 #### Usage: 获取租赁用户的停车位信息, 用于车位主查看自己车位的情况
+#### 已完成注释：根据openid作为ownerid查找此人全部停车场再根据每个停车场id作为parking查找每个停车场的停车时间方案，返回的json是全部停车场和全部方案，需要前端根据第二个json中的parking来将方案与停车场对应
 ```
 requestDataType: json
 eg:
@@ -49,6 +50,7 @@ eg:
     rentnumber: 1
 }]
 ```
+
 
 #### Method: POST
 #### Usage: 从数据库中删除指定的车位信息, 用于用户管理自己的车位
