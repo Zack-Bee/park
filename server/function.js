@@ -5,6 +5,7 @@
 // const e = require('../server/models/user');
 let mysql = require('mysql');
 var async = require('async');
+var request = require('request');
 
 var conn = mysql.createConnection({
   host: 'localhost',    //服务器端口
@@ -24,17 +25,17 @@ var options = {
 
 var pool = mysql.createPool(options);
 
-exports.addowner = function(id, name, idcard) {
+exports.addowner = function (id, name, idcard) {
   var aa = id
   var bb = "'" + name + "'"
   var cc = "'" + idcard + "'"
   sql = 'insert into owner (id,name,idcard) values(' + aa + ',' + bb + ',' + cc + ')'
-  conn.query(sql, function(err, result) {
+  conn.query(sql, function (err, result) {
     if (err) throw err;
     console.log(result);
   })
 }
-exports.addparking = function(id, ownerId,kind, name, location,lola,number, lease) {
+exports.addparking = function (id, ownerId, kind, name, location, lola, number, lease) {
   var aa = id
   var bb = ownerId
   var cc = kind
@@ -43,14 +44,14 @@ exports.addparking = function(id, ownerId,kind, name, location,lola,number, leas
   var ff = "'" + lola + "'"
   var gg = number
   var ii = "'" + lease + "'"
-  sql = 'insert into parking (id,ownerId,kind,name,location,lola,number,lease) values(' + aa + ',' + bb + ',' + cc + ',' + dd + ',' + ee + ',' + ff + ',' + gg + ','+ ii + ')'
+  sql = 'insert into parking (id,ownerId,kind,name,location,lola,number,lease) values(' + aa + ',' + bb + ',' + cc + ',' + dd + ',' + ee + ',' + ff + ',' + gg + ',' + ii + ')'
   conn.query(sql, function (err, result) {
     if (err) throw err;
     console.log(result);
   })
 }
 
-exports.addparkingtime = function(id, parking, time, price,rentnumber,isuse,kind) {
+exports.addparkingtime = function (id, parking, time, price, rentnumber, isuse, kind) {
   var aa = id
   var bb = parking
   var cc = "'" + time + "'"
@@ -58,34 +59,34 @@ exports.addparkingtime = function(id, parking, time, price,rentnumber,isuse,kind
   var ee = rentnumber
   var ff = isuse
   var gg = kind
-  sql = 'insert into parkingtime (id,parking,time,price,rentnumber,isuse,kind) values(' + aa + ',' + bb + ',' + cc + ',' + dd +',' + ee+',' + ff  +',' + gg + ')'
+  sql = 'insert into parkingtime (id,parking,time,price,rentnumber,isuse,kind) values(' + aa + ',' + bb + ',' + cc + ',' + dd + ',' + ee + ',' + ff + ',' + gg + ')'
   conn.query(sql, function (err, result) {
     if (err) throw err;
     console.log(result);
   })
 }
-exports.addhistory = function(id, parkingid, time, price,carnumber) {
+exports.addhistory = function (id, parkingid, time, price, carnumber) {
   var aa = id
   var bb = parkingid
   var cc = "'" + time + "'"
   var dd = "'" + price + "'"
-  var ee =  "'" + carnumber + "'"
-  sql = 'insert into history (id, parkingid, time, price,carnumber) values(' + aa + ',' + bb + ',' + cc + ',' + dd +',' + ee+ ')'
+  var ee = "'" + carnumber + "'"
+  sql = 'insert into history (id, parkingid, time, price,carnumber) values(' + aa + ',' + bb + ',' + cc + ',' + dd + ',' + ee + ')'
   conn.query(sql, function (err, result) {
     if (err) throw err;
     console.log(result);
   })
 }
-exports.adduser = function(openid,carnumber) {
+exports.adduser = function (openid, carnumber) {
   var aa = openid
-  var bb =  "'" + carnumber + "'"
+  var bb = "'" + carnumber + "'"
   sql = 'insert into user (openid,carnumber) values(' + aa + ',' + bb + ')'
   conn.query(sql, function (err, result) {
     if (err) throw err;
     console.log(result);
   })
 }
-exports.changeowner = function(id, name, idcard) {
+exports.changeowner = function (id, name, idcard) {
   var modSql = 'UPDATE owner SET name = ?,idcard = ? WHERE Id = ?';
   var modSqlParams = [name, idcard, id];
   conn.query(modSql, modSqlParams, function (err, result) {
@@ -98,7 +99,7 @@ exports.changeowner = function(id, name, idcard) {
 
 exports.changeparking = function (id, ownerId, kind, name, location, lola, number, lease) {
   var modSql = 'UPDATE parking SET ownerId = ?,kind=?,name = ?, location=?,lola=?, number=?,lease=? WHERE Id = ?';
-  var modSqlParams = [ownerId, kind, name, location, lola, number,lease,id];
+  var modSqlParams = [ownerId, kind, name, location, lola, number, lease, id];
   conn.query(modSql, modSqlParams, function (err, result) {
     if (err) {
       console.log('[UPDATE ERROR] - ', err.message);
@@ -107,9 +108,9 @@ exports.changeparking = function (id, ownerId, kind, name, location, lola, numbe
   })
 }
 
-exports.changeparkingtime = function(id, parking, time, price,rentnumber,isuse,kind) {
+exports.changeparkingtime = function (id, parking, time, price, rentnumber, isuse, kind) {
   var modSql = 'UPDATE parkingtime SET parking = ?,time = ?,price =?,rentnumber=?,isuse=?,kind=? WHERE Id = ?';
-  var modSqlParams = [parking, time, price,rentnumber,isuse,kind,id];
+  var modSqlParams = [parking, time, price, rentnumber, isuse, kind, id];
   conn.query(modSql, modSqlParams, function (err, result) {
     if (err) {
       console.log('[UPDATE ERROR] - ', err.message);
@@ -118,9 +119,9 @@ exports.changeparkingtime = function(id, parking, time, price,rentnumber,isuse,k
   })
 }
 
-exports.changehistory = function(id, parkingid, time, price,carnumber) {
+exports.changehistory = function (id, parkingid, time, price, carnumber) {
   var modSql = 'UPDATE history SET parkingid = ?,time = ?,price =?,carnumber=? WHERE Id = ?';
-  var modSqlParams = [parkingid, time, price,carnumber, id];
+  var modSqlParams = [parkingid, time, price, carnumber, id];
   conn.query(modSql, modSqlParams, function (err, result) {
     if (err) {
       console.log('[UPDATE ERROR] - ', err.message);
@@ -129,7 +130,7 @@ exports.changehistory = function(id, parkingid, time, price,carnumber) {
   })
 }
 
-exports.changeuser = function(openid, carnumber) {
+exports.changeuser = function (openid, carnumber) {
   var modSql = 'UPDATE user SET carnumber=? WHERE openid = ?';
   var modSqlParams = [carnumber, openid];
   conn.query(modSql, modSqlParams, function (err, result) {
@@ -139,7 +140,7 @@ exports.changeuser = function(openid, carnumber) {
     }
   })
 }
-exports.deleteowner = function(id) {
+exports.deleteowner = function (id) {
   var delSql = 'DELETE FROM owner where id=' + String(id);
   conn.query(delSql, function (err, result) {
     if (err) {
@@ -159,7 +160,7 @@ exports.deleteparking = function deleteparking(id) {
   })
 }
 
-exports.deleteparkingtime= function(id) {
+exports.deleteparkingtime = function (id) {
   var delSql = 'DELETE FROM parkingtime where id=' + String(id);
   conn.query(delSql, function (err, result) {
     if (err) {
@@ -169,7 +170,7 @@ exports.deleteparkingtime= function(id) {
   })
 }
 
-exports.deletehistory= function(id) {
+exports.deletehistory = function (id) {
   var delSql = 'DELETE FROM history where id=' + String(id);
   conn.query(delSql, function (err, result) {
     if (err) {
@@ -178,7 +179,7 @@ exports.deletehistory= function(id) {
     }
   })
 }
-exports.deleteuser= function(id) {
+exports.deleteuser = function (id) {
   var delSql = 'DELETE FROM user where id=' + String(id);
   conn.query(delSql, function (err, result) {
     if (err) {
@@ -246,7 +247,7 @@ exports.selectparking = function (idORownerIdORkindORnameORlocationORlolaORnumbe
       } else {
         resolve(rows);
         for (var i = 0; i < rows.length; i++) {
-          option.push({ 'id': rows[i].id, 'ownerId': rows[i].ownerId, 'kind':rows[i].kind,'name': rows[i].name, 'location': rows[i].location,"lola":rows[i].lola, 'number': rows[i].number,'lease': rows[i].lease });
+          option.push({ 'id': rows[i].id, 'ownerId': rows[i].ownerId, 'kind': rows[i].kind, 'name': rows[i].name, 'location': rows[i].location, "lola": rows[i].lola, 'number': rows[i].number, 'lease': rows[i].lease });
         }
         callback(option)
       }
@@ -264,7 +265,7 @@ exports.selectparkingtime = function (idORparkingORtimeORpriceORrentnumberORisus
       } else {
         resolve(rows);
         for (var i = 0; i < rows.length; i++) {
-          option.push({ 'id': rows[i].id, 'parking': rows[i].parking, 'time': rows[i].time, 'price': rows[i].price,'rentnumber':rows[i].rentnumber,'isuse':rows[i].isuse,'kind':rows[i].kind });
+          option.push({ 'id': rows[i].id, 'parking': rows[i].parking, 'time': rows[i].time, 'price': rows[i].price, 'rentnumber': rows[i].rentnumber, 'isuse': rows[i].isuse, 'kind': rows[i].kind });
         }
         callback(option)
       }
@@ -282,7 +283,7 @@ exports.selecthistory = function (idORparkingidORtimeORpriceORcarnumber, content
       } else {
         resolve(rows);
         for (var i = 0; i < rows.length; i++) {
-          option.push({ 'id': rows[i].id, 'parkingid': rows[i].parkingid, 'time': rows[i].time, 'price': rows[i].price,'carnumber':rows[i].carnumber });
+          option.push({ 'id': rows[i].id, 'parkingid': rows[i].parkingid, 'time': rows[i].time, 'price': rows[i].price, 'carnumber': rows[i].carnumber });
         }
         callback(option)
       }
@@ -300,7 +301,7 @@ exports.selectuser = function (openidORcarnumber, content, callback) {
       } else {
         resolve(rows);
         for (var i = 0; i < rows.length; i++) {
-          option.push({ 'openid': rows[i].openid,'carnumber':rows[i].carnumber });
+          option.push({ 'openid': rows[i].openid, 'carnumber': rows[i].carnumber });
         }
         callback(option)
       }
@@ -308,21 +309,96 @@ exports.selectuser = function (openidORcarnumber, content, callback) {
   })
 }
 
-var request = require('request');
-exports.xcxlogin=function(code,callback){
-  return new Promise(function (resolve, reject) {  
-        request('https://api.weixin.qq.com/sns/jscode2session?appid=wx5fbbb4d25168eb48&secret=106619eb311c77a93dbfd697ff06f709&js_code='+code+'&grant_type=authorization_code', function (error, response, body) {
-        if(error){
+exports.xcxlogin = function (code, callback) {
+  return new Promise(function (resolve, reject) {
+    request('https://api.weixin.qq.com/sns/jscode2session?appid=wx5fbbb4d25168eb48&secret=106619eb311c77a93dbfd697ff06f709&js_code=' + code + '&grant_type=authorization_code', function (error, response, body) {
+      if (error) {
         reject(error);
       }
-        else if(response.statusCode == 200) {
+      else if (response.statusCode == 200) {
         resolve(body);
         callback(body);
-    }
-    else{
-      reject("response.statusCode != 200");
-  }
-  })
+      }
+      else {
+        reject("response.statusCode != 200");
+      }
+    })
+  });
+}
+exports.using = function (option) {
+  var isuse = []
+  var real = []
+  var every = []
 
-});
+  function realisin(time) {
+    var now = new Date();
+    var year = now.getFullYear()
+    var month = now.getMonth() + 1
+    var day = now.getDate()
+    var hour = now.getHours()
+    var minute = now.getMinutes()
+    var t = time.split("-")
+    start = t[0]
+    start = start.split(".")
+    end = t[1]
+    end = end.split(".")
+    for (m = 0; m < start.length; m++) {
+      start[m] = parseInt(start[m])
+      end[m] = parseInt(end[m])
+    }
+    if ((start[0] <= year && start[1] <= month && start[2] <= day && start[3] <= hour && start[4] <= minute) || (start[0] <= year && start[1] <= month && start[2] <= day && start[3] < hour) || (start[0] <= year && start[1] <= month && start[2] < day) || (start[0] <= year && start[1] < month) || start[0] < year) {
+      if ((year <= end[0] && month <= end[1] && day <= end[2] && hour <= end[3] && minute <= end[4]) || (year <= end[0] && month <= end[1] && day <= end[2] && hour < end[3]) || (year <= end[0] && month <= end[1] && day < end[2]) || (year <= end[0] && month < end[1]) || year < end[0]) {
+        return true
+      }
+      return false
+    }
+    return false
+  }
+
+  function everyisin(time) {
+    var now = new Date()
+    var hour = now.getHours()
+    var minute = now.getMinutes()
+    t = time.split("-")
+    start = t[0]
+    start = start.split(".")
+    end = t[1]
+    end = end.split(".")
+    for (m = 0; m < start.length; m++) {
+      start[m] = parseInt(start[m])
+      end[m] = parseInt(end[m])
+    }
+    if (start[0] <= hour && start[1] <= minute) {
+      if (hour <= end[0] && minute < end[1]) {
+        return true
+      }
+      return false
+    }
+    return false
+  }
+
+  for (i = 0; i < option.length; i++) {
+    if (option[i].isuse == 1) {
+      isuse.push(option[i])
+    }
+  }
+  for (i = 0; i < isuse.length; i++) {
+    if (isuse[i].kind == 1) {
+      real.push(isuse[i])
+    }
+    else {
+      every.push(isuse[i])
+    }
+  }
+  for (i = 0; i < real.length; i++) {
+    if (realisin(real[i].time)) {
+      return real[i]
+    }
+  }
+  for (i = 0; i < every.length; i++) {
+    if (everyisin(every[i].time)) {
+      return every[i]
+    }
+  }
+  return 0
 }
