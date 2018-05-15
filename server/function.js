@@ -201,8 +201,10 @@ function execQuery(sql, values, callback) {
         if (err) {
           errinfo = 'DB-SQL语句执行错误:' + err;
           callback(err);
+          return
         } else {
           callback(null, rows);        //注意：第一个参数必须为null
+          return
         }
       });
     }
@@ -232,6 +234,7 @@ exports.selectowner = function (idORnameORidcard, content, callback) {
           option.push({ 'id': rows[i].id, 'name': rows[i].name, 'idcard': rows[i].idcard });
         }
         callback(option)
+        return
       }
     })
   })
@@ -250,6 +253,7 @@ exports.selectparking = function (idORownerIdORkindORnameORlocationORlolaORnumbe
           option.push({ 'id': rows[i].id, 'ownerId': rows[i].ownerId, 'kind': rows[i].kind, 'name': rows[i].name, 'location': rows[i].location, "lola": rows[i].lola, 'number': rows[i].number, 'lease': rows[i].lease });
         }
         callback(option)
+        return
       }
     })
   })
@@ -268,6 +272,7 @@ exports.selectparkingtime = function (idORparkingORtimeORpriceORrentnumberORisus
           option.push({ 'id': rows[i].id, 'parking': rows[i].parking, 'time': rows[i].time, 'price': rows[i].price, 'rentnumber': rows[i].rentnumber, 'isuse': rows[i].isuse, 'kind': rows[i].kind });
         }
         callback(option)
+        return
       }
     })
   })
@@ -286,6 +291,7 @@ exports.selecthistory = function (idORparkingidORtimeORpriceORcarnumber, content
           option.push({ 'id': rows[i].id, 'parkingid': rows[i].parkingid, 'time': rows[i].time, 'price': rows[i].price, 'carnumber': rows[i].carnumber });
         }
         callback(option)
+        return
       }
     })
   })
@@ -304,6 +310,7 @@ exports.selectuser = function (openidORcarnumber, content, callback) {
           option.push({ 'openid': rows[i].openid, 'carnumber': rows[i].carnumber });
         }
         callback(option)
+        return
       }
     })
   })
@@ -318,6 +325,7 @@ exports.xcxlogin = function (code, callback) {
       else if (response.statusCode == 200) {
         resolve(body);
         callback(body);
+        return
       }
       else {
         reject("response.statusCode != 200");

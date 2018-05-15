@@ -6,6 +6,7 @@ exports.login = async (ctx, next) => {
   code = ctx.request.body.code
   function c(option) {
     ctx.response.body = { openid: JSON.parse(option).openid, err: JSON.parse(option) }
+    return
   }
   var res = await fc.xcxlogin(code, c);
   return
@@ -50,9 +51,11 @@ exports.userparks = async (ctx, next) => {
         all[m].rentPark = using.rentnumber
       }
       m = m + 1
+      return
     }
 
     function c(option) {
+      console.log("cing")
       parking = option
       let t
       for (i = 0; i < option.length; i++) {
@@ -82,12 +85,15 @@ exports.userparks = async (ctx, next) => {
       }
     }
     await fc.selectparking("ownerId", ctx.request.body.openid, c)
+    console.log("parking ok")
     if (userparkserr == 1) { return }
     var m = 0
     while (m < parking.length) {
       await fc.selectparkingtime("parking", parking[m].id, cc)
+      console.log("parkingtime ing..")
     }
-    ctx.body = all
+    console.log("parkingtime over")
+    ctx.response.body = all
     return
   }
 }
@@ -96,12 +102,17 @@ exports.userplatenumber = async (ctx, next) => {
   openid = ctx.request.body.openid
   var carnumber
   function c(option) {
-    carnumber = option[0].carnumber
-    ctx.body = { carnumber: carnumber }
+    if(option[0]){
+    ctx.body = {carnumber: option[0].carnumber}
   }
-  fc.selectuser("openid", openid, c)
+  }
+  await fc.selectuser("openid", openid, c)
 }
 
 exports.test = async (ctx, next) => {
+  function c(option){console.log("ok")}
+  await fc.selectuser("openid", ctx.request.body.openid, c)
+  await fc.selectuser("openid", ctx.request.body.openid, c)
+  await fc.selectuser("openid", ctx.request.body.openid, c)
   ctx.body = { message: "没事" }
 }
