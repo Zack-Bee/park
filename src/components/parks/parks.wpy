@@ -40,7 +40,7 @@
             </view>
         </view>
         <Dialog :show.sync="isDialogShow"
-            :handleButtonClick="onButtonClick"
+            :handleButtonClick="onDialogButtonClick"
             :handleMaskClick="hideDialog"
             :message.sync="dialogMessage"
             :buttons.sync="buttons"/>
@@ -172,6 +172,8 @@
 <script>
 import wepy from 'wepy'
 import Dialog from "../dialog/dialog"
+import post from "../../common/post.js"
+import config from "../../config.js"
 
 export default class Parks extends wepy.component {
     components = {
@@ -199,11 +201,24 @@ export default class Parks extends wepy.component {
                 allPark: 1
             }
         ],
-        onButtonClick: (event) => {
-            console.log(event)
+        onDialogButtonClick: (event) => {
+            let type = event.currentTarget.dataset.type
+            if (type === "cancel") {
+                this.hideDialog()
+            } else {
+                console.log("will send request")
+                // 保存当前的parkId
+                let currentParkID = this.currentParkID
+                post()
+                this.parks.forEach((park) => {
+                    if (this.currentParkId === park.parkId) {
+                        park.isOpen = false
+                    }
+                })
+                this.hideDialog()
+            }
         },
         hideDialog: (event) => {
-            console.log(event)
             this.isDialogShow = false
             this.$apply()
         },
@@ -232,7 +247,6 @@ export default class Parks extends wepy.component {
             this.currentParkId = data.parkId
             if (data.isOpen) {
                 let parkName
-                console.log(this.parks)
                 this.parks.forEach((park) => {
                     if (park.parkId === data.parkId) {
                         parkName = park.parkName
@@ -243,8 +257,11 @@ export default class Parks extends wepy.component {
                 this.isDialogShow = true
                 this.$apply()
             }
-            console.log(event)
         }
+    }
+
+    onLoad() {
+
     }
 }
 </script>
