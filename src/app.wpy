@@ -2,7 +2,7 @@
 import wepy from 'wepy'
 import 'wepy-async-function'
 import config from './config.js'
-import post from "./common/post.js"
+import post from './common/post.js'
 
 export default class extends wepy.app {
     config = {
@@ -35,7 +35,7 @@ export default class extends wepy.app {
 
     globalData = {
         userInfo: {},
-        openId: "",
+        openId: '',
         mapHeight: 555,
         mapWidth: 375
     }
@@ -43,39 +43,35 @@ export default class extends wepy.app {
     onLaunch() {
         console.log('launch')
         wx.getSystemInfo({
-            success: (data) => {
+            success: data => {
                 console.log(data)
-                this.globalData.mapHeight = data.windowHeight - (data.windowWidth * 0.48)
+                this.globalData.mapHeight =
+                    data.windowHeight - data.windowWidth * 0.48
                 this.globalData.mapWidth = data.windowWidth
                 console.log(this.globalData)
+                var mScreenW = data.windowWidth / 375
+                var mScreenH = data.windowHeight / 603
+                wx.setStorageSync('MapScreenW', mScreenW)
+                wx.setStorageSync('MapScreenH', mScreenH)
             },
             fail() {
                 console.log('fail')
             }
         })
 
-        wx.getUserInfo({
-            success: (data) => {
-                let parsedData = JSON.parse(data.rawData)
-                this.globalData.userInfo = parsedData
-                console.log(parsedData)
-            },
-            fail: (err) => {
-                console.log(err)
-            }
-        })
-
         wx.login({
-            success: (res) => {
-                post(config.loginUrl, {code: res.code}).then((res) => {
-                    console.log(res)
-                    this.globalData.openId = res.data.openId
-                }, (err) => {
-                    console.log(err)
-                })
+            success: res => {
+                post(config.loginUrl, { code: res.code }).then(
+                    res => {
+                        console.log(res)
+                        this.globalData.openId = res.data.openId
+                    },
+                    err => {
+                        console.log(err)
+                    }
+                )
             }
         })
-
     }
 }
 </script>
