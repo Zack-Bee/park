@@ -26,4 +26,14 @@ exports.userparks = async (ctx, next) => {
   }
   ctx.body={parking:parking,parkingtime:parkingtime}
 }
+exports.userplatenumber = async (ctx, next) => {
+  openid=ctx.request.body.openid
+  var carnumber
+  function c(option){
+    carnumber =option[0].carnumber
+    
+    ctx.body={carnumber:carnumber}
+  }
+  fc.selectuser("openid",openid,c)
+}
 
