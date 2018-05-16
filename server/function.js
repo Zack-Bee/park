@@ -95,7 +95,6 @@ exports.changeowner = function (id, name, idcard) {
   conn.query(modSql, modSqlParams, function (err, result) {
     if (err) {
       console.log('[UPDATE ERROR] - ', err.message);
-      return;
     }
   })
 }
@@ -106,7 +105,6 @@ exports.changeparking = function (id, ownerId, kind, name, location, lola, numbe
   conn.query(modSql, modSqlParams, function (err, result) {
     if (err) {
       console.log('[UPDATE ERROR] - ', err.message);
-      return;
     }
   })
 }
@@ -117,7 +115,6 @@ exports.changeparkingtime = function (id, parking, time, price, rentnumber, isus
   conn.query(modSql, modSqlParams, function (err, result) {
     if (err) {
       console.log('[UPDATE ERROR] - ', err.message);
-      return;
     }
   })
 }
@@ -128,7 +125,6 @@ exports.changehistory = function (id, parkingid, time, price, carnumber) {
   conn.query(modSql, modSqlParams, function (err, result) {
     if (err) {
       console.log('[UPDATE ERROR] - ', err.message);
-      return;
     }
   })
 }
@@ -139,7 +135,6 @@ exports.changeuser = function (openid, carnumber) {
   conn.query(modSql, modSqlParams, function (err, result) {
     if (err) {
       console.log('[UPDATE ERROR] - ', err.message);
-      return;
     }
   })
 }
@@ -148,7 +143,6 @@ exports.deleteowner = function (id) {
   conn.query(delSql, function (err, result) {
     if (err) {
       console.log('[DELETE ERROR] - ', err.message);
-      return;
     }
   })
 }
@@ -158,7 +152,6 @@ exports.deleteparking = function deleteparking(id) {
   conn.query(delSql, function (err, result) {
     if (err) {
       console.log('[DELETE ERROR] - ', err.message);
-      return;
     }
   })
 }
@@ -168,7 +161,6 @@ exports.deleteparkingtime = function (id) {
   conn.query(delSql, function (err, result) {
     if (err) {
       console.log('[DELETE ERROR] - ', err.message);
-      return;
     }
   })
 }
@@ -178,16 +170,14 @@ exports.deletehistory = function (id) {
   conn.query(delSql, function (err, result) {
     if (err) {
       console.log('[DELETE ERROR] - ', err.message);
-      return;
     }
   })
 }
 exports.deleteuser = function (id) {
-  var delSql = 'DELETE FROM user where id=' + String(id);
+  var delSql = 'DELETE FROM user where openid=' + String(id);
   conn.query(delSql, function (err, result) {
     if (err) {
       console.log('[DELETE ERROR] - ', err.message);
-      return;
     }
   })
 }

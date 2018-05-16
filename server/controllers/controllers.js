@@ -96,17 +96,35 @@ exports.userparks = async (ctx, next) => {
     ctx.response.body = all
     return
   }
+  else if (ctx.request.body.type == "delete") {
+    fc.deleteparking(ctx.request.body.parkId) 
+  }
 }
 
 exports.userplatenumber = async (ctx, next) => {
-  openid = ctx.request.body.openid
-  var carnumber
+  if (ctx.request.body.type == "get") {
+  let openid = ctx.request.body.openId
+  let carnumber
   function c(option) {
     if(option[0]){
-    ctx.body = {carnumber: option[0].carnumber}
+    ctx.body = {carnumber: option[0].carnumber.split(".")}
   }
   }
   await fc.selectuser("openid", openid, c)
+}
+else if (ctx.request.body.type == "add") {
+  function c(option) {
+    if(option[0]){
+    fc.changeuser(ctx.request.body.openId,option[0].carnumber+"."+ctx.request.body.plateNumber)
+    ctx.body=option[0].carnumber+"."+ctx.request.body.plateNumber
+  }
+  else{
+    fc.adduser(ctx.request.body.openId,ctx.request.body.plateNumber)
+    ctx.body=ctx.request.body.plateNumber
+  }
+  }
+  await fc.selectuser("openid", ctx.request.body.openId, c)
+}
 }
 
 exports.test = async (ctx, next) => {
