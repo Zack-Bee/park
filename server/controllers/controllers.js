@@ -97,38 +97,46 @@ exports.userparks = async (ctx, next) => {
     return
   }
   else if (ctx.request.body.type == "delete") {
-    fc.deleteparking(ctx.request.body.parkId) 
+    fc.deleteparking(ctx.request.body.parkId)
   }
 }
 
 exports.userplatenumber = async (ctx, next) => {
   if (ctx.request.body.type == "get") {
-  let openid = ctx.request.body.openId
-  let carnumber
-  function c(option) {
-    if(option[0]){
-    ctx.body = {carnumber: option[0].carnumber.split(".")}
+    let openid = ctx.request.body.openId
+    let carnumber
+    function c(option) {
+      if (option[0]) {
+        ctx.body = { carnumber: option[0].carnumber.split(".") }
+      }
+    }
+    await fc.selectuser("openid", openid, c)
   }
+  else if (ctx.request.body.type == "add") {
+    function c(option) {
+      if (option[0]) {
+
+        Repeat = option[0].carnumber + "." + ctx.request.body.plateNumber
+        Repeat = Repeat.split(".")
+        cleanRepeat = fc.unique(Repeat)
+        let str = cleanRepeat[0]
+        for (let i = 1; i < cleanRepeat.length; i++) {
+          str = str + "." + cleanRepeat[i]
+        }
+        fc.changeuser(ctx.request.body.openId, str)
+        ctx.body = str
+      }
+      else {
+        fc.adduser(ctx.request.body.openId, ctx.request.body.plateNumber)
+        ctx.body = ctx.request.body.plateNumber
+      }
+    }
+    await fc.selectuser("openid", ctx.request.body.openId, c)
   }
-  await fc.selectuser("openid", openid, c)
-}
-else if (ctx.request.body.type == "add") {
-  function c(option) {
-    if(option[0]){
-    fc.changeuser(ctx.request.body.openId,option[0].carnumber+"."+ctx.request.body.plateNumber)
-    ctx.body=option[0].carnumber+"."+ctx.request.body.plateNumber
-  }
-  else{
-    fc.adduser(ctx.request.body.openId,ctx.request.body.plateNumber)
-    ctx.body=ctx.request.body.plateNumber
-  }
-  }
-  await fc.selectuser("openid", ctx.request.body.openId, c)
-}
 }
 
 exports.test = async (ctx, next) => {
-  function c(option){console.log(option)}
+  function c(option) { console.log(option) }
   await fc.selectowner("id", ctx.request.body.openid, c)
   await fc.selectowner("id", ctx.request.body.openid, c)
   await fc.selectowner("id", ctx.request.body.openid, c)

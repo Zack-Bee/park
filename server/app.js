@@ -18,6 +18,5 @@ const main = ctx => {
   ctx.response.body = fs.createReadStream('./server/test.html');
 };
 
-fc.deleteuser(1231)
 app.use(router.routes())
 app.use(main)
