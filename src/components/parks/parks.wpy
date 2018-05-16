@@ -90,8 +90,8 @@
     color: #09bb07;
 }
 
-.park-number-all {
-}
+/* .park-number-all { */
+/* } */
 
 .vertical-wrapper {
     line-height: 80rpx;
@@ -168,27 +168,15 @@ export default class Parks extends wepy.component {
         Dialog
     }
 
-    props = {}
+    props = {
+        parks: {
+            type: Array,
+            default: [],
+            twoWay: true
+        }
+    }
 
     data = {
-        parks: [
-            {
-                parkName: '王邦铮的停车场',
-                kind: 3,
-                allPark: 100,
-                rentPark: 60,
-                parkId: 10086,
-                isOpen: true
-            },
-            {
-                parkName: 'zackbee',
-                kind: 4,
-                parkId: 10087,
-                isOpen: true,
-                rentPark: 0,
-                allPark: 1
-            }
-        ],
         onDialogButtonClick: (event) => {
             let type = event.currentTarget.dataset.type
             if (type === "cancel") {
@@ -230,6 +218,12 @@ export default class Parks extends wepy.component {
         timer: 0
     }
 
+    watch = {
+        parks(newValue,oldValue) {
+            console.log(newValue, oldValue)
+        }
+    }
+
     methods = {
         onSwitchChange: (event) => {
             let data = event.currentTarget.dataset
@@ -260,31 +254,8 @@ export default class Parks extends wepy.component {
     }
 
     onLoad() {
-        let openId = this.$parent.$parent.globalData.openId
-        console.log(openId)
-        let freshParkData = () => {
-            setTimeout(() => {
-                post(config.host + "/user/paks",
-                    {
-                        openid: openId,
-                        type: "get"
-                    }
-                ).then((res) => {
-                    console.log(res)
-                    this.parks = res.data
-                    this.$apply()
-                },  (err) => {
-                    console.log(err)
-                })
 
-                freshParkData()
-            }, 5 * 60 * 1000)
-        }
-        // freshParkData()
     }
 
-    onShow() {
-        console.log("show")
-    }
 }
 </script>
