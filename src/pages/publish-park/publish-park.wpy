@@ -1,43 +1,46 @@
 <template>
-<view></view>
+    <view>
+
+    </view>
 </template>
 
 <style scoped>
-.page {
-    background-color: #efeff4;
-    min-height: 100vh;
-}
+/* .page { */
+    /* background-color: #efeff4; */
+    /* min-height: 100vh; */
+/* } */
 
-.padding {
-    height: 30rpx;
-    box-shadow: 0 2rpx 2rpx 1rpx rgba(0, 0, 0, 0.1) inset;
-}
+/* .padding { */
+    /* height: 30rpx; */
+    /* box-shadow: 0 2rpx 2rpx 1rpx rgba(0, 0, 0, 0.1) inset; */
+/* } */
+
+
 </style>
 
 <script>
 import wepy from 'wepy'
+import Field from "../../components/field/field"
+import Steps from "../../components/steps/steps"
 
 export default class Index extends wepy.page {
-    components = {}
-
-    data = {
+    components = {
+        parkNameInput: Field,
+        startTimeInput: Field,
+        endTimeInput:
     }
+
+    data = {}
 
     onLoad(option) {
-        console.log("\n")
+        console.log('\n')
         console.log(option)
-        console.log("\n")
-        setTimeout(() => {
-            wx.navigateBack({delta: 1})
-        }, 5000)
-    }
+        console.log('\n')
 
-    onShow(some) {
-        console.log("i am showing and console something: ", some)
     }
 
     config = {
-        navigationBarTitleText: "发布停车位"
+        navigationBarTitleText: '发布停车位'
     }
 }
 </script>

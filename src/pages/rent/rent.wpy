@@ -83,7 +83,7 @@ export default class Index extends wepy.page {
                 allPark: 100,
                 rentPark: 60,
                 parkId: 10086,
-                isOpen: true
+                isOpen: false
             },
             {
                 parkName: 'zackbee',
@@ -133,6 +133,10 @@ export default class Index extends wepy.page {
             this.isActionSheetShow = true
             this.$apply()
         }
+    }
+
+    onShow() {
+        console.log("\nrent page is show\n")
     }
 }
 </script>

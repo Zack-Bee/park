@@ -254,7 +254,31 @@ export default class Parks extends wepy.component {
     }
 
     onLoad() {
+        let openId = this.$parent.$parent.globalData.openId
+        console.log(openId)
+        let freshParkData = () => {
+            setTimeout(() => {
+                post(config.host + "/user/paks",
+                    {
+                        openid: openId,
+                        type: "get"
+                    }
+                ).then((res) => {
+                    console.log(res)
+                    this.parks = res.data
+                    this.$apply()
+                },  (err) => {
+                    console.log(err)
+                })
 
+                freshParkData()
+            }, 5 * 60 * 1000)
+        }
+        // freshParkData()
+    }
+
+    onShow() {
+        console.log("show")
     }
 
 }
