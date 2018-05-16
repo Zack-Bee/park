@@ -48,5 +48,9 @@ export default class Index extends wepy.page {
     config = {
         navigationBarTitleText: "我的停车位"
     }
+
+    onShow() {
+        console.log("\nrent page is show\n")
+    }
 }
 </script>

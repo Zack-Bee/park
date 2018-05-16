@@ -3,9 +3,7 @@
         <view class="park" wx:for="{{parks}}" wx:key="parkId-{{item.parkId}}">
             <view class="park-left">
                 <view class="park-icon-wrapper">
-                    <image
-                        src="{{(item.kind === 3) ? '../../components/parks/company.png' : '../../components/parks/person.png'}}"
-                        style="height: 100%; width: 100%;" />
+                    <image src="{{(item.kind === 3) ? '../../components/parks/company.png' : '../../components/parks/person.png'}}" style="height: 100%; width: 100%;" />
                 </view>
                 <view class="park-type">
                     {{(item.kind === 3) ? "企业类" : "个人类"}}
@@ -24,13 +22,7 @@
             </view>
             <view class="vertical-wrapper">
                 <view class="switcher-wrapper">
-                    <view data-park-id="{{item.parkId}}"
-                        data-is-open="{{item.isOpen}}"
-                        class="zan-switch zan-switch--{{ item.isOpen ? 'on' : 'off' }} {{ disabled ? 'zan-swtich--disabled' : '' }}"
-                        checked="{{ checked }}"
-                        loading="{{ loading }}"
-                        disabled="{{ disabled }}"
-                        @tap="onSwitchChange">
+                    <view data-park-id="{{item.parkId}}" data-is-open="{{item.isOpen}}" class="zan-switch zan-switch--{{ item.isOpen ? 'on' : 'off' }} {{ disabled ? 'zan-swtich--disabled' : '' }}" checked="{{ checked }}" loading="{{ loading }}" disabled="{{ disabled }}" @tap="onSwitchChange">
                         <view class="zan-switch__circle">
                             <view hidden="{{ true }}" class="zan-switch__loading"></view>
                         </view>
@@ -39,11 +31,7 @@
                 </view>
             </view>
         </view>
-        <Dialog :show.sync="isDialogShow"
-            :handleButtonClick="onDialogButtonClick"
-            :handleMaskClick="hideDialog"
-            :message.sync="dialogMessage"
-            :buttons.sync="buttons"/>
+        <Dialog :show.sync="isDialogShow" :handleButtonClick="onDialogButtonClick" :handleMaskClick="hideDialog" :message.sync="dialogMessage" :buttons.sync="buttons" />
     </view>
 </template>
 
@@ -209,7 +197,7 @@ export default class Parks extends wepy.component {
                 console.log("will send request")
                 // 保存当前的parkId
                 let currentParkID = this.currentParkID
-                post()
+                // post(config.host + "/user/parks")
                 this.parks.forEach((park) => {
                     if (this.currentParkId === park.parkId) {
                         park.isOpen = false
@@ -238,7 +226,8 @@ export default class Parks extends wepy.component {
                 type: 'confirm'
             }
         ],
-        currentParkId: ""
+        currentParkId: "",
+        timer: 0
     }
 
     methods = {
@@ -256,12 +245,46 @@ export default class Parks extends wepy.component {
                 this.$apply()
                 this.isDialogShow = true
                 this.$apply()
+            } else {
+                wx.navigateTo({
+                    url: `../publish-park/publish-park?parkId=${this.currentParkId}`,
+                    success: (res) => {
+                        console.log(res)
+                    },
+                    fail: (err) => {
+                        console.log(err)
+                    }
+                })
             }
         }
     }
 
     onLoad() {
+        let openId = this.$parent.$parent.globalData.openId
+        console.log(openId)
+        let freshParkData = () => {
+            setTimeout(() => {
+                post(config.host + "/user/paks",
+                    {
+                        openid: openId,
+                        type: "get"
+                    }
+                ).then((res) => {
+                    console.log(res)
+                    this.parks = res.data
+                    this.$apply()
+                },  (err) => {
+                    console.log(err)
+                })
 
+                freshParkData()
+            }, 5 * 60 * 1000)
+        }
+        // freshParkData()
+    }
+
+    onShow() {
+        console.log("show")
     }
 }
 </script>
