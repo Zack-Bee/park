@@ -58,7 +58,47 @@ requestDataType: json
 eg:
 {
     type: "delete",
-    parkId: "123456789"
+    parkId: "123456789",
+    openId: "12313213"
+}
+```
+
+#### Method: POST
+#### Usage: 用于车位主发布车位信息, 开放车位
+```
+requestDataType: json
+eg:
+每周周一到周天
+{
+    type: "open",
+    parkId: "31232131",
+    openId: "12345677",
+    openType: "weekly",
+    startDay: "1",
+    endDay: "7"
+}
+
+一次
+{
+    type: "open",
+    parkId: "31232131",
+    openId: "12345677",
+    openType: "once",
+    startTime: "8:00",
+    endTime: "22:00"
+}
+
+从指定日期到指定日期
+eg: 十月八号到十一月十一号
+{
+    type: "open",
+    parkId: "31232131",
+    openId: "12345677",
+    openType: "date",
+    startDay: "10-8",
+    endDay: "11-11",
+    startTime: "8:00",
+    endTime: "22:00"
 }
 ```
 

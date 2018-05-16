@@ -1,0 +1,99 @@
+<template>
+    <view>
+        <view class="plate-number-item" @tap="onClick">
+            <view class="plate-number-item-icon-wrapper">
+                <image src="./icon.png" style="width: 100%; height: 100%" />
+            </view>
+            <view class="plate-number-item-text-wrapper">
+                <text>我的车牌号</text>
+            </view>
+        </view>
+        <Actionsheet :actions.sync="plateNumber" :show.sync="show" :cancel="cancel" />
+    </view>
+</template>
+
+<style scoped>
+.plate-number-item {
+    padding: 20rpx 30rpx;
+    background-color: #fff;
+    box-shadow: 0 2rpx 2rpx 1rpx rgba(0, 0, 0, 0.1);
+}
+
+.plate-number-item::before,
+.plate-number-item::after {
+    content: '';
+    display: block;
+    clear: both;
+}
+
+.plate-number-item-icon-wrapper {
+    float: left;
+    width: 60rpx;
+    height: 60rpx;
+}
+
+.plate-number-item-text-wrapper {
+    float: left;
+    line-height: 60rpx;
+    font-size: 30rpx;
+    width: 600rpx;
+    color: #353535;
+    padding-left: 30rpx;
+}
+</style>
+
+<script>
+import wepy from 'wepy'
+import Actionsheet from '../actionsheet/actionsheet'
+import post from '../../common/post.js'
+
+export default class FilterBar extends wepy.component {
+    components = {
+        Actionsheet
+    }
+
+    prosp = {
+        plateNumber: {
+            type: Array,
+            default: []
+        }
+    }
+
+    data = {
+        show: false,
+        actions: [
+            {
+                name: '鄂A',
+                subname: '-12345',
+                loading: false
+            },
+            {
+                name: '选项2',
+                subname: '选项描述语2',
+                loading: true
+            },
+            {
+                name: '选项2',
+                subname: '选项描述语2',
+                loading: true
+            }
+        ],
+        cancel: () => {
+            this.show = false
+            this.$apply()
+        }
+    }
+
+    methods = {
+        onClick: () => {
+            this.show = true
+            this.$apply()
+            // post("").then()
+        }
+    }
+
+    onLoad() {
+        console.log(this.plateNumber)
+    }
+}
+</script>
