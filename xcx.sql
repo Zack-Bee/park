@@ -84,7 +84,7 @@ CREATE TABLE `parking` (
   `number` int(11) DEFAULT NULL,
   `lease` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -93,7 +93,7 @@ CREATE TABLE `parking` (
 
 LOCK TABLES `parking` WRITE;
 /*!40000 ALTER TABLE `parking` DISABLE KEYS */;
-INSERT INTO `parking` VALUES (1,2,3,'某停车场场','jhce','2121,11',1,'ewiygvfbhjcnk'),(2,5,1,'某停车场2','某地方','12,12',1,'wcarshg4we5rg'),(3,3,1,'某停车场3','某地方','12,12',1,'wcarshg4we5rg'),(4,4,1,'某停车场4','某地方','12,12',500,'wcarshg4we5rg');
+INSERT INTO `parking` VALUES (1,2,4,'某停车场2','某地方','12,12',1,'wcarshg4we5'),(2,2,4,'某停车场2','某地方','12,12',1,'wcarshg4we5'),(3,5,4,'某停车场2','某地方','12,12',1,'wcarshg4we5'),(4,3,3,'某停车场2','某地方','12,12',500,'wcarshg4we5'),(5,4,3,'某停车场2','某地方','12,12',50,'wcarshg4we5'),(6,1,3,'某停车场2','某地方','12,12',5,'wcarshg4we5'),(7,1,3,'某停车场2','某地方','12,12',500,'wcarshg4we5'),(8,1,4,'某停车场2','某地方','12,12',1,'wcarshg4we5'),(9,1,4,'某停车场2','某地方','12,12',1,'wcarshg4we5');
 /*!40000 ALTER TABLE `parking` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -113,7 +113,7 @@ CREATE TABLE `parkingtime` (
   `isuse` tinyint(1) DEFAULT NULL,
   `kind` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -122,7 +122,7 @@ CREATE TABLE `parkingtime` (
 
 LOCK TABLES `parkingtime` WRITE;
 /*!40000 ALTER TABLE `parkingtime` DISABLE KEYS */;
-INSERT INTO `parkingtime` VALUES (1,1,'12-2','12',0,0,0),(2,1,'12-2','12',0,0,0),(3,2,'2018.5.14.12-2018.5.16.12','12',0,0,1),(4,3,'12-2','12',0,0,0),(5,4,'12-2','12',0,1,0),(6,5,'2018.5.14.12-2018.5.16.12','12',0,0,1);
+INSERT INTO `parkingtime` VALUES (1,1,'12.00-2.00','12',0,1,0),(2,1,'12.00-2.00','12',0,1,0),(3,6,'12.00-23.59','12',0,1,0),(4,3,'12.00-2.00','12',0,1,0),(5,4,'12.00-2.00','12',0,1,0),(6,7,'2018.5.14.12-2018.5.16.12','12',0,1,1),(7,8,'2018.5.14.12-2018.5.16.12','12',0,1,1),(8,1,'2018.5.14.12.00-2018.5.16.12.00','12',0,1,1),(9,1,'2018.5.14.12.00-2018.5.16.12.00','12',0,1,1),(10,6,'12.00-2.00','12',0,1,0),(11,9,'12.00-23.59','12',0,1,0),(12,6,'2.00-9.00','12',0,1,0),(13,7,'2018.5.14.12.00-2018.5.16.12.00','12',0,0,1),(14,8,'2018.5.14.12.00-2018.5.16.12.00','12',0,0,1),(15,7,'2018.5.14.12.00-2018.5.16.12.00','12',0,1,1);
 /*!40000 ALTER TABLE `parkingtime` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -159,4 +159,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-05-14 23:02:07
+-- Dump completed on 2018-05-16 11:15:18
