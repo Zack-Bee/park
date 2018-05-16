@@ -110,9 +110,9 @@ exports.userplatenumber = async (ctx, next) => {
 }
 
 exports.test = async (ctx, next) => {
-  function c(option){console.log("ok")}
-  await fc.selectuser("openid", ctx.request.body.openid, c)
-  await fc.selectuser("openid", ctx.request.body.openid, c)
-  await fc.selectuser("openid", ctx.request.body.openid, c)
+  function c(option){console.log(option)}
+  await fc.selectowner("id", ctx.request.body.openid, c)
+  await fc.selectowner("id", ctx.request.body.openid, c)
+  await fc.selectowner("id", ctx.request.body.openid, c)
   ctx.body = { message: "没事" }
 }

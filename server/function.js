@@ -25,6 +25,9 @@ var options = {
 
 var pool = mysql.createPool(options);
 
+
+
+
 exports.addowner = function (id, name, idcard) {
   var aa = id
   var bb = "'" + name + "'"
@@ -189,54 +192,35 @@ exports.deleteuser = function (id) {
   })
 }
 
-function execQuery(sql, values, callback) {
-  var errinfo;
-  pool.getConnection(function (err, connection) {
-    if (err) {
-      errinfo = 'DB-获取数据库连接异常！';
-      throw errinfo;
-    } else {
-      var querys = connection.query(sql, values, function (err, rows) {
-        release(connection);
-        if (err) {
-          errinfo = 'DB-SQL语句执行错误:' + err;
-          callback(err);
-          return
-        } else {
-          callback(null, rows);        //注意：第一个参数必须为null
-          return
-        }
-      });
-    }
-  });
-}
+var query=function(sql,options,callback){  
+  pool.getConnection(function(err,conn){  
+      if(err){  
+          callback(err,null,null);  
+      }else{  
+          conn.query(sql,options,function(err,results,fields){  
+              conn.release();  
+              callback(err,results,fields);  
+          });  
+      }  
+  });  
+};  
 
-function release(connection) {
-  try {
-    connection.release(function (error) {
-      if (error) {
-        console.log('DB-关闭数据库连接异常！');
-      }
-    });
-  } catch (err) { }
-}
 
 exports.selectowner = function (idORnameORidcard, content, callback) {
   return new Promise(function (resolve, reject) {
     var option = new Array();
     var sql = 'select * from owner where ' + String(idORnameORidcard) + '=' + String(content)
-    execQuery(sql, function (err, rows) {
+    query(sql, [1], function(err,rows,fields){  
       if (err) {
-        reject(err);
-      } else {
-        resolve(rows);
-        for (var i = 0; i < rows.length; i++) {
-          option.push({ 'id': rows[i].id, 'name': rows[i].name, 'idcard': rows[i].idcard });
-        }
-        callback(option)
-        return
-      }
-    })
+            reject(err);
+          } else {
+            resolve(rows);
+            for (var i = 0; i < rows.length; i++) {
+              option.push({ 'id': rows[i].id, 'name': rows[i].name, 'idcard': rows[i].idcard });
+            }
+            callback(option)
+          }
+  });
   })
 }
 
@@ -244,7 +228,7 @@ exports.selectparking = function (idORownerIdORkindORnameORlocationORlolaORnumbe
   return new Promise(function (resolve, reject) {
     var option = new Array();
     var sql = 'select * from parking where ' + String(idORownerIdORkindORnameORlocationORlolaORnumberORlease) + '=' + String(content)
-    execQuery(sql, function (err, rows) {
+    query(sql, [1], function(err,rows,fields){  
       if (err) {
         reject(err);
       } else {
@@ -253,9 +237,9 @@ exports.selectparking = function (idORownerIdORkindORnameORlocationORlolaORnumbe
           option.push({ 'id': rows[i].id, 'ownerId': rows[i].ownerId, 'kind': rows[i].kind, 'name': rows[i].name, 'location': rows[i].location, "lola": rows[i].lola, 'number': rows[i].number, 'lease': rows[i].lease });
         }
         callback(option)
-        return
       }
     })
+    
   })
 }
 
@@ -263,7 +247,7 @@ exports.selectparkingtime = function (idORparkingORtimeORpriceORrentnumberORisus
   return new Promise(function (resolve, reject) {
     var option = new Array();
     var sql = 'select * from parkingtime where ' + String(idORparkingORtimeORpriceORrentnumberORisuseORkind) + '=' + String(content)
-    execQuery(sql, function (err, rows) {
+    query(sql, [1], function(err,rows,fields){  
       if (err) {
         reject(err);
       } else {
@@ -272,7 +256,6 @@ exports.selectparkingtime = function (idORparkingORtimeORpriceORrentnumberORisus
           option.push({ 'id': rows[i].id, 'parking': rows[i].parking, 'time': rows[i].time, 'price': rows[i].price, 'rentnumber': rows[i].rentnumber, 'isuse': rows[i].isuse, 'kind': rows[i].kind });
         }
         callback(option)
-        return
       }
     })
   })
@@ -282,7 +265,7 @@ exports.selecthistory = function (idORparkingidORtimeORpriceORcarnumber, content
   return new Promise(function (resolve, reject) {
     var option = new Array();
     var sql = 'select * from history where ' + String(idORparkingidORtimeORpriceORcarnumber) + '=' + String(content)
-    execQuery(sql, function (err, rows) {
+    query(sql, [1], function(err,rows,fields){  
       if (err) {
         reject(err);
       } else {
@@ -291,7 +274,6 @@ exports.selecthistory = function (idORparkingidORtimeORpriceORcarnumber, content
           option.push({ 'id': rows[i].id, 'parkingid': rows[i].parkingid, 'time': rows[i].time, 'price': rows[i].price, 'carnumber': rows[i].carnumber });
         }
         callback(option)
-        return
       }
     })
   })
@@ -301,7 +283,7 @@ exports.selectuser = function (openidORcarnumber, content, callback) {
   return new Promise(function (resolve, reject) {
     var option = new Array();
     var sql = 'select * from user where ' + String(openidORcarnumber) + '=' + String(content)
-    execQuery(sql, function (err, rows) {
+    query(sql, [1], function(err,rows,fields){  
       if (err) {
         reject(err);
       } else {
@@ -310,7 +292,6 @@ exports.selectuser = function (openidORcarnumber, content, callback) {
           option.push({ 'openid': rows[i].openid, 'carnumber': rows[i].carnumber });
         }
         callback(option)
-        return
       }
     })
   })
@@ -325,7 +306,6 @@ exports.xcxlogin = function (code, callback) {
       else if (response.statusCode == 200) {
         resolve(body);
         callback(body);
-        return
       }
       else {
         reject("response.statusCode != 200");
