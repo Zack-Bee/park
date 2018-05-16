@@ -1,11 +1,21 @@
 <template>
     <view class="page">
-        <view class="padding"/>
-        <User :nickName.sync="nickName" :avatarUrl.sync="avatarUrl"/>
-        <view class="padding"/>
-        <PlateNumber/>
-        <view class="padding"/>
-        <Parks/>
+        <view class="padding" />
+        <User :nickName.sync="nickName" :avatarUrl.sync="avatarUrl" />
+        <view class="padding" />
+        <view>
+            <view class="plate-number-item" @tap="onPlateNumberClick">
+                <view class="plate-number-item-icon-wrapper">
+                    <image src="./plateNumberIcon.png" style="width: 100%; height: 100%" />
+                </view>
+                <view class="plate-number-item-text-wrapper">
+                    <text>我的车牌号</text>
+                </view>
+            </view>
+            <Actionsheet :actions.sync="plateNumber" :show.sync="isActionSheetShow" :cancel="hideActionSheet" />
+        </view>
+        <view class="padding" />
+        <Parks :parks.sync="parks" />
     </view>
 </template>
 
@@ -19,38 +29,110 @@
     height: 30rpx;
     box-shadow: 0 2rpx 2rpx 1rpx rgba(0, 0, 0, 0.1) inset;
 }
+
+.plate-number-item {
+    padding: 20rpx 30rpx;
+    background-color: #fff;
+    box-shadow: 0 2rpx 2rpx 1rpx rgba(0, 0, 0, 0.1);
+}
+
+.plate-number-item::before,
+.plate-number-item::after {
+    content: '';
+    display: block;
+    clear: both;
+}
+
+.plate-number-item-icon-wrapper {
+    float: left;
+    width: 60rpx;
+    height: 60rpx;
+}
+
+.plate-number-item-text-wrapper {
+    float: left;
+    line-height: 60rpx;
+    font-size: 30rpx;
+    width: 600rpx;
+    color: #353535;
+    padding-left: 30rpx;
+}
 </style>
 
 <script>
 import wepy from 'wepy'
 import User from '../../components/user/user'
-import PlateNumber from "../../components/plate-number/plate-number"
-import Parks from "../../components/parks/parks"
+import Parks from '../../components/parks/parks'
+import Actionsheet from '../../components/actionsheet/actionsheet'
+
 
 export default class Index extends wepy.page {
     components = {
         User,
-        PlateNumber,
-        Parks
+        Parks,
+        Actionsheet
     }
 
     data = {
         nickName: '',
-        avatarUrl: ''
+        avatarUrl: '',
+        parks: [
+            {
+                parkName: '王邦铮的停车场',
+                kind: 3,
+                allPark: 100,
+                rentPark: 60,
+                parkId: 10086,
+                isOpen: true
+            },
+            {
+                parkName: 'zackbee',
+                kind: 4,
+                parkId: 10087,
+                isOpen: true,
+                rentPark: 0,
+                allPark: 1
+            }
+        ],
+        plateNumber: [
+            {
+                name: '鄂A',
+                subname: '-12345',
+                loading: false
+            },
+            {
+                name: '选项2',
+                subname: '选项描述语2',
+                loading: true
+            },
+            {
+                name: '选项2',
+                subname: '选项描述语2',
+                loading: true
+            }
+        ],
+        isActionSheetShow: false,
+        hideActionSheet: () => {
+            this.isActionSheetShow = false
+            this.$apply()
+        }
     }
 
-    onLoad() {
-        let userInfo = this.$parent.globalData.userInfo
-        this.nickName = userInfo.nickName
-        this.avatarUrl = userInfo.avatarUrl
-    }
+    onLoad() {}
 
     config = {
-        navigationBarTitleText: "我的停车位"
+        navigationBarTitleText: '我的停车位'
     }
 
     onShow() {
-        console.log("\nrent page is show\n")
+        console.log('\nrent page is show\n')
+    }
+
+    methods = {
+        onPlateNumberClick: () => {
+            this.isActionSheetShow = true
+            this.$apply()
+        }
     }
 }
 </script>
