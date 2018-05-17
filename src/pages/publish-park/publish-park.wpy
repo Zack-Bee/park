@@ -1,42 +1,124 @@
 <template>
     <view>
-
+        <view class="steps-wrapper">
+            <Steps :steps.sync="steps"/>
+        </view>
+        <view>
+            <view wx:if="{{currentStepsIndex === 0}}">
+                <parkNameInput title="车位名" placeholder="仅用于自己辨识不同车位"/>
+            </view>
+            <view wx:if="{{currentStepsIndex === 1}}">
+                <priceInput inputType="digit" title="价格¥" placeholder="每小时收取的费用"/>
+            </view>
+            <view wx:if="{{currentStepsIndex === 2}}"></view>
+        </view>
+        <view class="buttons-wrapper">
+            <view class="left-button" wx:if="{{currentStepsIndex !== 0}}">
+                <prevButton size="small" type="normal">
+                    上一步
+                </prevButton>
+            </view>
+            <view class="right-button">
+                <nextButton size="small" type="primary">
+                    {{currentStepsIndex === 2 ? "发布" : "下一步"}}
+                </nextButton>
+            </view>
+        </view>
     </view>
 </template>
 
-<style scoped>
+<style>
+.steps-wrapper {
+    padding: 20rpx 40rpx;
+}
+
+.zan-steps__title {
+    color: #353535!important;
+}
+
+.zan-steps__title--desc {
+    color: #888!important;
+}
+
+.buttons-wrapper {
+    margin: 20rpx 0;
+}
+
+.buttons-wrapper::before,
+.buttons-wrapper::after {
+    content: "";
+    display: block;
+    clear: both;
+}
+
+.left-button {
+    float: left;
+}
+
+.right-button {
+    float: right;
+}
+
 /* .page { */
-    /* background-color: #efeff4; */
-    /* min-height: 100vh; */
+/* background-color: #efeff4; */
+/* min-height: 100vh; */
 /* } */
 
 /* .padding { */
-    /* height: 30rpx; */
-    /* box-shadow: 0 2rpx 2rpx 1rpx rgba(0, 0, 0, 0.1) inset; */
+/* height: 30rpx; */
+/* box-shadow: 0 2rpx 2rpx 1rpx rgba(0, 0, 0, 0.1) inset; */
 /* } */
-
-
 </style>
 
 <script>
 import wepy from 'wepy'
-import Field from "../../components/field/field"
-import Steps from "../../components/steps/steps"
+import Field from '../../components/field/field'
+import Steps from '../../components/steps/steps'
+import Button from "../../components/button/button"
+
 
 export default class Index extends wepy.page {
     components = {
         parkNameInput: Field,
         startTimeInput: Field,
-        endTimeInput:
+        Steps,
+        priceInput: Field,
+        prevButton: Button,
+        nextButton: Button
     }
 
-    data = {}
+    data = {
+        steps: [
+            {
+                // 此步骤是否当前完成状态
+                current: false,
+                // 此步骤是否已经完成
+                done: true,
+                // 此步骤显示文案
+                text: '名字',
+                // 此步骤描述语
+                desc: '填写名字'
+            },
+            {
+                done: true,
+                current: false,
+                text: '价格',
+                desc: '选择价格'
+            },
+            {
+                done: false,
+                current: true,
+                text: '时间',
+                desc: '选择时间'
+            }
+        ],
+        currentStepsIndex: 2
+    }
 
     onLoad(option) {
         console.log('\n')
         console.log(option)
         console.log('\n')
-
     }
 
     config = {
