@@ -1,4 +1,5 @@
 const fc = require('../../server/function')
+const ofc = require('../../server/otherfunction')
 const fs = require('fs');
 const async = require('async');
 
@@ -8,7 +9,7 @@ exports.login = async (ctx, next) => {
     ctx.response.body = { openid: JSON.parse(option).openid, err: JSON.parse(option) }
     return
   }
-  var res = await fc.xcxlogin(code, c);
+  var res = await ofc.xcxlogin(code, c);
   return
 }
 
@@ -41,7 +42,7 @@ exports.userparks = async (ctx, next) => {
     }
 
     function cc(option) {
-      using = fc.using(option)
+      using = ofc.using(option)
       if (using == 0) {
         all[m].isOpen = false
         all[m].rentPark = 0
@@ -118,7 +119,7 @@ exports.userplatenumber = async (ctx, next) => {
 
         Repeat = option[0].carnumber + "." + ctx.request.body.plateNumber
         Repeat = Repeat.split(".")
-        cleanRepeat = fc.unique(Repeat)
+        cleanRepeat = ofc.unique(Repeat)
         let str = cleanRepeat[0]
         for (let i = 1; i < cleanRepeat.length; i++) {
           str = str + "." + cleanRepeat[i]

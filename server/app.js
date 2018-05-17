@@ -1,6 +1,7 @@
 console.log("运行server/app.js")
 let mysql = require('mysql');
 const fc=require('./function')
+const ofc=require('./otherfunction')
 const Koa = require('koa');
 const fs = require('fs');
 const bodyParser = require('koa-bodyparser')
@@ -17,6 +18,9 @@ const main = ctx => {
   ctx.response.type = 'html';
   ctx.response.body = fs.createReadStream('./server/test.html');
 };
-
+ofc.changeone("parking",1,"name","出去")
+ofc.changeone("user",1,"carnumber","甲A-13456")
+ofc.changeone("history",1,"parkingid","1")
+ofc.changeone("owner",1,"idcard","zzzzzzzzz")
 app.use(router.routes())
 app.use(main)
