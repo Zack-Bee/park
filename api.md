@@ -134,3 +134,20 @@ eg:
     plateNumber: "甲A-12345"
 }
 ```
+
+#### Method: POST
+#### Usage: 添加停车场信息
+````
+requestDataType: json
+eg:
+{
+    parkingId: "123456789",
+    type: "parking",
+    Longitude:"123.123456",
+    Latitude:"123.123456",
+    charge:"1/0",
+    price:"99",
+    parkingspace_all:"999",
+    parkingspace_rest:"999",
+}
+```

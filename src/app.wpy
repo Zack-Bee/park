@@ -6,7 +6,7 @@ import post from './common/post.js'
 
 export default class extends wepy.app {
     config = {
-        pages: ['pages/find/find', 'pages/rent/rent', "pages/publish-park/publish-park"],
+        pages: ['pages/find/find', 'pages/rent/rent', "pages/publish-park/publish-park",'pages/search/search'],
         window: {
             backgroundTextStyle: 'light',
             navigationBarBackgroundColor: '#fff',
