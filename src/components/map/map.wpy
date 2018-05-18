@@ -63,13 +63,13 @@ export default class Map extends wepy.component {
         ]
     }
     onLoad() {
-        /*wx.openSetting({
+        wx.openSetting({
             success: res => {
                 res.authSetting = {
                     'scope.userLocation': true
                 }
             }
-        })*/
+        })
         wx.getLocation({
             //获得用户当前位置
             type: 'gcj02',
@@ -83,6 +83,82 @@ export default class Map extends wepy.component {
             }
         })
     }
+
+    getParkList() {
+        //在这里有商量 是后端还是前端要做的
+        //反正我先写了 大概还   需要判断是否连入网络    停车场列表获取方法
+        wx.request({
+            url= this.data  //url是啥我不知道
+            data=  this.data  //data要什么 我也不知道
+            method=  'POST', // OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, CONNECT
+            // header: {}, // 设置请求的 header 我也不知道是啥
+            header=  {
+                //我怎么什么都不知道 照着文档写好累哦
+            },
+            success: res =>{
+                // success
+                var message = res.data.message
+                var statu = res.data.status
+                /*wx.showToast({    查询动画需不需要 有待商讨
+                    title: '查询附近停车场:\n' + message,
+                    icon: 'success.png', 大概是有一个这么个图标 大概
+                    duration: 2000,
+                })*/
+                var parkList = res.data.result
+                var markers = []
+                for (var i=0;i<parkList.length;i++) {
+                    var parkLat = Number(parkList[i].latitude)
+                    var parkLong = Number(parkList[i].longitude)
+                    var id = Number(parkList[i].park_id)  //所以这个id是要怎么定 根据什么定
+                    var marker={
+                        latitude:parkLat,
+                        longitude:parkLong,
+                        iconPath: "../",//图标我还没找到  :)
+                        id: id,
+                        width: 40*wx.getStorageSync("MapScreenW"),
+                        height: 40*wx.getStorageSync("MapScreenW")
+                    }
+                markers.push(marker)
+                'markers' = markers
+                }
+                console.log(that.data.markers)
+            },
+        })
+    }
+
+    regionchange (e) {
+        //得到地图中心点的位置
+        //我可真是个小机灵
+        this.mapCtx = wx.createMapContext('map-body')
+        that.mapCtx.getCenterLocation({
+            success :res => {
+                //滑动屏幕 判断是否需要刷新“离我最近”的停车场
+                var longitudeFix = res.longitude
+                var latitudeFix = res.latitude
+                if (e.type == "begin") {
+                    console.log('same')
+                }
+                else {
+                    console.log("change")
+                    //data还没写好 哇 我不知道自己具体需要哪些数据啊啊啊啊啊
+                    //这里大概是需要一个经纬度的重新定位
+                    //靠着longitudeFix和latitudeFix来进行停车场距离比较大小
+                    //可能会重新显示离我最近的停车场
+                    //好了我的思路已经写在这里了
+                    //怎么写呢嘤嘤嘤
+                    if (that.data.emmmm){  //这里需要一个能否获得附近停车场的flag
+                        that.getParkList()
+                    }
+                }
+            }
+        })
+    },
+
+    //点击标注点显示停车场信息 还没写好嘤嘤嘤
+    markertap: function (e) {
+    console.log(e.markerId)
+    },
+
     methods = {
         clickcontrols(e) {
             if (e.controlId === 2) {
