@@ -2,7 +2,7 @@
 (一下内容的openId可能会改成数据库中自己存储的用户id, 有待商榷)
 ### /login
 #### Method: POST
-#### Usage: 用于用户登陆, 获取openid
+#### Usage: 用于用户登陆, 获取openId
 ```
 requestDataType: json
 eg:
@@ -14,7 +14,7 @@ eg:
 responseDataType: json
 eg:
 {
-    openid: 123456789
+    openId: 123456789
 }
 ```
 
@@ -26,7 +26,7 @@ eg:
 requestDataType: json
 eg:
 {
-    openid: 123456789,
+    openId: 123456789,
     type: "get"
 }
 ```
@@ -75,7 +75,8 @@ eg:
     openId: "12345677",
     openType: "weekly",
     startDay: "1",
-    endDay: "7"
+    endDay: "7",
+    price: "123.23"
 }
 
 一次
@@ -85,7 +86,8 @@ eg:
     openId: "12345677",
     openType: "once",
     startTime: "8:00",
-    endTime: "22:00"
+    endTime: "22:00",
+    price: "22.22"
 }
 
 从指定日期到指定日期
@@ -98,10 +100,36 @@ eg: 十月八号到十一月十一号
     startDay: "10-8",
     endDay: "11-11",
     startTime: "8:00",
-    endTime: "22:00"
+    endTime: "22:00",
+    price: "6.66"
 }
 ```
 
+#### Method: POST
+#### Usage：用于用户提供停车场相关信息进行认证
+```
+requestDataType
+eg:
+{
+    type: "add",
+    openId: "123456789",
+    longitude: "13.323",
+    latitude: "21.223",
+    kind: 3
+}
+```
+
+#### Method: POST
+#### Usage: 用于停止发布停车场
+```
+requestDataType
+eg:
+{
+    type: "close",
+    openId: "1232142141",
+    parkId: "12131231"
+}
+```
 
 ### /user/platenumber
 #### Method: POST
@@ -110,7 +138,7 @@ eg: 十月八号到十一月十一号
 requestDataType: json
 eg:
 {
-    openid: "123456789",
+    openId: "123456789",
     type: "get"
 }
 ```
@@ -134,11 +162,10 @@ eg:
     plateNumber: "甲A-12345"
 }
 ```
-```
 
 #### Method: POST
 #### Usage: 添加停车场信息
-````
+```
 requestDataType: json
 eg:
 {
