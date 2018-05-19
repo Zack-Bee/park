@@ -6,7 +6,7 @@ const async = require('async');
 exports.login = async (ctx, next) => {
   code = ctx.request.body.code
   function c(option) {
-    ctx.response.body = { openid: JSON.parse(option).openid, err: JSON.parse(option) }
+    ctx.response.body = { openId: JSON.parse(option).openId, err: JSON.parse(option) }
     return
   }
   var res = await ofc.xcxlogin(code, c);
@@ -39,6 +39,7 @@ exports.userparks = async (ctx, next) => {
       this.isOpen = "return err"
       this.allPark = "return err"
       this.rentPark = "return err"
+      this.expectedRevenue = "return err"
     }
 
     function cc(option) {
@@ -49,14 +50,13 @@ exports.userparks = async (ctx, next) => {
       }
       else {
         all[m].isOpen = true
-        all[m].rentPark = using.rentnumber
+        all[m].rentPark = using.rentNumber
       }
       m = m + 1
       return
     }
 
     function c(option) {
-      console.log("cing")
       parking = option
       let t
       for (i = 0; i < option.length; i++) {
@@ -77,6 +77,7 @@ exports.userparks = async (ctx, next) => {
           t.isOpen = "waiting"
           t.allPark = option[i].number
           t.rentPark = "waiting"
+          t.expectedRevenue = option[i].income
         }
         else {
           ctx.body = { err: "kind不是3也不是4" }
@@ -85,46 +86,85 @@ exports.userparks = async (ctx, next) => {
         all.push(t)
       }
     }
-    await fc.selectparking("ownerId", ctx.request.body.openid, c)
-    console.log("parking ok")
+    await fc.selectparking("openId", ctx.request.body.openId, c)
     if (userparkserr == 1) { return }
     var m = 0
     while (m < parking.length) {
       await fc.selectparkingtime("parking", parking[m].id, cc)
-      console.log("parkingtime ing..")
     }
-    console.log("parkingtime over")
     ctx.response.body = all
     return
   }
   else if (ctx.request.body.type == "delete") {
     fc.deleteparking(ctx.request.body.parkId)
   }
+  else if (ctx.request.body.type == "open") {
+    var now = new Date()
+    var year = now.getFullYear()
+    var month = now.getMonth() + 1
+    var day = now.getDate()
+    var hour = now.getHours()
+    var minute = now.getMinutes()
+    if (ctx.request.body.kind == 3) {
+      if (ctx.request.body.openType == "weekly") {
+        fc.addparkingtime(ctx.request.body.parkId, ctx.request.body.startDay + ctx.request.body.startTime.replace(":", ".") + "-" + ctx.request.body.endDay + ctx.request.body.endTime.replace(":", "."), ctx.request.body.price, null, 0)
+        //这里要添加更新rentNumber的东西
+      }
+      else if (ctx.request.body.openType == "once") {
+        fc.addparkingtime(ctx.request.body.parkId, year + "." + month + "." + day + "." + ctx.request.body.startTime.replace(":", ".") + "-" + year + "." + month + "." + day + "." + ctx.request.body.endTime.replace(":", "."), ctx.request.body.price, null, 1)
+      }
+      else if (ctx.request.body.openType == "date") {
+        fc.addparkingtime(ctx.request.body.parkId, ctx.request.body.startDay.replace("-", ".") + ctx.request.body.startTime.replace(":", ".") + "-" + ctx.request.body.endDay.replace("-", ".") + ctx.request.body.endTime.replace(":", "."), ctx.request.body.price, null, 1)
+      }
+    }
+    else if (ctx.request.body.kind == 4) {
+      if (ctx.request.body.openType == "weekly") {
+        fc.addparkingtime(ctx.request.body.parkId, ctx.request.body.startDay + ctx.request.body.startTime.replace(":", ".") + "-" + ctx.request.body.endDay + ctx.request.body.endTime.replace(":", "."), null, null, 0)
+      }
+      else if (ctx.request.body.openType == "once") {
+        fc.addparkingtime(ctx.request.body.parkId, year + "." + month + "." + day + "." + ctx.request.body.startTime.replace(":", ".") + "-" + year + "." + month + "." + day + "." + ctx.request.body.endTime.replace(":", "."), null, null, 1)
+      }
+      else if (ctx.request.body.openType == "date") {
+        fc.addparkingtime(ctx.request.body.parkId, ctx.request.body.startDay.replace("-", ".") + ctx.request.body.startTime.replace(":", ".") + "-" + ctx.request.body.endDay.replace("-", ".") + ctx.request.body.endTime.replace(":", "."), null, null, 1)
+      }
+    }
+  }
+  else if(ctx.request.body.type == "add"){
+    fc.addparking(ctx.request.body.openId,ctx.request.body.kind,null,null,ctx.request.body.longitude+","+ctx.request.body.latitude,null,null)
+  }
+  else if(ctx.request.body.type == "close"){
+    function c(option){
+      for(let i=0;i<option.length;i++){
+        fc.deleteparkingtime(option[i].parking)
+      }
+    }
+    fc.selectparkingtime("parking",ctx.request.body.parkId,c)
+  }
 }
 
 exports.userplatenumber = async (ctx, next) => {
   if (ctx.request.body.type == "get") {
-    let openid = ctx.request.body.openId
-    let carnumber
+    let openId = ctx.request.body.openId
+    let carNumber
     function c(option) {
       if (option[0]) {
-        ctx.body = { carnumber: option[0].carnumber.split(".") }
+        ctx.body = { carNumber: option[0].carNumber.split(".") }
       }
     }
-    await fc.selectuser("openid", openid, c)
+    await fc.selectuser("openId", openId, c)
   }
   else if (ctx.request.body.type == "add") {
     function c(option) {
       if (option[0]) {
 
-        Repeat = option[0].carnumber + "." + ctx.request.body.plateNumber
+        Repeat = option[0].carNumber + "." + ctx.request.body.plateNumber
         Repeat = Repeat.split(".")
         cleanRepeat = ofc.unique(Repeat)
         let str = cleanRepeat[0]
         for (let i = 1; i < cleanRepeat.length; i++) {
           str = str + "." + cleanRepeat[i]
         }
-        fc.changeuser(ctx.request.body.openId, str)
+        fc.changeou("user", ctx.request.body.openId, "carNumber", str)
         ctx.body = str
       }
       else {
@@ -132,14 +172,7 @@ exports.userplatenumber = async (ctx, next) => {
         ctx.body = ctx.request.body.plateNumber
       }
     }
-    await fc.selectuser("openid", ctx.request.body.openId, c)
+    await fc.selectuser("openId", ctx.request.body.openId, c)
   }
 }
 
-exports.test = async (ctx, next) => {
-  function c(option) { console.log(option) }
-  await fc.selectowner("id", ctx.request.body.openid, c)
-  await fc.selectowner("id", ctx.request.body.openid, c)
-  await fc.selectowner("id", ctx.request.body.openid, c)
-  ctx.body = { message: "没事" }
-}

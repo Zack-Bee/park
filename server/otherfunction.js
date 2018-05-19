@@ -1,47 +1,4 @@
 const fc = require('./function')
-exports.changeone = async (oppuh, id, what, value) => {
-  var a
-  function c(option) {
-    a = option[0]
-  }
-  if (oppuh == "owner") {
-    await fc.selectowner("id", id, c)
-    if (what == "name") { fc.changeowner(id, value, a.idcard) }
-    else if (what == "idcard") { fc.changeowner(id, a.name, value) }
-  }
-  else if (oppuh == "parking") {
-    await fc.selectparking("id", id, c)
-    if (what == "ownerId") { fc.changeparking(id, value, a.kind, a.name, a.location, a.lola, a.number, a.lease) }
-    else if (what == "kind") { fc.changeparking(id, a.ownerId, value, a.name, a.location, a.lola, a.number, a.lease) }
-    else if (what == "name") { fc.changeparking(id, a.ownerId, a.kind, value, a.location, a.lola, a.number, a.lease) }
-    else if (what == "location") { fc.changeparking(id, a.ownerId, a.kind, a.name, value, a.lola, a.number, a.lease) }
-    else if (what == "lola") { fc.changeparking(id, a.ownerId, a.kind, a.name, a.location, value, a.number, a.lease) }
-    else if (what == "number") { fc.changeparking(id, a.ownerId, a.kind, a.name, a.location, a.lola, value, a.lease) }
-    else if (what == "lease") { fc.changeparking(id, a.ownerId, a.kind, a.name, a.location, a.lola, a.number, value) }
-  }
-  else if (oppuh == "parkingtime") {
-    await fc.selectparkingtime("id", id, c)
-    if (what == "parking") { fc.changeparkingtime(id, value, a.time, a.price, a.rentnumber, a.isuse, a.kind) }
-    else if (what == "time") { fc.changeparkingtime(id, a.parking, value, a.price, a.rentnumber, a.isuse, a.kind) }
-    else if (what == "price") { fc.changeparkingtime(id, a.parking, a.time, value, a.rentnumber, a.isuse, a.kind) }
-    else if (what == "rentnumber") { fc.changeparkingtime(id, a.parking, a.time, a.price, value, a.isuse, a.kind) }
-    else if (what == "isuse") { fc.changeparkingtime(id, a.parking, a.time, a.price, a.rentnumber, value, a.kind) }
-    else if (what == "kind") { fc.changeparkingtime(id, a.parking, a.time, a.price, a.rentnumber, a.isuse, value) }
-  }
-  else if (oppuh == "user") {
-    await fc.selectuser("openid", id, c)
-    if (what == "carnumber") { fc.changeuser(id, value) }
-  }
-  else if (oppuh == "history") {
-    await fc.selecthistory("id", id, c)
-    if (what == "parkingid") { fc.changehistory(id, value, a.time, a.price, a.carnumber) }
-    else if (what == "time") { fc.changehistory(id, a.parkingid, value, a.price, a.carnumber) }
-    else if (what == "price") { fc.changehistory(id, a.parkingid, a.time, value, a.carnumber) }
-    else if (what == "carnumber") { fc.changehistory(id, a.parkingid, a.time, a.price, value) }
-  }
-}
-
-
 exports.xcxlogin = function (code, callback) {
   return new Promise(function (resolve, reject) {
     request('https://api.weixin.qq.com/sns/jscode2session?appid=wx5fbbb4d25168eb48&secret=106619eb311c77a93dbfd697ff06f709&js_code=' + code + '&grant_type=authorization_code', function (error, response, body) {

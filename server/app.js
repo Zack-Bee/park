@@ -1,4 +1,3 @@
-console.log("运行server/app.js")
 let mysql = require('mysql');
 const fc=require('./function')
 const ofc=require('./otherfunction')

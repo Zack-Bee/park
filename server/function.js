@@ -28,70 +28,66 @@ var pool = mysql.createPool(options);
 
 
 
-exports.addowner = function (id, name, idcard) {
-  var aa = id
-  var bb = "'" + name + "'"
-  var cc = "'" + idcard + "'"
-  sql = 'insert into owner (id,name,idcard) values(' + aa + ',' + bb + ',' + cc + ')'
+exports.addowner = function (openId) {
+  sql = 'insert into owner (openId) values(' + openId + ')'
   conn.query(sql, function (err, result) {
     if (err) throw err;
     console.log(result);
   })
 }
-exports.addparking = function (id, ownerId, kind, name, location, lola, number, lease) {
-  var aa = id
-  var bb = ownerId
+exports.addparking = function (openId, kind, name, location, lola, number, lease) {
+  var bb = "'" + openId + "'"
   var cc = kind
   var dd = "'" + name + "'"
   var ee = "'" + location + "'"
   var ff = "'" + lola + "'"
   var gg = number
   var ii = "'" + lease + "'"
-  sql = 'insert into parking (id,ownerId,kind,name,location,lola,number,lease) values(' + aa + ',' + bb + ',' + cc + ',' + dd + ',' + ee + ',' + ff + ',' + gg + ',' + ii + ')'
+  sql = 'insert into parking (openId, kind, name, location, lola, number, lease) values(' + bb + ',' + cc + ',' + dd + ',' + ee + ',' + ff + ',' + gg + ',' + ii + ')'
   conn.query(sql, function (err, result) {
     if (err) throw err;
     console.log(result);
   })
 }
 
-exports.addparkingtime = function (id, parking, time, price, rentnumber, isuse, kind) {
-  var aa = id
+exports.addparkingtime = function (parking, time, price, rentNumber, kind) {
   var bb = parking
   var cc = "'" + time + "'"
   var dd = "'" + price + "'"
-  var ee = rentnumber
-  var ff = isuse
+  var ee = rentNumber
   var gg = kind
-  sql = 'insert into parkingtime (id,parking,time,price,rentnumber,isuse,kind) values(' + aa + ',' + bb + ',' + cc + ',' + dd + ',' + ee + ',' + ff + ',' + gg + ')'
+  sql = 'insert into parkingtime (parking,time,price,rentNumber,kind) values(' + bb + ',' + cc + ',' + dd + ',' + ee + ',' + gg + ')'
   conn.query(sql, function (err, result) {
     if (err) throw err;
     console.log(result);
   })
 }
-exports.addhistory = function (id, parkingid, time, price, carnumber) {
-  var aa = id
-  var bb = parkingid
+exports.addhistory = function (parking, time, pay, carNumber, parkingName, openId) {
+  var bb = parking
   var cc = "'" + time + "'"
-  var dd = "'" + price + "'"
-  var ee = "'" + carnumber + "'"
-  sql = 'insert into history (id, parkingid, time, price,carnumber) values(' + aa + ',' + bb + ',' + cc + ',' + dd + ',' + ee + ')'
+  var dd = "'" + pay + "'"
+  var ee = "'" + carNumber + "'"
+  var ff = "'" + parkingName + "'"
+  var gg = "'" + openId + "'"
+  sql = 'insert into history (parking, time, pay, carNumber,parkingName, openId) values(' + bb + ',' + cc + ',' + dd + ',' + ee + ',' + ff + ',' + gg + ')'
   conn.query(sql, function (err, result) {
     if (err) throw err;
     console.log(result);
   })
 }
-exports.adduser = function (openid, carnumber) {
-  var aa = openid
-  var bb = "'" + carnumber + "'"
-  sql = 'insert into user (openid,carnumber) values(' + aa + ',' + bb + ')'
+exports.adduser = function (openId, carNumber) {
+  var aa = "'" + openId + "'"
+  var bb = "'" + carNumber + "'"
+  sql = 'insert into user (openId,carNumber) values(' + aa + ',' + bb + ')'
   conn.query(sql, function (err, result) {
     if (err) throw err;
     console.log(result);
   })
 }
-exports.changeowner = function (id, name, idcard) {
-  var modSql = 'UPDATE owner SET name = ?,idcard = ? WHERE Id = ?';
-  var modSqlParams = [name, idcard, id];
+
+exports.changeone = function (pph, id, what, value) {
+  var modSql = 'UPDATE'+ pph +'SET '+what+' = ?'+' WHERE id = ?';
+  var modSqlParams = [value, id];
   conn.query(modSql, modSqlParams, function (err, result) {
     if (err) {
       console.log('[UPDATE ERROR] - ', err.message);
@@ -99,9 +95,9 @@ exports.changeowner = function (id, name, idcard) {
   })
 }
 
-exports.changeparking = function (id, ownerId, kind, name, location, lola, number, lease) {
-  var modSql = 'UPDATE parking SET ownerId = ?,kind=?,name = ?, location=?,lola=?, number=?,lease=? WHERE Id = ?';
-  var modSqlParams = [ownerId, kind, name, location, lola, number, lease, id];
+exports.changeou = function (ou, openId, what, value) {
+  var modSql = 'UPDATE'+ ou +'SET '+what+' = ?'+' WHERE openId = ?';
+  var modSqlParams = [value, openId];
   conn.query(modSql, modSqlParams, function (err, result) {
     if (err) {
       console.log('[UPDATE ERROR] - ', err.message);
@@ -109,9 +105,9 @@ exports.changeparking = function (id, ownerId, kind, name, location, lola, numbe
   })
 }
 
-exports.changeparkingtime = function (id, parking, time, price, rentnumber, isuse, kind) {
-  var modSql = 'UPDATE parkingtime SET parking = ?,time = ?,price =?,rentnumber=?,isuse=?,kind=? WHERE Id = ?';
-  var modSqlParams = [parking, time, price, rentnumber, isuse, kind, id];
+exports.changeowner = function (id, openId) {
+  var modSql = 'UPDATE owner SET openId = ? WHERE id = ?';
+  var modSqlParams = [openId, id];
   conn.query(modSql, modSqlParams, function (err, result) {
     if (err) {
       console.log('[UPDATE ERROR] - ', err.message);
@@ -119,9 +115,9 @@ exports.changeparkingtime = function (id, parking, time, price, rentnumber, isus
   })
 }
 
-exports.changehistory = function (id, parkingid, time, price, carnumber) {
-  var modSql = 'UPDATE history SET parkingid = ?,time = ?,price =?,carnumber=? WHERE Id = ?';
-  var modSqlParams = [parkingid, time, price, carnumber, id];
+exports.changeparking = function (id, openId, kind, name, location, lola, number, lease, income) {
+  var modSql = 'UPDATE parking SET openId = ?,kind=?,name = ?, location=?,lola=?, number=?,lease=?,income=? WHERE id = ?';
+  var modSqlParams = [openId, kind, name, location, lola, number, lease, income, id];
   conn.query(modSql, modSqlParams, function (err, result) {
     if (err) {
       console.log('[UPDATE ERROR] - ', err.message);
@@ -129,17 +125,37 @@ exports.changehistory = function (id, parkingid, time, price, carnumber) {
   })
 }
 
-exports.changeuser = function (openid, carnumber) {
-  var modSql = 'UPDATE user SET carnumber=? WHERE openid = ?';
-  var modSqlParams = [carnumber, openid];
+exports.changeparkingtime = function (id, parking, time, price, rentNumber, kind) {
+  var modSql = 'UPDATE parkingtime SET parking = ?,time = ?,price =?,rentNumber=?,kind=? WHERE id = ?';
+  var modSqlParams = [parking, time, price, rentNumber, kind, id];
   conn.query(modSql, modSqlParams, function (err, result) {
     if (err) {
       console.log('[UPDATE ERROR] - ', err.message);
     }
   })
 }
-exports.deleteowner = function (id) {
-  var delSql = 'DELETE FROM owner where id=' + String(id);
+
+exports.changehistory = function (id, parking, time, pay, carNumber, parkingName, openId) {
+  var modSql = 'UPDATE history SET parking = ?,time = ?,pay =?,carNumber=?,parkingName=?,openId=? WHERE id = ?';
+  var modSqlParams = [parking, time, pay, carNumber, parkingName, openId, id];
+  conn.query(modSql, modSqlParams, function (err, result) {
+    if (err) {
+      console.log('[UPDATE ERROR] - ', err.message);
+    }
+  })
+}
+
+exports.changeuser = function (id, openId, carNumber) {
+  var modSql = 'UPDATE user SET carNumber=?,openId=? WHERE id = ?';
+  var modSqlParams = [carNumber, openId, id];
+  conn.query(modSql, modSqlParams, function (err, result) {
+    if (err) {
+      console.log('[UPDATE ERROR] - ', err.message);
+    }
+  })
+}
+exports.deleteowner = function (openId) {
+  var delSql = 'DELETE FROM owner where openId=' + String(id);
   conn.query(delSql, function (err, result) {
     if (err) {
       console.log('[DELETE ERROR] - ', err.message);
@@ -173,8 +189,8 @@ exports.deletehistory = function (id) {
     }
   })
 }
-exports.deleteuser = function (id) {
-  var delSql = 'DELETE FROM user where openid=' + String(id);
+exports.deleteuser = function (openId) {
+  var delSql = 'DELETE FROM user where openId=' + String(id);
   conn.query(delSql, function (err, result) {
     if (err) {
       console.log('[DELETE ERROR] - ', err.message);
@@ -182,68 +198,68 @@ exports.deleteuser = function (id) {
   })
 }
 
-var query=function(sql,options,callback){  
-  pool.getConnection(function(err,conn){  
-      if(err){  
-          callback(err,null,null);  
-      }else{  
-          conn.query(sql,options,function(err,results,fields){  
-              conn.release();  
-              callback(err,results,fields);  
-          });  
-      }  
-  });  
-};  
-
-
-exports.selectowner = function (idORnameORidcard, content, callback) {
-  return new Promise(function (resolve, reject) {
-    var option = new Array();
-    var sql = 'select * from owner where ' + String(idORnameORidcard) + '=' + String(content)
-    query(sql, [1], function(err,rows,fields){  
-      if (err) {
-            reject(err);
-          } else {
-            resolve(rows);
-            for (var i = 0; i < rows.length; i++) {
-              option.push({ 'id': rows[i].id, 'name': rows[i].name, 'idcard': rows[i].idcard });
-            }
-            callback(option)
-          }
+var query = function (sql, options, callback) {
+  pool.getConnection(function (err, conn) {
+    if (err) {
+      callback(err, null, null);
+    } else {
+      conn.query(sql, options, function (err, results, fields) {
+        conn.release();
+        callback(err, results, fields);
+      });
+    }
   });
-  })
-}
+};
 
-exports.selectparking = function (idORownerIdORkindORnameORlocationORlolaORnumberORlease, content, callback) {
+
+exports.selectowner = function (idORopenId, content, callback) {
   return new Promise(function (resolve, reject) {
     var option = new Array();
-    var sql = 'select * from parking where ' + String(idORownerIdORkindORnameORlocationORlolaORnumberORlease) + '=' + String(content)
-    query(sql, [1], function(err,rows,fields){  
+    var sql = 'select * from owner where ' + String(idORopenId) + '=' + String(content)
+    query(sql, [1], function (err, rows, fields) {
       if (err) {
         reject(err);
       } else {
         resolve(rows);
         for (var i = 0; i < rows.length; i++) {
-          option.push({ 'id': rows[i].id, 'ownerId': rows[i].ownerId, 'kind': rows[i].kind, 'name': rows[i].name, 'location': rows[i].location, "lola": rows[i].lola, 'number': rows[i].number, 'lease': rows[i].lease });
+          option.push({ 'id': rows[i].id, 'openId': rows[i].openId });
+        }
+        callback(option)
+      }
+    });
+  })
+}
+
+exports.selectparking = function (idORopenIdORkindORnameORlocationORlolaORnumberORleaseORincome, content, callback) {
+  return new Promise(function (resolve, reject) {
+    var option = new Array();
+    var sql = 'select * from parking where ' + String(idORopenIdORkindORnameORlocationORlolaORnumberORleaseORincome) + '=' + String(content)
+    query(sql, [1], function (err, rows, fields) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(rows);
+        for (var i = 0; i < rows.length; i++) {
+          option.push({ 'id': rows[i].id, 'openId': rows[i].openId, 'kind': rows[i].kind, 'name': rows[i].name, 'location': rows[i].location, "lola": rows[i].lola, 'number': rows[i].number, 'lease': rows[i].lease, 'income': rows[i].income });
         }
         callback(option)
       }
     })
-    
+
   })
 }
 
-exports.selectparkingtime = function (idORparkingORtimeORpriceORrentnumberORisuseORkind, content, callback) {
+exports.selectparkingtime = function (idORparkingORtimeORpriceORrentNumberORkind, content, callback) {
   return new Promise(function (resolve, reject) {
     var option = new Array();
-    var sql = 'select * from parkingtime where ' + String(idORparkingORtimeORpriceORrentnumberORisuseORkind) + '=' + String(content)
-    query(sql, [1], function(err,rows,fields){  
+    var sql = 'select * from parkingtime where ' + String(idORparkingORtimeORpriceORrentNumberORkind) + '=' + String(content)
+    query(sql, [1], function (err, rows, fields) {
       if (err) {
         reject(err);
       } else {
         resolve(rows);
         for (var i = 0; i < rows.length; i++) {
-          option.push({ 'id': rows[i].id, 'parking': rows[i].parking, 'time': rows[i].time, 'price': rows[i].price, 'rentnumber': rows[i].rentnumber, 'isuse': rows[i].isuse, 'kind': rows[i].kind });
+          option.push({ 'id': rows[i].id, 'parking': rows[i].parking, 'time': rows[i].time, 'price': rows[i].price, 'rentNumber': rows[i].rentNumber, 'kind': rows[i].kind });
         }
         callback(option)
       }
@@ -251,17 +267,17 @@ exports.selectparkingtime = function (idORparkingORtimeORpriceORrentnumberORisus
   })
 }
 
-exports.selecthistory = function (idORparkingidORtimeORpriceORcarnumber, content, callback) {
+exports.selecthistory = function (idORparkingORtimeORpayORcarNumberORparkingNameORopenId, content, callback) {
   return new Promise(function (resolve, reject) {
     var option = new Array();
-    var sql = 'select * from history where ' + String(idORparkingidORtimeORpriceORcarnumber) + '=' + String(content)
-    query(sql, [1], function(err,rows,fields){  
+    var sql = 'select * from history where ' + String(idORparkingORtimeORpayORcarNumberORparkingNameORopenId) + '=' + String(content)
+    query(sql, [1], function (err, rows, fields) {
       if (err) {
         reject(err);
       } else {
         resolve(rows);
         for (var i = 0; i < rows.length; i++) {
-          option.push({ 'id': rows[i].id, 'parkingid': rows[i].parkingid, 'time': rows[i].time, 'price': rows[i].price, 'carnumber': rows[i].carnumber });
+          option.push({ 'id': rows[i].id, 'parking': rows[i].parking, 'time': rows[i].time, 'pay': rows[i].pay, 'carNumber': rows[i].carNumber, 'parkingName': rows[i].parkingName, 'openId': rows[i].openId });
         }
         callback(option)
       }
@@ -269,17 +285,17 @@ exports.selecthistory = function (idORparkingidORtimeORpriceORcarnumber, content
   })
 }
 
-exports.selectuser = function (openidORcarnumber, content, callback) {
+exports.selectuser = function (idORopenIdORcarNumber, content, callback) {
   return new Promise(function (resolve, reject) {
     var option = new Array();
-    var sql = 'select * from user where ' + String(openidORcarnumber) + '=' + String(content)
-    query(sql, [1], function(err,rows,fields){  
+    var sql = 'select * from user where ' + String(idORopenIdORcarNumber) + '=' + String(content)
+    query(sql, [1], function (err, rows, fields) {
       if (err) {
         reject(err);
       } else {
         resolve(rows);
         for (var i = 0; i < rows.length; i++) {
-          option.push({ 'openid': rows[i].openid, 'carnumber': rows[i].carnumber });
+          option.push({ 'id': rows[i].id, 'openId': rows[i].openId, 'carNumber': rows[i].carNumber });
         }
         callback(option)
       }

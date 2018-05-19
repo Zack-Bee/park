@@ -77,8 +77,10 @@ eg:
     openType: "weekly",
     startDay: "1",
     endDay: "7",
+    startTime: "8:00",
+    endTime: "22:00",
     price: 15,
-    parkName: "王邦铮的停车场"
+    kind: 3
 }
 
 一次
@@ -90,7 +92,7 @@ eg:
     startTime: "8:00",
     endTime: "22:00",
     price: 20,
-    parkName: "王邦铮的停车场"
+    kind: 3
 }
 
 从指定日期到指定日期
@@ -100,12 +102,12 @@ eg: 十月八号到十一月十一号
     parkId: "31232131",
     openId: "12345677",
     openType: "date",
-    startDay: "10-8",
-    endDay: "11-11",
+    startDay: "2018-10-8",
+    endDay: "2018-11-11",
     startTime: "8:00",
     endTime: "22:00",
     price: 25,
-    parkName: "王邦铮的停车场"
+    kind: 3
 }
 
 4类用户
@@ -117,7 +119,9 @@ eg: 十月八号到十一月十一号
     openType: "weekly",
     startDay: "1",
     endDay: "7",
-    parkName: "王邦铮的停车场"
+    startTime: "8:00",
+    endTime: "22:00",
+    kind: 4
 }
 
 一次
@@ -128,7 +132,7 @@ eg: 十月八号到十一月十一号
     openType: "once",
     startTime: "8:00",
     endTime: "22:00",
-    parkName: "王邦铮的停车场"
+    kind: 4
 }
 
 从指定日期到指定日期
@@ -142,7 +146,7 @@ eg: 十月八号到十一月十一号
     endDay: "11-11",
     startTime: "8:00",
     endTime: "22:00",
-    parkName: "王邦铮的停车场"
+    kind: 4
 }
 ```
 
@@ -201,22 +205,5 @@ eg:
     openId: "123456789",
     type: "add",
     plateNumber: "甲A-12345"
-}
-```
-
-#### Method: POST
-#### Usage: 添加停车场信息
-```
-requestDataType: json
-eg:
-{
-    parkingId: "123456789",
-    type: "parking",
-    Longitude:"123.123456",
-    Latitude:"123.123456",
-    charge:"1/0",
-    price:"99",
-    parkingspace_all:"999",
-    parkingspace_rest:"999",
 }
 ```
