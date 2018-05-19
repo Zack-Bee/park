@@ -1,25 +1,31 @@
 <template>
     <view>
         <view class="steps-wrapper">
-            <Steps :steps.sync="steps"/>
+            <Steps :steps.sync="steps" />
         </view>
         <view>
             <view wx:if="{{currentStepsIndex === 0}}">
-                <parkNameInput title="车位名" placeholder="仅用于自己辨识不同车位"/>
+                <parkNameInput title="车位名" placeholder="仅用于自己辨识不同车位" />
             </view>
             <view wx:if="{{currentStepsIndex === 1}}">
-                <priceInput inputType="digit" title="价格¥" placeholder="每小时收取的费用"/>
+                <priceInput inputType="digit" title="价格¥" placeholder="每小时收取的费用" />
             </view>
-            <view wx:if="{{currentStepsIndex === 2}}"></view>
+            <view wx:if="{{currentStepsIndex === 2}}">
+                <Select :items="frequenceSelect"
+                    :checkedValue.sync="selectedValue"
+                    :handleSelectChange="changeSelect"
+                    activeColor="#09bb07"/>
+
+            </view>
         </view>
         <view class="buttons-wrapper">
             <view class="left-button" wx:if="{{currentStepsIndex !== 0}}">
-                <prevButton size="small" type="normal">
+                <prevButton size="small" type="normal" :bindTap="prevStep">
                     上一步
                 </prevButton>
             </view>
             <view class="right-button">
-                <nextButton size="small" type="primary">
+                <nextButton size="small" type="primary" :bindTap="netxStep">
                     {{currentStepsIndex === 2 ? "发布" : "下一步"}}
                 </nextButton>
             </view>
@@ -33,11 +39,11 @@
 }
 
 .zan-steps__title {
-    color: #353535!important;
+    color: #353535 !important;
 }
 
 .zan-steps__title--desc {
-    color: #888!important;
+    color: #888 !important;
 }
 
 .buttons-wrapper {
@@ -46,7 +52,7 @@
 
 .buttons-wrapper::before,
 .buttons-wrapper::after {
-    content: "";
+    content: '';
     display: block;
     clear: both;
 }
@@ -74,8 +80,8 @@
 import wepy from 'wepy'
 import Field from '../../components/field/field'
 import Steps from '../../components/steps/steps'
-import Button from "../../components/button/button"
-
+import Button from '../../components/button/button'
+import Select from '../../components/select/select'
 
 export default class Index extends wepy.page {
     components = {
@@ -84,7 +90,8 @@ export default class Index extends wepy.page {
         Steps,
         priceInput: Field,
         prevButton: Button,
-        nextButton: Button
+        nextButton: Button,
+        Select
     }
 
     data = {
@@ -112,7 +119,45 @@ export default class Index extends wepy.page {
                 desc: '选择时间'
             }
         ],
-        currentStepsIndex: 2
+        currentStepsIndex: 2,
+        frequenceSelect: [
+            {
+                value: 'weekly',
+                // 选项文案
+                name: '每周'
+            },
+            {
+                value: 'onece',
+                name: '一次'
+            },
+            {
+                value: "date",
+                name: "指定范围"
+            }
+        ],
+        selectedValue: "weekly",
+        changeSelect: (event) => {
+            this.selectedValue = event.detail.value
+            this.$apply()
+        },
+        prevStep: () => {
+            this.steps[this.currentStepsIndex].current = false
+            this.steps[this.currentStepsIndex - 1].done = false
+            this.steps[this.currentStepsIndex - 1].current = true
+            this.currentStepsIndex--
+            this.$apply()
+        },
+        netxStep: () => {
+            if (this.currentStepsIndex === 2) {
+                // 提交到服务器
+            } else {
+                this.steps[this.currentStepsIndex].done = true
+                this.steps[this.currentStepsIndex].current = false
+                this.steps[this.currentStepsIndex + 1].current = true
+                this.currentStepsIndex++
+                this.$apply()
+            }
+        }
     }
 
     onLoad(option) {
