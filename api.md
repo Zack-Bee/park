@@ -77,7 +77,8 @@ eg:
     openType: "weekly",
     startDay: "1",
     endDay: "7",
-    price: 15
+    price: 15,
+    parkName: "王邦铮的停车场"
 }
 
 一次
@@ -88,7 +89,8 @@ eg:
     openType: "once",
     startTime: "8:00",
     endTime: "22:00",
-    price: 20
+    price: 20,
+    parkName: "王邦铮的停车场"
 }
 
 从指定日期到指定日期
@@ -102,7 +104,8 @@ eg: 十月八号到十一月十一号
     endDay: "11-11",
     startTime: "8:00",
     endTime: "22:00",
-    price: 25
+    price: 25,
+    parkName: "王邦铮的停车场"
 }
 
 4类用户
@@ -113,7 +116,8 @@ eg: 十月八号到十一月十一号
     openId: "12345677",
     openType: "weekly",
     startDay: "1",
-    endDay: "7"
+    endDay: "7",
+    parkName: "王邦铮的停车场"
 }
 
 一次
@@ -123,7 +127,8 @@ eg: 十月八号到十一月十一号
     openId: "12345677",
     openType: "once",
     startTime: "8:00",
-    endTime: "22:00"
+    endTime: "22:00",
+    parkName: "王邦铮的停车场"
 }
 
 从指定日期到指定日期
@@ -136,7 +141,8 @@ eg: 十月八号到十一月十一号
     startDay: "10-8",
     endDay: "11-11",
     startTime: "8:00",
-    endTime: "22:00"
+    endTime: "22:00",
+    parkName: "王邦铮的停车场"
 }
 ```
 
