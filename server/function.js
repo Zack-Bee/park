@@ -86,7 +86,7 @@ exports.adduser = function (openId, carNumber) {
 }
 
 exports.changeone = function (pph, id, what, value) {
-  var modSql = 'UPDATE'+ pph +'SET '+what+' = ?'+' WHERE id = ?';
+  var modSql = 'UPDATE '+ pph +' SET '+what+' = ?'+' WHERE id = ?';
   var modSqlParams = [value, id];
   conn.query(modSql, modSqlParams, function (err, result) {
     if (err) {
@@ -96,7 +96,7 @@ exports.changeone = function (pph, id, what, value) {
 }
 
 exports.changeou = function (ou, openId, what, value) {
-  var modSql = 'UPDATE'+ ou +'SET '+what+' = ?'+' WHERE openId = ?';
+  var modSql = 'UPDATE '+ ou +' SET '+what+' = ?'+' WHERE openId = ?';
   var modSqlParams = [value, openId];
   conn.query(modSql, modSqlParams, function (err, result) {
     if (err) {
