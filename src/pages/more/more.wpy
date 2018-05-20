@@ -134,9 +134,5 @@ export default class Index extends wepy.page {
             this.$apply()
         }
     }
-
-    onShow() {
-        console.log("\nrent page is show\n")
-    }
 }
 </script>

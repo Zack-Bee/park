@@ -6,7 +6,7 @@ import post from './common/post.js'
 
 export default class extends wepy.app {
     config = {
-        pages: ['pages/find/find', 'pages/rent/rent', "pages/publish-park/publish-park",'pages/search/search'],
+        pages: ['pages/find/find', 'pages/more/more', "pages/publish-park/publish-park",'pages/search/search'],
         window: {
             backgroundTextStyle: 'light',
             navigationBarBackgroundColor: '#fff',
@@ -22,10 +22,10 @@ export default class extends wepy.app {
                     selectedIconPath: 'pages/find/selectedIcon.png'
                 },
                 {
-                    pagePath: 'pages/rent/rent',
-                    text: '租赁',
-                    iconPath: 'pages/rent/icon.png',
-                    selectedIconPath: 'pages/rent/selectedIcon.png'
+                    pagePath: 'pages/more/more',
+                    text: '更多',
+                    iconPath: 'pages/more/icon.png',
+                    selectedIconPath: 'pages/more/selectedIcon.png'
                 }
             ],
             selectedColor: '#09bb07'
