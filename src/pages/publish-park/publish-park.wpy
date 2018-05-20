@@ -13,29 +13,44 @@
                 </view>
                 <view wx:if="{{currentStepsIndex3 === 2}}">
                     <Select :items="frequenceSelect" :checkedValue.sync="selectedValue" :handleSelectChange="changeSelect" activeColor="#09bb07" />
-                    <picker mode="time" value="{{startTime}}" start="00:00" end="23:59" bindchange="onStartTimeChange">
+                    <view wx:if="{{selectedValue === 'weekly'}}" />
+                    <picker bindchange="bindPickerChange" value="{{startDay}}" range="{{weeks}}">
                         <view class="publish-time">
-                            开始时间: {{startTime}}
+                            <view class="publish-time-desc">开始日期:</view>
+                            <view class="publish-time-value">{{weeks[startDay]}}</view>
                         </view>
                     </picker>
-                    <picker mode="time" value="{{endTime}}" start="00:00" end="23:59" bindchange="onEndTimeChange">
+                    <picker bindchange="bindPickerChange" value="{{endDay}}" range="{{weeks}}">
                         <view class="publish-time">
-                            停止时间: {{endTime}}
+                            <view class="publish-time-desc">截止日期:</view>
+                            <view class="publish-time-value">{{weeks[endDay]}}</view>
                         </view>
                     </picker>
                 </view>
-            </view>
-            <view class="buttons-wrapper">
-                <view class="left-button" wx:if="{{currentStepsIndex3 !== 0}}">
-                    <prevButton size="small" type="normal" :bindTap="prevStep">
-                        上一步
-                    </prevButton>
-                </view>
-                <view class="right-button">
-                    <nextButton size="small" type="primary" :bindTap="netxStep">
-                        {{currentStepsIndex3 === 2 ? "发布" : "下一步"}}
-                    </nextButton>
-                </view>
+                <picker mode="date" value="{{startDate}}" start="2018-05-01" end="2019-12-31" bindchange="bindDateChange">
+                    <view class="publish-time">
+                        <view class="publish-time-desc">开始日期:</view>
+                        <view class="publish-time-value">{{startDate}}</view>
+                    </view>
+                </picker>
+                <picker mode="date" value="{{endDate}}" start="2018-05-01" end="2019-12-31" bindchange="bindDateChange">
+                    <view class="publish-time">
+                        <view class="publish-time-desc">截止日期:</view>
+                        <view class="publish-time-value">{{endDate}}</view>
+                    </view>
+                </picker>
+                <picker mode="time" value="{{startTime}}" start="00:00" end="23:59" bindchange="onStartTimeChange">
+                    <view class="publish-time">
+                        <view class="publish-time-desc">开始时间:</view>
+                        <view class="publish-time-value">{{startTime}}</view>
+                    </view>
+                </picker>
+                <picker mode="time" value="{{endTime}}" start="00:00" end="23:59" bindchange="onEndTimeChange">
+                    <view class="publish-time">
+                        <view class="publish-time-desc">停止时间:</view>
+                        <view class="publish-time-value">{{endTime}}</view>
+                    </view>
+                </picker>
             </view>
         </view>
         <view wx:if="{{kind === 4}}">
@@ -61,6 +76,18 @@
                         {{currentStepsIndex4 === 1 ? "发布" : "下一步"}}
                     </nextButton>
                 </view>
+            </view>
+        </view>
+        <view class="buttons-wrapper">
+            <view class="left-button" wx:if="{{currentStepsIndex3 !== 0}}">
+                <prevButton size="small" type="normal" :bindTap="prevStep">
+                    上一步
+                </prevButton>
+            </view>
+            <view class="right-button">
+                <nextButton size="small" type="primary" :bindTap="netxStep">
+                    {{currentStepsIndex3 === 2 ? "发布" : "下一步"}}
+                </nextButton>
             </view>
         </view>
     </view>
@@ -107,6 +134,15 @@
     line-height: 24px;
     color: #303030;
     padding: 9px 15px;
+    display: flex;
+}
+
+.publish-time-desc {
+    min-width: 65px;
+}
+
+.publish-time-value {
+    padding-left: 20px;
 }
 </style>
 
@@ -233,8 +269,13 @@ export default class Index extends wepy.page {
                 }
             }
         },
-        startTime: '',
-        endTime: ''
+        startTime: '07:00',
+        endTime: '23:00',
+        startDate: '2018-05-20',
+        endDate: '2018-07-27',
+        weeks: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+        startDay: 0,
+        endDay: 6
     }
 
     onLoad(option) {
