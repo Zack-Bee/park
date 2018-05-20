@@ -107,38 +107,67 @@ exports.userparks = async (ctx, next) => {
     var minute = now.getMinutes()
     if (ctx.request.body.kind == 3) {
       if (ctx.request.body.openType == "weekly") {
-        fc.addparkingtime(ctx.request.body.parkId, ctx.request.body.startDay + ctx.request.body.startTime.replace(":", ".") + "-" + ctx.request.body.endDay + ctx.request.body.endTime.replace(":", "."), ctx.request.body.price, null, 0)
+        fc.addparkingtime(ctx.request.body.parkId,
+          ctx.request.body.startDay+"."
+          + ctx.request.body.startTime.replace(/:/g, ".")
+          + "-" + ctx.request.body.endDay+"."
+          + ctx.request.body.endTime.replace(/:/g, "."), 
+          ctx.request.body.price, null, 0)
         //这里要添加更新rentNumber的东西
       }
       else if (ctx.request.body.openType == "once") {
-        fc.addparkingtime(ctx.request.body.parkId, year + "." + month + "." + day + "." + ctx.request.body.startTime.replace(":", ".") + "-" + year + "." + month + "." + day + "." + ctx.request.body.endTime.replace(":", "."), ctx.request.body.price, null, 1)
+        fc.addparkingtime(ctx.request.body.parkId,
+           year + "." + month + "." + day + "." 
+           + ctx.request.body.startTime.replace(/:/g, ".") 
+           + "-" + year + "." + month + "." + day + "." 
+           + ctx.request.body.endTime.replace(/:/g, "."), 
+           ctx.request.body.price, null, 1)
       }
       else if (ctx.request.body.openType == "date") {
-        fc.addparkingtime(ctx.request.body.parkId, ctx.request.body.startDay.replace("-", ".") + ctx.request.body.startTime.replace(":", ".") + "-" + ctx.request.body.endDay.replace("-", ".") + ctx.request.body.endTime.replace(":", "."), ctx.request.body.price, null, 1)
+        fc.addparkingtime(ctx.request.body.parkId, 
+          ctx.request.body.startDay.replace(/-/g, ".") +"."
+          + ctx.request.body.startTime.replace(/:/g, ".") 
+          + "-" + ctx.request.body.endDay.replace(/-/g, ".") +"."
+          + ctx.request.body.endTime.replace(/:/g, "."),
+           ctx.request.body.price, null, 1)
       }
     }
     else if (ctx.request.body.kind == 4) {
       if (ctx.request.body.openType == "weekly") {
-        fc.addparkingtime(ctx.request.body.parkId, ctx.request.body.startDay + ctx.request.body.startTime.replace(":", ".") + "-" + ctx.request.body.endDay + ctx.request.body.endTime.replace(":", "."), null, null, 0)
+        fc.addparkingtime(ctx.request.body.parkId, 
+          ctx.request.body.startDay +"."
+          + ctx.request.body.startTime.replace(/:/g, ".") 
+          + "-" + ctx.request.body.endDay +"."
+          + ctx.request.body.endTime.replace(/:/g, "."), null, null, 0)
       }
       else if (ctx.request.body.openType == "once") {
-        fc.addparkingtime(ctx.request.body.parkId, year + "." + month + "." + day + "." + ctx.request.body.startTime.replace(":", ".") + "-" + year + "." + month + "." + day + "." + ctx.request.body.endTime.replace(":", "."), null, null, 1)
+        fc.addparkingtime(ctx.request.body.parkId, year 
+          + "." + month + "." + day + "." 
+          + ctx.request.body.startTime.replace(/:/g, ".") 
+          + "-" + year + "." + month + "." + day + "." 
+          + ctx.request.body.endTime.replace(/:/g, "."), null, null, 1)
       }
       else if (ctx.request.body.openType == "date") {
-        fc.addparkingtime(ctx.request.body.parkId, ctx.request.body.startDay.replace("-", ".") + ctx.request.body.startTime.replace(":", ".") + "-" + ctx.request.body.endDay.replace("-", ".") + ctx.request.body.endTime.replace(":", "."), null, null, 1)
+        fc.addparkingtime(ctx.request.body.parkId, 
+          ctx.request.body.startDay.replace(/-/g, ".") +"."
+          + ctx.request.body.startTime.replace(/:/g, ".") 
+          + "-" + ctx.request.body.endDay.replace(/-/g, ".") +"."
+          + ctx.request.body.endTime.replace(/:/g, "."), null, null, 1)
       }
     }
   }
-  else if(ctx.request.body.type == "add"){
-    fc.addparking(ctx.request.body.openId,ctx.request.body.kind,null,null,ctx.request.body.longitude+","+ctx.request.body.latitude,null,null)
+  else if (ctx.request.body.type == "add") {
+    fc.addparking(ctx.request.body.openId,
+       ctx.request.body.kind, null, null, 
+       ctx.request.body.longitude + "," + ctx.request.body.latitude, null, null)
   }
-  else if(ctx.request.body.type == "close"){
-    function c(option){
-      for(let i=0;i<option.length;i++){
-        fc.deleteparkingtime(option[i].parking)
+  else if (ctx.request.body.type == "close") {
+    function c(option) {
+      for (let i = 0; i < option.length; i++) {
+        fc.deleteparkingtime(option[i].id)
       }
     }
-    fc.selectparkingtime("parking",ctx.request.body.parkId,c)
+    fc.selectparkingtime("parking", ctx.request.body.parkId, c)
   }
 }
 
