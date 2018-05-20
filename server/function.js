@@ -5,7 +5,6 @@
 // const e = require('../server/models/user');
 let mysql = require('mysql');
 var async = require('async');
-var request = require('request');
 
 var conn = mysql.createConnection({
   host: 'localhost',    //服务器端口
