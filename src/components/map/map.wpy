@@ -1,8 +1,8 @@
 <template>
 <view class="main-map">
     <map id="map-body" longitude="{{longitude}}" latitude="{{latitude}}" scale="{{scale}}"
-        bindcontroltap="clickcontrols" controls="{{controls}}"
-        markers="{{markers}}"
+        bindcontroltap="clickcontrols" controls="{{controls}}" 
+        markers="{{markers}}" bindmarkertap="markertap"
         show-location
         style="width:100%;height:{{height}}px">
     </map>
@@ -19,15 +19,39 @@ export default class Map extends wepy.component {
         height: {
             type: Number,
             default: 375
+        },
+        scale :{
+            type: Number,
+            default: 18
         }
     }
     data = {
-        scale: 18,
+        scale: 16,
         latitude: '',
         longitude: '',
-        markers: [],
-        controls: [
+        markers: [
+            //做个循环 search获取到的进行id分配 然而不会写循坏的id分配和关闭程序后free掉id
             {
+                iconPath: "../../components/map/parking.png",
+                id: 1,
+                latitude:41.65213,
+                longitude:123.423030,
+                width: 40*wx.getStorageSync("MapScreenW"),
+                height: 40*wx.getStorageSync("MapScreenW"),
+                callout:{
+                    content:'我是个气泡\n我会显示价格\n还有剩余车位量',
+                    fontSize:14,
+                    color:'#ffffff',
+                    bgColor:'#000000',
+                    padding:8,
+                    borderRadius:4,
+                    boxShadow:'4px 8px 16px 0 rgba(0)',
+                    display:"BYCLICK"
+                }
+            }
+        ],
+        controls: [
+            /*{
                 id: 1, //标记中心位置
                 iconPath: '../../components/map/iamhere.png',
                 position: {
@@ -37,7 +61,7 @@ export default class Map extends wepy.component {
                     height: 40 * wx.getStorageSync('MapScreenW')
                 },
                 clickable: false
-            },
+            },*/
             {
                 id: 2, //点击回到当前位置
                 iconPath: '../../components/map/locate.png',
@@ -60,7 +84,7 @@ export default class Map extends wepy.component {
                 },
                 clickable: true
             }
-        ]
+        ],
     }
     onLoad() {
         // wx.openSetting({
@@ -84,95 +108,106 @@ export default class Map extends wepy.component {
         })
     }
 
-    getParkList() {
-        //在这里有商量 是后端还是前端要做的
-        //反正我先写了 大概还   需要判断是否连入网络    停车场列表获取方法
-        // wx.request({
-        //     url= this.data  //url是啥我不知道
-        //     data=  this.data  //data要什么 我也不知道
-        //     method=  'POST', // OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, CONNECT
-        //     // header: {}, // 设置请求的 header 我也不知道是啥
-        //     header=  {
-        //         //我怎么什么都不知道 照着文档写好累哦
-        //     },
-        //     success: res =>{
-        //         // success
-        //         var message = res.data.message
-        //         var statu = res.data.status
-        //         /*wx.showToast({    查询动画需不需要 有待商讨
-        //             title: '查询附近停车场:\n' + message,
-        //             icon: 'success.png', 大概是有一个这么个图标 大概
-        //             duration: 2000,
-        //         })*/
-        //         var parkList = res.data.result
-        //         var markers = []
-        //         for (var i=0;i<parkList.length;i++) {
-        //             var parkLat = Number(parkList[i].latitude)
-        //             var parkLong = Number(parkList[i].longitude)
-        //             var id = Number(parkList[i].park_id)  //所以这个id是要怎么定 根据什么定
-        //             var marker={
-        //                 latitude:parkLat,
-        //                 longitude:parkLong,
-        //                 iconPath: "../",//图标我还没找到  :)
-        //                 id: id,
-        //                 width: 40*wx.getStorageSync("MapScreenW"),
-        //                 height: 40*wx.getStorageSync("MapScreenW")
-        //             }
-        //         markers.push(marker)
-        //         'markers' = markers
-        //         }
-        //         console.log(that.data.markers)
-        //     },
-        // })
+    /*getParkList() {
+        //需要判断是否连入网络
+        wx.request({
+            url= this.data.ParkinglistUrl.getlist  //接口地址search
+            data=  this.data.getParkList  //data要什么 我也不知道
+            method=  'POST', // OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, CONNECT
+            // header: {}, // 设置请求的 header 我也不知道是啥
+            header=  {
+                //我怎么什么都不知道 照着文档写好累哦
+            },
+            success: res =>{
+                var message = res.data.message
+                var statu = res.data.status
+                wx.showToast({    //查询动画需不需要 有待商讨
+                    title: '查询附近停车场:\n' + message,
+                    icon: '../../components/map/success.png',
+                    duration: 2000,
+                })
+                var parkList = res.data.result
+                var markers = []
+                for (var i=0;i<parkList.length;i++) {
+                    var parkLat = Number(parkList[i].latitude)
+                    var parkLong = Number(parkList[i].longitude)
+                    var id = Number(parkList[i].park_id)  //search到的parklist数组
+                    var marker={
+                        latitude:parkLat,
+                        longitude:parkLong,
+                        iconPath: "../../components/map/parking.png",
+                        id: id,
+                        width: 40*wx.getStorageSync("MapScreenW"),
+                        height: 40*wx.getStorageSync("MapScreenW"),
+                        callout:{
+                            content:'我是个气泡\n我会显示价格\n还有剩余车位量',  //callout的content数据传入
+                            fontSize:14,
+                            color:'#ffffff',
+                            bgColor:'#000000',
+                            padding:8,
+                            borderRadius:4,
+                            boxShadow:'4px 8px 16px 0 rgba(0)',
+                            display:"BYCLICK"
+                        }
+                    }
+                markers.push(marker)
+                'markers' = markers
+                }
+                console.log(that.data.markers)
+            },
+        })
     }
 
     regionchange (e) {
         //得到地图中心点的位置
-        //我可真是个小机灵
-        // this.mapCtx = wx.createMapContext('map-body')
-        // that.mapCtx.getCenterLocation({
-        //     success :res => {
-        //         //滑动屏幕 判断是否需要刷新“离我最近”的停车场
-        //         var longitudeFix = res.longitude
-        //         var latitudeFix = res.latitude
-        //         if (e.type == "begin") {
-        //             console.log('same')
-        //         }
-        //         else {
-        //             console.log("change")
-        //             //data还没写好 哇 我不知道自己具体需要哪些数据啊啊啊啊啊
-        //             //这里大概是需要一个经纬度的重新定位
-        //             //靠着longitudeFix和latitudeFix来进行停车场距离比较大小
-        //             //可能会重新显示离我最近的停车场
-        //             //好了我的思路已经写在这里了
-        //             //怎么写呢嘤嘤嘤
-        //             if (that.data.emmmm){  //这里需要一个能否获得附近停车场的flag
-        //                 that.getParkList()
-        //             }
-        //         }
-        //     }
-        // })
-    }
-
-    //点击标注点显示停车场信息 还没写好嘤嘤嘤
-    // markertap: function (e) {
-    // console.log(e.markerId)
-    // }
+        this.mapCtx = wx.createMapContext('map-body')
+        that.mapCtx.getCenterLocation({
+            success :res => {
+                //滑动屏幕 判断是否需要刷新“离我最近”的停车场
+                var longitudeFix = res.longitude
+                var latitudeFix = res.latitude
+                if (e.type == "begin") {
+                    console.log('same')
+                }
+                else {
+                    console.log("change")
+                    //这里大概是需要一个经纬度的重新定位
+                    //靠着longitudeFix和latitudeFix来进行停车场距离比较大小
+                    //可能会重新显示离我最近的停车场
+                    if (that.data.emmmm){  //这里需要一个能否获得附近停车场的flag
+                        that.getParkList() //刷新search的列表 动态刷新id分配
+                    }
+                }
+            }
+        })
+    },*/
 
     methods = {
+        markertap (e) {
+            console.log(e.markerId)
+            console.log(e.latitude)
+            console.log(e.longitude)
+        },
         clickcontrols(e) {
-            // if (e.controlId === 2) {
-            //     //点击定位按钮回到当前位置
-            //     this.mapCtx = wx.createMapContext('map-body')
-            //     this.mapCtx.moveToLocation()
-            //     scale = 18
-            // } else if (e.controlId === 1) {
-            //     //点击搜索按钮进入搜索界面
-            //     wx.navigateTo({
-            //         url: '../search/search'
-            //     })
-            // }
+            if (e.controlId === 2) {
+                //点击定位按钮回到当前位置
+                this.mapCtx = wx.createMapContext('map-body')
+                this.mapCtx.moveToLocation()
+                this.scale = 16
+            }if (e.controlId === 3) {
+                //点击搜索按钮进入搜索界面
+                wx.navigateTo({
+                    url: '../search/search',
+                    success: (res) => {
+                        console.log(res)
+                    },
+                    fail: (err) => {
+                        console.log(err)
+                    }
+                })
+            }
         }
     }
 }
 </script>
+
