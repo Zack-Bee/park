@@ -1,33 +1,66 @@
 <template>
     <view>
-        <view class="steps-wrapper">
-            <Steps :steps.sync="steps" />
+        <view wx:if="{{kind === 3}}">
+            <view class="steps-wrapper">
+                <Steps3 :steps.sync="steps3" />
+            </view>
+            <view class="publish-form">
+                <view wx:if="{{currentStepsIndex3 === 0}}">
+                    <parkNameInput title="车位名" placeholder="仅用于自己辨识不同车位" />
+                </view>
+                <view wx:if="{{currentStepsIndex3 === 1}}">
+                    <priceInput inputType="digit" title="价格¥" placeholder="每小时收取的费用" />
+                </view>
+                <view wx:if="{{currentStepsIndex3 === 2}}">
+                    <Select :items="frequenceSelect" :checkedValue.sync="selectedValue" :handleSelectChange="changeSelect" activeColor="#09bb07" />
+                    <picker mode="time" value="{{startTime}}" start="00:00" end="23:59" bindchange="onStartTimeChange">
+                        <view class="publish-time">
+                            开始时间: {{startTime}}
+                        </view>
+                    </picker>
+                    <picker mode="time" value="{{endTime}}" start="00:00" end="23:59" bindchange="onEndTimeChange">
+                        <view class="publish-time">
+                            停止时间: {{endTime}}
+                        </view>
+                    </picker>
+                </view>
+            </view>
+            <view class="buttons-wrapper">
+                <view class="left-button" wx:if="{{currentStepsIndex3 !== 0}}">
+                    <prevButton size="small" type="normal" :bindTap="prevStep">
+                        上一步
+                    </prevButton>
+                </view>
+                <view class="right-button">
+                    <nextButton size="small" type="primary" :bindTap="netxStep">
+                        {{currentStepsIndex3 === 2 ? "发布" : "下一步"}}
+                    </nextButton>
+                </view>
+            </view>
         </view>
-        <view>
-            <view wx:if="{{currentStepsIndex === 0}}">
-                <parkNameInput title="车位名" placeholder="仅用于自己辨识不同车位" />
+        <view wx:if="{{kind === 4}}">
+            <view class="steps-wrapper">
+                <Steps4 type="vertical" :steps.sync="steps4" />
             </view>
-            <view wx:if="{{currentStepsIndex === 1}}">
-                <priceInput inputType="digit" title="价格¥" placeholder="每小时收取的费用" />
+            <view class="publish-form">
+                <view wx:if="{{currentStepsIndex4 === 0}}">
+                    <parkNameInput title="车位名" placeholder="仅用于自己辨识不同车位" />
+                </view>
+                <view wx:if="{{currentStepsIndex4 === 1}}">
+                    <Select :items="frequenceSelect" :checkedValue.sync="selectedValue" :handleSelectChange="changeSelect" activeColor="#09bb07" />
+                </view>
             </view>
-            <view wx:if="{{currentStepsIndex === 2}}">
-                <Select :items="frequenceSelect"
-                    :checkedValue.sync="selectedValue"
-                    :handleSelectChange="changeSelect"
-                    activeColor="#09bb07"/>
-
-            </view>
-        </view>
-        <view class="buttons-wrapper">
-            <view class="left-button" wx:if="{{currentStepsIndex !== 0}}">
-                <prevButton size="small" type="normal" :bindTap="prevStep">
-                    上一步
-                </prevButton>
-            </view>
-            <view class="right-button">
-                <nextButton size="small" type="primary" :bindTap="netxStep">
-                    {{currentStepsIndex === 2 ? "发布" : "下一步"}}
-                </nextButton>
+            <view class="buttons-wrapper">
+                <view class="left-button" wx:if="{{currentStepsIndex4 !== 0}}">
+                    <prevButton size="small" type="normal" :bindTap="prevStep">
+                        上一步
+                    </prevButton>
+                </view>
+                <view class="right-button">
+                    <nextButton size="small" type="primary" :bindTap="netxStep">
+                        {{currentStepsIndex4 === 1 ? "发布" : "下一步"}}
+                    </nextButton>
+                </view>
             </view>
         </view>
     </view>
@@ -44,6 +77,10 @@
 
 .zan-steps__title--desc {
     color: #888 !important;
+}
+
+.publish-form {
+    margin-top: 20rpx;
 }
 
 .buttons-wrapper {
@@ -65,15 +102,12 @@
     float: right;
 }
 
-/* .page { */
-/* background-color: #efeff4; */
-/* min-height: 100vh; */
-/* } */
-
-/* .padding { */
-/* height: 30rpx; */
-/* box-shadow: 0 2rpx 2rpx 1rpx rgba(0, 0, 0, 0.1) inset; */
-/* } */
+.publish-time {
+    font-size: 14px;
+    line-height: 24px;
+    color: #303030;
+    padding: 9px 15px;
+}
 </style>
 
 <script>
@@ -87,7 +121,8 @@ export default class Index extends wepy.page {
     components = {
         parkNameInput: Field,
         startTimeInput: Field,
-        Steps,
+        Steps3: Steps,
+        Steps4: Steps,
         priceInput: Field,
         prevButton: Button,
         nextButton: Button,
@@ -95,7 +130,9 @@ export default class Index extends wepy.page {
     }
 
     data = {
-        steps: [
+        parkId: '',
+        kind: 3,
+        steps3: [
             {
                 // 此步骤是否当前完成状态
                 current: false,
@@ -107,8 +144,8 @@ export default class Index extends wepy.page {
                 desc: '填写名字'
             },
             {
-                done: true,
                 current: false,
+                done: true,
                 text: '价格',
                 desc: '选择价格'
             },
@@ -119,7 +156,26 @@ export default class Index extends wepy.page {
                 desc: '选择时间'
             }
         ],
-        currentStepsIndex: 2,
+        steps4: [
+            {
+                // 此步骤是否当前完成状态
+                current: true,
+                // 此步骤是否已经完成
+                done: false,
+                // 此步骤显示文案
+                text: '步骤一',
+                // 此步骤描述语
+                desc: '填写名字'
+            },
+            {
+                done: false,
+                current: false,
+                text: '步骤二',
+                desc: '选择时间'
+            }
+        ],
+        currentStepsIndex3: 2,
+        currentStepsIndex4: 0,
         frequenceSelect: [
             {
                 value: 'weekly',
@@ -131,43 +187,80 @@ export default class Index extends wepy.page {
                 name: '一次'
             },
             {
-                value: "date",
-                name: "指定范围"
+                value: 'date',
+                name: '指定范围'
             }
         ],
-        selectedValue: "weekly",
-        changeSelect: (event) => {
+        selectedValue: 'weekly',
+        changeSelect: event => {
             this.selectedValue = event.detail.value
             this.$apply()
         },
         prevStep: () => {
-            this.steps[this.currentStepsIndex].current = false
-            this.steps[this.currentStepsIndex - 1].done = false
-            this.steps[this.currentStepsIndex - 1].current = true
-            this.currentStepsIndex--
+            if (this.kind === 3) {
+                this.steps3[this.currentStepsIndex3].current = false
+                this.steps3[this.currentStepsIndex3 - 1].done = false
+                this.steps3[this.currentStepsIndex3 - 1].current = true
+                this.currentStepsIndex3--
+            } else {
+                this.steps4[this.currentStepsIndex4].current = false
+                this.steps4[this.currentStepsIndex4 - 1].done = false
+                this.steps4[this.currentStepsIndex4 - 1].current = true
+                this.currentStepsIndex4--
+            }
             this.$apply()
         },
         netxStep: () => {
-            if (this.currentStepsIndex === 2) {
-                // 提交到服务器
+            if (this.kind === 3) {
+                if (this.currentStepsIndex3 === 2) {
+                    // 提交到服务器
+                } else {
+                    this.steps3[this.currentStepsIndex3].done = true
+                    this.steps3[this.currentStepsIndex3].current = false
+                    this.steps3[this.currentStepsIndex3 + 1].current = true
+                    this.currentStepsIndex3++
+                    this.$apply()
+                }
             } else {
-                this.steps[this.currentStepsIndex].done = true
-                this.steps[this.currentStepsIndex].current = false
-                this.steps[this.currentStepsIndex + 1].current = true
-                this.currentStepsIndex++
-                this.$apply()
+                if (this.currentStepsIndex4 === 1) {
+                    // 提交到服务器
+                } else {
+                    this.steps4[this.currentStepsIndex4].done = true
+                    this.steps4[this.currentStepsIndex4].current = false
+                    this.steps4[this.currentStepsIndex4 + 1].current = true
+                    this.currentStepsIndex4++
+                    this.$apply()
+                }
             }
-        }
+        },
+        startTime: '',
+        endTime: ''
     }
 
     onLoad(option) {
         console.log('\n')
         console.log(option)
         console.log('\n')
+        this.parkId = option.parkId
+        this.kind = parseInt(option.kind)
+        this.$apply()
     }
 
     config = {
         navigationBarTitleText: '发布停车位'
+    }
+
+    methods = {
+        onStartTimeChange: event => {
+            this.startTime = event.detail.value
+            this.$apply()
+            console.log(event)
+        },
+        onEndTimeChange: event => {
+            this.endTime = event.detail.value
+            this.$apply()
+            console.log(event)
+        }
     }
 }
 </script>

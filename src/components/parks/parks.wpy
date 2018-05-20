@@ -22,7 +22,7 @@
             </view>
             <view class="vertical-wrapper">
                 <view class="switcher-wrapper">
-                    <view data-park-id="{{item.parkId}}" data-is-open="{{item.isOpen}}" class="zan-switch zan-switch--{{ item.isOpen ? 'on' : 'off' }} {{ disabled ? 'zan-swtich--disabled' : '' }}" checked="{{ checked }}" loading="{{ loading }}" disabled="{{ disabled }}" @tap="onSwitchChange">
+                    <view data-park-id="{{item.parkId}}" data-kind="{{item.kind}}" data-is-open="{{item.isOpen}}" class="zan-switch zan-switch--{{ item.isOpen ? 'on' : 'off' }} {{ disabled ? 'zan-swtich--disabled' : '' }}" checked="{{ checked }}" loading="{{ loading }}" disabled="{{ disabled }}" @tap="onSwitchChange">
                         <view class="zan-switch__circle">
                             <view hidden="{{ true }}" class="zan-switch__loading"></view>
                         </view>
@@ -241,7 +241,7 @@ export default class Parks extends wepy.component {
                 this.$apply()
             } else {
                 wx.navigateTo({
-                    url: `../publish-park/publish-park?parkId=${this.currentParkId}`,
+                    url: `../publish-park/publish-park?parkId=${this.currentParkId}&kind=${data.kind}`,
                     success: (res) => {
                         console.log(res)
                     },
