@@ -4,7 +4,7 @@
         <view class="weui-search-bar__form">
             <view class="weui-search-bar__box">
                 <icon class="weui-icon-search_in-box" type="search" size="14"></icon>
-                <input type="text" class="weui-search-bar__input" placeholder="搜索" value="{{inputVal}}" focus="{{inputShowed}}" bindinput="inputTyping" />
+                <input type="text" class="weui-search-bar__input" placeholder="搜索附近停车场" value="{{inputVal}}" focus="{{inputShowed}}" bindinput="inputTyping" />
                 <view class="weui-icon-clear" wx:if="{{inputVal.length > 0}}" bindtap="clearInput">
                     <icon type="clear" size="14"></icon>
                 </view>
@@ -19,22 +19,22 @@
     <view class="weui-cells searchbar-result" wx:if="{{inputVal.length > 0}}">
         <navigator url="" class="weui-cell" hover-class="weui-cell_active">
             <view class="weui-cell__bd">
-                <view>实时搜索文本</view>
+                <view>停车场数据1</view>
             </view>
         </navigator>
         <navigator url="" class="weui-cell" hover-class="weui-cell_active">
             <view class="weui-cell__bd">
-                <view>实时搜索文本</view>
+                <view>停车场数据2</view>
             </view>
         </navigator>
         <navigator url="" class="weui-cell" hover-class="weui-cell_active">
             <view class="weui-cell__bd">
-                <view>实时搜索文本</view>
+                <view>停车场数据3</view>
             </view>
         </navigator>
         <navigator url="" class="weui-cell" hover-class="weui-cell_active">
             <view class="weui-cell__bd">
-                <view>实时搜索文本</view>
+                <view>停车场数据4</view>
             </view>
         </navigator>
     </view>
@@ -51,33 +51,38 @@
     display: none;
 }
 .weui-cell{
-    padding: 12px 15px 12px 35px;
+    padding: 50px 15px 50px 35px;
 }
 </style>
 
 <script>
 import wepy from 'wepy';
 
-export default class Search extends wepy.component {
+export default class Search extends wepy.page {
     data = {
         inputShowed: false,
         inputVal: '',
     }
-
-    methods = {
+    onLoad(option) {
+        console.log('\n')
+        console.log(option)
+        console.log('\n')
+    }
         showInput () {
             this.inputShowed = true
-        },
+            console.log('hhh')
+        }
         hideInput () {
             this.inputVal = "",
             this.inputShowed = false
-        },
+        }
         clearInput () {
             this.inputVal = ""
-        },
+        }
         inputTyping (e) {
             this.inputVal= e.detail.value
-        },
-    }
+            console.log('hhh')
+        }
+
 }
 </script>

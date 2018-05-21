@@ -15,7 +15,7 @@ import Map from "../../components/map/map"
 export default class Index extends wepy.page {
     components = {
         FilterBar,
-        Map
+        Map,
     }
 
     data = {
