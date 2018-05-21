@@ -1,0 +1,87 @@
+<template>
+<view class="closestparking">
+    <view class="closesttapname">
+        <text>离我最近</text>
+        </view>
+    <block>
+        <view bindtap="clickclosest" class="parkingView">
+        <!--image class="parkingImage" src="{{item.parkingImage}}" 停车场图片调用-->
+        <view class="parkingRightView">
+            <text class="parkingName">东北大学停车场<!--{{item.parkingsName}}--> </text>
+            <text class="parkingPrice">￥0<!--{{item.parkingsPrice}}--></text>
+            <!--距离-->
+            <view class="parkingMsg">
+                <text class="parkingtext">关于东北大学停车场<!--{{item.abtmsg}}--></text>
+                <text class="parkingRightText">距离10m<!--{{item.metersnum}}--></text>
+            </view>
+        </view>
+        </view>
+    </block>
+</view>
+</template>
+
+<style scoped>
+/**
+ * 停车场样式
+
+
+.parkingImage {
+    width: 60rpx;
+    height: 60rpx;
+}
+*/
+
+/*右侧文本整体样式*/
+
+.parkingRightView {
+    width: 100rpx;
+    margin-left: 15rpx;
+    display: flex;
+    flex-direction: column;
+}
+
+/*名称样式*/
+
+.parkingName {
+    font-size: 25rpx;
+}
+
+
+/*简介*/
+
+.parkingMsg {
+    margin-top: 8rpx;
+    flex-direction: row;
+}
+
+.parkingtext {
+    position: absolute;
+    right: 0;
+    margin-right: 10rpx;
+    font-size: 25rpx;
+}
+
+.parkingRightText {
+    position: absolute;
+    right: 0;
+    margin-right: 10rpx;
+    font-size: 25rpx;
+}
+
+/*整体view样式*/
+
+.closestparking {
+    box-sizing: border-box;
+    height: 60rpx;
+    width: 100%;
+    background-color: white;
+    flex-direction: column;
+}
+</style>
+
+<script>
+import wepy from 'wepy'
+export default class Closest extends wepy.component {
+}
+</script>
+

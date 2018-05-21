@@ -4,6 +4,7 @@
     <view>
         <FilterBar :filter.sync="filter"/>
         <Map/>
+        <Closest>
     </view>
 </template>
 
@@ -11,11 +12,13 @@
 import wepy from 'wepy'
 import FilterBar from '../../components/filter-bar/filter-bar'
 import Map from "../../components/map/map"
+import Closest from "../../components/closest/closest"
 
 export default class Index extends wepy.page {
     components = {
         FilterBar,
         Map,
+        Closest
     }
 
     data = {
