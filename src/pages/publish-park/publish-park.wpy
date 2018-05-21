@@ -12,22 +12,20 @@
                     <priceInput inputType="digit" title="价格¥" placeholder="每小时收取的费用" />
                 </view>
                 <view wx:if="{{currentStepsIndex3 === 2}}">
-                    <Select :items="frequenceSelect"
-                        :checkedValue.sync="selectedValue"
-                        :handleSelectChange="changeSelect"
-                        activeColor="#09bb07" />
-                    <TimePicker :frequence.sync="selectedValue" :weeks="weeks"
-                        :startDay.sync="startDay" :endDay.sync="endDay"
-                        :startDate.sync="startDate" :endDate.sync="endDate"
-                        :startTime.sync="startTime" :endTime.sync="endTime"
-                        :startDateLimit.sync="startDateLimit" :endDateLimit.sync="endDateLimit"
-                        :onStartDayChange="onStartDayChange"
-                        :onEndDayChange="onEndDayChange"
-                        :onStartDateChange="onStartDateChange"
-                        :onEndDateChange="onEndDateChange"
-                        :onStartTimeChange="onStartTimeChange"
-                        :onEndTimeChange="onEndTimeChange"
-                        />
+                    <Select :items="frequenceSelect" :checkedValue.sync="selectedValue" :handleSelectChange="changeSelect" activeColor="#09bb07" />
+                    <TimePicker :frequence.sync="selectedValue" :weeks="weeks" :startDay.sync="startDay" :endDay.sync="endDay" :startDate.sync="startDate" :endDate.sync="endDate" :startTime.sync="startTime" :endTime.sync="endTime" :startDateLimit.sync="startDateLimit" :endDateLimit.sync="endDateLimit" :onStartDayChange="onStartDayChange" :onEndDayChange="onEndDayChange" :onStartDateChange="onStartDateChange" :onEndDateChange="onEndDateChange" :onStartTimeChange="onStartTimeChange" :onEndTimeChange="onEndTimeChange" />
+                </view>
+                <view class="buttons-wrapper">
+                    <view class="left-button" wx:if="{{currentStepsIndex3 !== 0}}">
+                        <prevButton size="small" type="normal" :bindTap="prevStep">
+                            上一步
+                        </prevButton>
+                    </view>
+                    <view class="right-button">
+                        <nextButton size="small" type="primary" :bindTap="netxStep">
+                            {{currentStepsIndex3 === 2 ? "发布" : "下一步"}}
+                        </nextButton>
+                    </view>
                 </view>
             </view>
         </view>
@@ -41,7 +39,7 @@
                 </view>
                 <view wx:if="{{currentStepsIndex4 === 1}}">
                     <Select :items="frequenceSelect" :checkedValue.sync="selectedValue" :handleSelectChange="changeSelect" activeColor="#09bb07" />
-                    <!-- <TimePicker /> -->
+                    <TimePicker :frequence.sync="selectedValue" :weeks="weeks" :startDay.sync="startDay" :endDay.sync="endDay" :startDate.sync="startDate" :endDate.sync="endDate" :startTime.sync="startTime" :endTime.sync="endTime" :startDateLimit.sync="startDateLimit" :endDateLimit.sync="endDateLimit" :onStartDayChange="onStartDayChange" :onEndDayChange="onEndDayChange" :onStartDateChange="onStartDateChange" :onEndDateChange="onEndDateChange" :onStartTimeChange="onStartTimeChange" :onEndTimeChange="onEndTimeChange" />
                 </view>
             </view>
             <view class="buttons-wrapper">
@@ -55,18 +53,6 @@
                         {{currentStepsIndex4 === 1 ? "发布" : "下一步"}}
                     </nextButton>
                 </view>
-            </view>
-        </view>
-        <view class="buttons-wrapper">
-            <view class="left-button" wx:if="{{currentStepsIndex3 !== 0}}">
-                <prevButton size="small" type="normal" :bindTap="prevStep">
-                    上一步
-                </prevButton>
-            </view>
-            <view class="right-button">
-                <nextButton size="small" type="primary" :bindTap="netxStep">
-                    {{currentStepsIndex3 === 2 ? "发布" : "下一步"}}
-                </nextButton>
             </view>
         </view>
     </view>
@@ -115,7 +101,7 @@ import Field from '../../components/field/field'
 import Steps from '../../components/steps/steps'
 import Button from '../../components/button/button'
 import Select from '../../components/select/select'
-import TimePicker from "../../components/time-picker/time-picker"
+import TimePicker from '../../components/time-picker/time-picker'
 
 export default class Index extends wepy.page {
     components = {
@@ -133,7 +119,7 @@ export default class Index extends wepy.page {
     data = {
         parkId: '',
         kind: 3,
-        price: "",
+        price: '',
         steps3: [
             {
                 // 此步骤是否当前完成状态
@@ -217,7 +203,7 @@ export default class Index extends wepy.page {
                 if (this.currentStepsIndex3 === 2) {
                     // 提交到服务器
                     let option = {
-                        type: "open",
+                        type: 'open',
                         parkId: this.parkId,
                         openId: this.$parent.globalData.openId,
                         openType: this.selectedValue,
@@ -228,11 +214,11 @@ export default class Index extends wepy.page {
                     }
 
                     switch (this.selectedValue) {
-                        case "weekly": {
+                        case 'weekly': {
                             option.startDay = this.startDay
                             option.endDay = this.endDay
                         }
-                        case "date": {
+                        case 'date': {
                             option.startDate = this.startDate
                             option.endDate = this.endDate
                         }
@@ -263,29 +249,29 @@ export default class Index extends wepy.page {
         endDate: '2018-07-27',
         startDay: 0,
         endDay: 6,
-        startDateLimit: "",
-        endDateLimit: "",
-        onStartDayChange: (event) => {
+        startDateLimit: '',
+        endDateLimit: '',
+        onStartDayChange: event => {
             this.startDay = event.detail.value
             this.$apply()
         },
-        onEndDayChange: (event) => {
+        onEndDayChange: event => {
             this.endDay = event.detail.value
             this.$apply()
         },
-        onStartDateChange: (event) => {
+        onStartDateChange: event => {
             this.startDate = event.detail.value
             this.$apply()
         },
-        onEndDateChange: (event) => {
+        onEndDateChange: event => {
             this.endDate = event.detail.value
             this.$apply()
         },
-        onStartTimeChange: (event) => {
+        onStartTimeChange: event => {
             this.startTime = event.detail.value
             this.$apply()
         },
-        onEndTimeChange: (event) => {
+        onEndTimeChange: event => {
             this.endTime = event.detail.value
             this.$apply()
         }
