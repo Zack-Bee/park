@@ -127,3 +127,94 @@ exports.unique = function (array) {
   return n;
 }
 
+exports.cleanparkingtime = function (option) {
+  function realisin(time) {
+    var now = new Date();
+    var year = now.getFullYear()
+    var month = now.getMonth() + 1
+    var day = now.getDate()
+    var hour = now.getHours()
+    var minute = now.getMinutes()
+    var t = time.split("-")
+    start = t[0]
+    start = start.split(".")
+    end = t[1]
+    end = end.split(".")
+    for (m = 0; m < start.length; m++) {
+      start[m] = parseInt(start[m])
+      end[m] = parseInt(end[m])
+    }
+    if (start[0] < year || (start[0] == year && start[1] < month) || (start[0] == year && start[1] == month && start[2] < day) || (start[0] == year && start[1] == month && start[2] == day && start[3] < hour) || (start[0] == year && start[1] == month && start[2] == day && start[3] == hour && start[4] <= minute)) {
+      if (year < end[0] || (year == end[0] && month < end[1]) || (year == end[0] && month == end[1] && day < end[2]) || (year == end[0] && month == end[1] && day == end[2] && hour < end[3]) || (year == end[0] && month == end[1] && day == end[2] && hour == end[3] && minute <= end[4])) {
+        return true
+      }
+      return false
+    }
+    return false
+  }
+
+  function everyisin(time) {
+    var now = new Date()
+    var week = now.getDay()
+    var hour = now.getHours()
+    var minute = now.getMinutes()
+    t = time.split("-")
+    start = t[0]
+    start = start.split(".")
+    end = t[1]
+    end = end.split(".")
+    for (m = 0; m < start.length; m++) {
+      start[m] = parseInt(start[m])
+      end[m] = parseInt(end[m])
+    }
+    if (start[0] <= end[0]) {
+      if ((start[0] < week) || (start[0] == week && start[1] < hour) || (start[0] == week && start[1] == hour && start[2] <= minute)) {
+        if ((week < end[0]) || (week == end[0] && hour < end[1]) || (week == end[0] && hour == end[1] && minutes <= end[3])) {
+          return true
+        }
+        return false
+      }
+      return false
+    }
+    else {
+      var s1 = start
+      var s2 = [1, 0, 0]
+      var e1 = [7, 23, 59]
+      var e2 = end
+      if ((s1[0] < week) || (s1[0] == week && s1[1] < hour) || (s1[0] == week && s1[1] == hour && s1[2] <= minute)) {
+        if ((week < e1[0]) || (week == e1[0] && hour < e1[1]) || (week == e1[0] && hour == e1[1] && minutes <= e1[3])) {
+          return true
+        }
+      }
+      else if ((s2[0] < week) || (s2[0] == week && s2[1] < hour) || (s2[0] == week && s2[1] == hour && s2[2] <= minute)) {
+        if ((week < e2[0]) || (week == e2[0] && hour < e2[1]) || (week == e2[0] && hour == e2[1] && minutes <= e2[3])) {
+          return true
+        }
+      }
+      else
+        return false
+    }
+  }
+  for (let i = 0; i < option.length; i++) {
+    time = option[i].time
+    kind = option[i].kind
+    if (kind == 0) {
+      if (everyisin(time)) {
+        continue
+      }
+      else {
+        fc.deleteparkingtime(option[i].id)
+      }
+    }
+    else if (kind == 1) {
+      if (realisin(time)) {
+        continue
+      }
+      else {
+        fc.deleteparkingtime(option[i].id)
+      }
+    }
+
+  }
+
+}
