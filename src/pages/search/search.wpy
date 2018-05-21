@@ -42,7 +42,7 @@
 </template>
 
 <style scoped>
-@import 'weui.wxss';
+@import './weui-searchbar.wxss';
 .searchbar-result{
     margin-top: 0;
     font-size: 14px;

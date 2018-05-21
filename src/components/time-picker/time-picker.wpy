@@ -1,0 +1,155 @@
+<template>
+    <view>
+        <view wx:if="{{frequence === 'weekly'}}">
+            <picker bindchange="bindStartDayChange" value="{{startDay}}" range="{{weeks}}">
+                <view class="publish-time">
+                    <view class="publish-time-desc">开始日期:</view>
+                    <view class="publish-time-value">{{weeks[startDay]}}</view>
+                </view>
+            </picker>
+            <picker bindchange="bindEndDayChange" value="{{endDay}}" range="{{weeks}}">
+                <view class="publish-time">
+                    <view class="publish-time-desc">截止日期:</view>
+                    <view class="publish-time-value">{{weeks[endDay]}}</view>
+                </view>
+            </picker>
+        </view>
+        <view wx:if="{{frequence === 'date'}}">
+            <picker mode="date" value="{{startDate}}" start="{{startDateLimit}}"
+                end="{{endDateLimit}}"
+                bindchange="bindStartDateChange">
+                <view class="publish-time">
+                    <view class="publish-time-desc">开始日期:</view>
+                    <view class="publish-time-value">{{startDate}}</view>
+                </view>
+            </picker>
+            <picker mode="date" value="{{endDate}}" start="{{startDateLimit}}"
+                end="{{endDateLimit}}"
+                bindchange="bindEndDateChange">
+                <view class="publish-time">
+                    <view class="publish-time-desc">截止日期:</view>
+                    <view class="publish-time-value">{{endDate}}</view>
+                </view>
+            </picker>
+        </view>
+        <view>
+            <picker mode="time" value="{{startTime}}"
+                start="00:00" end="23:59" bindchange="bindStartTimeChange">
+                <view class="publish-time">
+                    <view class="publish-time-desc">开始时间:</view>
+                    <view class="publish-time-value">{{startTime}}</view>
+                </view>
+            </picker>
+            <picker mode="time" value="{{endTime}}"
+                start="00:00" end="23:59" bindchange="bindEndTimeChange">
+                <view class="publish-time">
+                    <view class="publish-time-desc">停止时间:</view>
+                    <view class="publish-time-value">{{endTime}}</view>
+                </view>
+            </picker>
+        </view>
+    </view>
+</template>
+
+<style>
+.publish-time {
+    display: flex;
+    font-size: 14px;
+    line-height: 24px;
+    color: #303030;
+    padding: 9px 15px;
+}
+
+.publish-time-desc {
+    min-width: 65px;
+}
+
+.publish-time-value {
+    padding-left: 20px;
+}
+</style>
+
+<script>
+import wepy from 'wepy'
+export default class TimePicker {
+    props = {
+        frequence: {
+            type: String,
+            default: "weekly"
+        },
+        startDay: {
+            type: Number,
+            default: 0
+        },
+        endDay: {
+            type: Number,
+            default: 0
+        },
+        startDate: {
+            type: String,
+            default: "2018-07-27"
+        },
+        startDateLimit: {
+            type: String,
+            default: "2018-07-27"
+        },
+        endDate: {
+            type: String,
+            default: "2018-07-27"
+        },
+        endDateLimit: {
+            type: String,
+            default: "2018-07-27"
+        },
+        weeks: {
+            type: Array,
+            default: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+        },
+        onStartDayChange: {
+            type: Function,
+            default: () => {}
+        },
+        onEndDayChange: {
+            type: Function,
+            default: () => {}
+        },
+        onStartDateChange: {
+            type: Function,
+            default: () => {}
+        },
+        onEndDateChange: {
+            type: Function,
+            default: () => {}
+        },
+        onStartTimeChange: {
+            type: Function,
+            default: () => {}
+        },
+        onEndTimeChange: {
+            type: Function,
+            default: () => {}
+        }
+    }
+
+    methods = {
+        bindStartDayChange: (event) => {
+            this.onStartDayChange(event)
+        },
+        bindEndDayChange: (event) => {
+            this.onEndDayChange(event)
+        },
+        bindStartDateChange: (event) => {
+            this.onStartDateChange(event)
+        },
+        bindEndDateChange: (event) => {
+            this.onEndDateChange(event)
+        },
+        bindStartTimeChange: (event) => {
+            this.onStartTimeChange(event)
+        },
+        bindEndTimeChange: (event) => {
+            this.onEndTimeChange(event)
+        }
+    }
+}
+</script>
