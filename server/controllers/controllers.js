@@ -53,7 +53,7 @@ exports.userparks = async (ctx, next) => {
         all[m].rentPark = using.rentNumber
       }
       m = m + 1
-      return
+      ofc.cleanparkingtime(option)
     }
 
     function c(option) {
