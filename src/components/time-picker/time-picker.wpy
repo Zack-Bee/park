@@ -71,7 +71,7 @@
 
 <script>
 import wepy from 'wepy'
-export default class TimePicker {
+export default class TimePicker extends wepy.component {
     props = {
         frequence: {
             type: String,
@@ -100,6 +100,14 @@ export default class TimePicker {
         endDateLimit: {
             type: String,
             default: "2018-07-27"
+        },
+        startTime: {
+            type: String,
+            default: "07:30"
+        },
+        endTime: {
+            type: String,
+            default: "23:30"
         },
         weeks: {
             type: Array,

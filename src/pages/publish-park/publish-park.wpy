@@ -20,6 +20,7 @@
                         :startDay.sync="startDay" :endDay.sync="endDay"
                         :startDate.sync="startDate" :endDate.sync="endDate"
                         :startTime.sync="startTime" :endTime.sync="endTime"
+                        :startDateLimit.sync="startDateLimit" :endDateLimit.sync="endDateLimit"
                         :onStartDayChange="onStartDayChange"
                         :onEndDayChange="onEndDayChange"
                         :onStartDateChange="onStartDateChange"
@@ -132,6 +133,7 @@ export default class Index extends wepy.page {
     data = {
         parkId: '',
         kind: 3,
+        price: "",
         steps3: [
             {
                 // 此步骤是否当前完成状态
@@ -214,6 +216,27 @@ export default class Index extends wepy.page {
             if (this.kind === 3) {
                 if (this.currentStepsIndex3 === 2) {
                     // 提交到服务器
+                    let option = {
+                        type: "open",
+                        parkId: this.parkId,
+                        openId: this.$parent.globalData.openId,
+                        openType: this.selectedValue,
+                        price: this.price,
+                        kind: 3,
+                        startTime: this.startTime,
+                        endTime: this.endTime
+                    }
+
+                    switch (this.selectedValue) {
+                        case "weekly": {
+                            option.startDay = this.startDay
+                            option.endDay = this.endDay
+                        }
+                        case "date": {
+                            option.startDate = this.startDate
+                            option.endDate = this.endDate
+                        }
+                    }
                 } else {
                     this.steps3[this.currentStepsIndex3].done = true
                     this.steps3[this.currentStepsIndex3].current = false
@@ -240,8 +263,9 @@ export default class Index extends wepy.page {
         endDate: '2018-07-27',
         startDay: 0,
         endDay: 6,
+        startDateLimit: "",
+        endDateLimit: "",
         onStartDayChange: (event) => {
-            console.log(event)
             this.startDay = event.detail.value
             this.$apply()
         },
@@ -271,6 +295,15 @@ export default class Index extends wepy.page {
         console.log('\n')
         console.log(option)
         console.log('\n')
+        let today = new Date(),
+            year = today.getFullYear(),
+            month = today.getMonth() + 1,
+            date = today.getDate()
+
+        this.startDate = `${year}-${month}-${date}`
+        this.startDateLimit = this.startDate
+        this.endDateLimit = `${year + 2}-${month}-${date}`
+        this.endDate = `${year + 1}-${month}-${date}`
         this.parkId = option.parkId
         this.kind = parseInt(option.kind)
         this.$apply()
@@ -278,19 +311,6 @@ export default class Index extends wepy.page {
 
     config = {
         navigationBarTitleText: '发布停车位'
-    }
-
-    methods = {
-        onStartTimeChange: event => {
-            this.startTime = event.detail.value
-            this.$apply()
-            console.log(event)
-        },
-        onEndTimeChange: event => {
-            this.endTime = event.detail.value
-            this.$apply()
-            console.log(event)
-        }
     }
 }
 </script>
