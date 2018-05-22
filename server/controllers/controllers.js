@@ -155,6 +155,10 @@ exports.userparks = async (ctx, next) => {
           + ctx.request.body.endTime.replace(/:/g, "."), null, null, 1)
       }
     }
+    fc.changeone("parking",ctx.request.body.parkId,"name",ctx.request.body.parkName)
+
+
+
   }
   else if (ctx.request.body.type == "add") {
     fc.addparking(ctx.request.body.openId,

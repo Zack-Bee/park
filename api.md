@@ -80,7 +80,8 @@ eg:
     startTime: "8:00",
     endTime: "22:00",
     price: 15,
-    kind: 3
+    kind: 3,
+    parkName: "王邦铮的停车场"
 }
 
 一次

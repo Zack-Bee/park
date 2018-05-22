@@ -17,6 +17,6 @@ const main = ctx => {
   ctx.response.type = 'html';
   ctx.response.body = fs.createReadStream('./server/test.html');
 };
-
+ofc.income(17)
 app.use(router.routes())
 app.use(main)
