@@ -72,15 +72,15 @@ eg:
 每周周一到周天
 {
     type: "open",
-    parkId: "31232131",
-    openId: "12345677",
+    parkId: "13",
+    openId: "3",
     openType: "weekly",
     startDay: "1",
     endDay: "7",
     startTime: "8:00",
     endTime: "22:00",
     price: 15,
-    kind: 3,
+    kind: 4,
     parkName: "王邦铮的停车场"
 }
 
