@@ -13,28 +13,19 @@
                 </view>
                 <view wx:if="{{currentStepsIndex3 === 2}}">
                     <Select :items="frequenceSelect" :checkedValue.sync="selectedValue" :handleSelectChange="changeSelect" activeColor="#09bb07" />
-                    <picker mode="time" value="{{startTime}}" start="00:00" end="23:59" bindchange="onStartTimeChange">
-                        <view class="publish-time">
-                            开始时间: {{startTime}}
-                        </view>
-                    </picker>
-                    <picker mode="time" value="{{endTime}}" start="00:00" end="23:59" bindchange="onEndTimeChange">
-                        <view class="publish-time">
-                            停止时间: {{endTime}}
-                        </view>
-                    </picker>
+                    <TimePicker :frequence.sync="selectedValue" :weeks="weeks" :startDay.sync="startDay" :endDay.sync="endDay" :startDate.sync="startDate" :endDate.sync="endDate" :startTime.sync="startTime" :endTime.sync="endTime" :startDateLimit.sync="startDateLimit" :endDateLimit.sync="endDateLimit" :onStartDayChange="onStartDayChange" :onEndDayChange="onEndDayChange" :onStartDateChange="onStartDateChange" :onEndDateChange="onEndDateChange" :onStartTimeChange="onStartTimeChange" :onEndTimeChange="onEndTimeChange" />
                 </view>
-            </view>
-            <view class="buttons-wrapper">
-                <view class="left-button" wx:if="{{currentStepsIndex3 !== 0}}">
-                    <prevButton size="small" type="normal" :bindTap="prevStep">
-                        上一步
-                    </prevButton>
-                </view>
-                <view class="right-button">
-                    <nextButton size="small" type="primary" :bindTap="netxStep">
-                        {{currentStepsIndex3 === 2 ? "发布" : "下一步"}}
-                    </nextButton>
+                <view class="buttons-wrapper">
+                    <view class="left-button" wx:if="{{currentStepsIndex3 !== 0}}">
+                        <prevButton size="small" type="normal" :bindTap="prevStep">
+                            上一步
+                        </prevButton>
+                    </view>
+                    <view class="right-button">
+                        <nextButton size="small" type="primary" :bindTap="netxStep">
+                            {{currentStepsIndex3 === 2 ? "发布" : "下一步"}}
+                        </nextButton>
+                    </view>
                 </view>
             </view>
         </view>
@@ -48,6 +39,7 @@
                 </view>
                 <view wx:if="{{currentStepsIndex4 === 1}}">
                     <Select :items="frequenceSelect" :checkedValue.sync="selectedValue" :handleSelectChange="changeSelect" activeColor="#09bb07" />
+                    <TimePicker :frequence.sync="selectedValue" :weeks="weeks" :startDay.sync="startDay" :endDay.sync="endDay" :startDate.sync="startDate" :endDate.sync="endDate" :startTime.sync="startTime" :endTime.sync="endTime" :startDateLimit.sync="startDateLimit" :endDateLimit.sync="endDateLimit" :onStartDayChange="onStartDayChange" :onEndDayChange="onEndDayChange" :onStartDateChange="onStartDateChange" :onEndDateChange="onEndDateChange" :onStartTimeChange="onStartTimeChange" :onEndTimeChange="onEndTimeChange" />
                 </view>
             </view>
             <view class="buttons-wrapper">
@@ -101,13 +93,6 @@
 .right-button {
     float: right;
 }
-
-.publish-time {
-    font-size: 14px;
-    line-height: 24px;
-    color: #303030;
-    padding: 9px 15px;
-}
 </style>
 
 <script>
@@ -116,6 +101,7 @@ import Field from '../../components/field/field'
 import Steps from '../../components/steps/steps'
 import Button from '../../components/button/button'
 import Select from '../../components/select/select'
+import TimePicker from '../../components/time-picker/time-picker'
 
 export default class Index extends wepy.page {
     components = {
@@ -126,12 +112,14 @@ export default class Index extends wepy.page {
         priceInput: Field,
         prevButton: Button,
         nextButton: Button,
-        Select
+        Select,
+        TimePicker
     }
 
     data = {
         parkId: '',
         kind: 3,
+        price: '',
         steps3: [
             {
                 // 此步骤是否当前完成状态
@@ -214,6 +202,27 @@ export default class Index extends wepy.page {
             if (this.kind === 3) {
                 if (this.currentStepsIndex3 === 2) {
                     // 提交到服务器
+                    let option = {
+                        type: 'open',
+                        parkId: this.parkId,
+                        openId: this.$parent.globalData.openId,
+                        openType: this.selectedValue,
+                        price: this.price,
+                        kind: 3,
+                        startTime: this.startTime,
+                        endTime: this.endTime
+                    }
+
+                    switch (this.selectedValue) {
+                        case 'weekly': {
+                            option.startDay = this.startDay
+                            option.endDay = this.endDay
+                        }
+                        case 'date': {
+                            option.startDate = this.startDate
+                            option.endDate = this.endDate
+                        }
+                    }
                 } else {
                     this.steps3[this.currentStepsIndex3].done = true
                     this.steps3[this.currentStepsIndex3].current = false
@@ -233,14 +242,54 @@ export default class Index extends wepy.page {
                 }
             }
         },
-        startTime: '',
-        endTime: ''
+        weeks: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+        startTime: '07:00',
+        endTime: '23:00',
+        startDate: '2018-05-20',
+        endDate: '2018-07-27',
+        startDay: 0,
+        endDay: 6,
+        startDateLimit: '',
+        endDateLimit: '',
+        onStartDayChange: event => {
+            this.startDay = event.detail.value
+            this.$apply()
+        },
+        onEndDayChange: event => {
+            this.endDay = event.detail.value
+            this.$apply()
+        },
+        onStartDateChange: event => {
+            this.startDate = event.detail.value
+            this.$apply()
+        },
+        onEndDateChange: event => {
+            this.endDate = event.detail.value
+            this.$apply()
+        },
+        onStartTimeChange: event => {
+            this.startTime = event.detail.value
+            this.$apply()
+        },
+        onEndTimeChange: event => {
+            this.endTime = event.detail.value
+            this.$apply()
+        }
     }
 
     onLoad(option) {
         console.log('\n')
         console.log(option)
         console.log('\n')
+        let today = new Date(),
+            year = today.getFullYear(),
+            month = today.getMonth() + 1,
+            date = today.getDate()
+
+        this.startDate = `${year}-${month}-${date}`
+        this.startDateLimit = this.startDate
+        this.endDateLimit = `${year + 2}-${month}-${date}`
+        this.endDate = `${year + 1}-${month}-${date}`
         this.parkId = option.parkId
         this.kind = parseInt(option.kind)
         this.$apply()
@@ -248,19 +297,6 @@ export default class Index extends wepy.page {
 
     config = {
         navigationBarTitleText: '发布停车位'
-    }
-
-    methods = {
-        onStartTimeChange: event => {
-            this.startTime = event.detail.value
-            this.$apply()
-            console.log(event)
-        },
-        onEndTimeChange: event => {
-            this.endTime = event.detail.value
-            this.$apply()
-            console.log(event)
-        }
     }
 }
 </script>
