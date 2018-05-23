@@ -6,10 +6,10 @@
             </view>
             <view class="publish-form">
                 <view wx:if="{{currentStepsIndex3 === 0}}">
-                    <parkNameInput title="车位名" placeholder="仅用于自己辨识不同车位" />
+                    <parkNameInput :handleFieldChange="onParkNameChanege" :value.sync="parkName" title="车位名" placeholder="仅用于自己辨识不同车位" />
                 </view>
                 <view wx:if="{{currentStepsIndex3 === 1}}">
-                    <priceInput inputType="digit" title="价格¥" placeholder="每小时收取的费用" />
+                    <priceInput :handleFieldChange="onPriceChange" :value.sync="price" inputType="digit" title="价格¥" placeholder="每小时收取的费用" />
                 </view>
                 <view wx:if="{{currentStepsIndex3 === 2}}">
                     <Select :items="frequenceSelect" :checkedValue.sync="selectedValue" :handleSelectChange="changeSelect" activeColor="#09bb07" />
@@ -17,7 +17,7 @@
                 </view>
                 <view class="buttons-wrapper">
                     <view class="left-button" wx:if="{{currentStepsIndex3 !== 0}}">
-                        <prevButton size="small" type="normal" :bindTap="prevStep">
+                        <prevButton size="small" :bindTap="prevStep">
                             上一步
                         </prevButton>
                     </view>
@@ -35,7 +35,7 @@
             </view>
             <view class="publish-form">
                 <view wx:if="{{currentStepsIndex4 === 0}}">
-                    <parkNameInput title="车位名" placeholder="仅用于自己辨识不同车位" />
+                    <parkNameInput :handleFieldChange="onParkNameChanege" :value.sync="parkName" title="车位名" placeholder="仅用于自己辨识不同车位" />
                 </view>
                 <view wx:if="{{currentStepsIndex4 === 1}}">
                     <Select :items="frequenceSelect" :checkedValue.sync="selectedValue" :handleSelectChange="changeSelect" activeColor="#09bb07" />
@@ -44,7 +44,7 @@
             </view>
             <view class="buttons-wrapper">
                 <view class="left-button" wx:if="{{currentStepsIndex4 !== 0}}">
-                    <prevButton size="small" type="normal" :bindTap="prevStep">
+                    <prevButton size="small" :bindTap="prevStep">
                         上一步
                     </prevButton>
                 </view>
@@ -118,14 +118,15 @@ export default class Index extends wepy.page {
 
     data = {
         parkId: '',
+        parkName: "",
         kind: 3,
         price: '',
         steps3: [
             {
                 // 此步骤是否当前完成状态
-                current: false,
+                current: true,
                 // 此步骤是否已经完成
-                done: true,
+                done: false,
                 // 此步骤显示文案
                 text: '名字',
                 // 此步骤描述语
@@ -133,13 +134,13 @@ export default class Index extends wepy.page {
             },
             {
                 current: false,
-                done: true,
+                done: false,
                 text: '价格',
                 desc: '选择价格'
             },
             {
                 done: false,
-                current: true,
+                current: false,
                 text: '时间',
                 desc: '选择时间'
             }
@@ -162,7 +163,7 @@ export default class Index extends wepy.page {
                 desc: '选择时间'
             }
         ],
-        currentStepsIndex3: 2,
+        currentStepsIndex3: 0,
         currentStepsIndex4: 0,
         frequenceSelect: [
             {
@@ -273,6 +274,14 @@ export default class Index extends wepy.page {
         },
         onEndTimeChange: event => {
             this.endTime = event.detail.value
+            this.$apply()
+        },
+        onParkNameChanege: (event) => {
+            this.parkName = event.detail.value
+            this.$apply()
+        },
+        onPriceChange: (event) => {
+            this.price = event.detail.value
             this.$apply()
         }
     }

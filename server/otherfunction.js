@@ -127,3 +127,111 @@ exports.unique = function (array) {
   return n;
 }
 
+exports.cleanparkingtime = function (option) {
+  function realisok(time) {
+    var now = new Date();
+    var year = now.getFullYear()
+    var month = now.getMonth() + 1
+    var day = now.getDate()
+    var hour = now.getHours()
+    var minute = now.getMinutes()
+    var t = time.split("-")
+    start = t[0]
+    start = start.split(".")
+    end = t[1]
+    end = end.split(".")
+    for (m = 0; m < start.length; m++) {
+      start[m] = parseInt(start[m])
+      end[m] = parseInt(end[m])
+    }
+    if (year < end[0] || (year == end[0] && month < end[1]) || (year == end[0] && month == end[1] && day < end[2]) || (year == end[0] && month == end[1] && day == end[2] && hour < end[3]) || (year == end[0] && month == end[1] && day == end[2] && hour == end[3] && minute <= end[4])) {
+      return true
+    }
+    return false
+  }
+
+  function everyisok(time) {
+    var now = new Date()
+    var week = now.getDay()
+    var hour = now.getHours()
+    var minute = now.getMinutes()
+    t = time.split("-")
+    start = t[0]
+    start = start.split(".")
+    end = t[1]
+    end = end.split(".")
+    for (m = 0; m < start.length; m++) {
+      start[m] = parseInt(start[m])
+      end[m] = parseInt(end[m])
+    }
+    if (start[0] <= end[0]) {
+      if ((week < end[0]) || (week == end[0] && hour < end[1]) || (week == end[0] && hour == end[1] && minutes <= end[3])) {
+        return true
+      }
+      return false
+    }
+    else {
+      var s1 = start
+      var s2 = [1, 0, 0]
+      var e1 = [7, 23, 59]
+      var e2 = end
+
+      if ((week < e1[0]) || (week == e1[0] && hour < e1[1]) || (week == e1[0] && hour == e1[1] && minutes <= e1[3])) {
+        return true
+      }
+
+      else if ((week < e2[0]) || (week == e2[0] && hour < e2[1]) || (week == e2[0] && hour == e2[1] && minutes <= e2[3])) {
+        return true
+      }
+      else
+        return false
+    }
+  }
+  for (let i = 0; i < option.length; i++) {
+    time = option[i].time
+    kind = option[i].kind
+    if (kind == 0) {
+      if (everyisok(time)) {
+        continue
+      }
+      else {
+        fc.deleteparkingtime(option[i].id)
+      }
+    }
+    else if (kind == 1) {
+      if (realisok(time)) {
+        continue
+      }
+      else {
+        fc.deleteparkingtime(option[i].id)
+      }
+    }
+
+  }
+}
+
+exports.income = async (parkingtimeId) => {
+  let parkingtime
+  function c(option) {
+    parkingtime = option[0]
+  }
+  await fc.selectparkingtime("id", parkingtimeId, c)
+  if(parkingtime.kind==0){
+    let t=parkingtime.time.split("-")
+    t=t[0].split(".").concat(t[1].split("."))
+    let hour=parseInt(t[4])-parseInt(t[1])
+    let minute=parseInt(t[5])-parseInt(t[2])
+    let income=(hour*parkingtime.price+minute/60*parkingtime.price)*7
+    income=income.toFixed(1)
+    fc.changeone("parking",parkingtime.parking,"income",income)
+  }
+  else if(parkingtime.kind==1){
+    let t=parkingtime.time.split("-")
+    t=t[0].split(".").concat(t[1].split("."))
+    let hour=parseInt(t[8])-parseInt(t[3])
+    let minute=parseInt(t[9])-parseInt(t[4])
+    let income=(hour*parkingtime.price+minute/60*parkingtime.price)*7
+    income=income.toFixed(1)
+    fc.changeone("parking",parkingtime.parking,"income",income)
+  }
+}

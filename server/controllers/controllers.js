@@ -47,13 +47,15 @@ exports.userparks = async (ctx, next) => {
       if (using == 0) {
         all[m].isOpen = false
         all[m].rentPark = 0
+        all[m].expectedRevenue = 0
       }
       else {
         all[m].isOpen = true
         all[m].rentPark = using.rentNumber
+        all[m].expectedRevenue = ofc.income(option[0].id)
       }
       m = m + 1
-      return
+      //ofc.cleanparkingtime(option)
     }
 
     function c(option) {
@@ -77,7 +79,7 @@ exports.userparks = async (ctx, next) => {
           t.isOpen = "waiting"
           t.allPark = option[i].number
           t.rentPark = "waiting"
-          t.expectedRevenue = option[i].income
+          t.expectedRevenue = "waiting"
         }
         else {
           ctx.body = { err: "kind不是3也不是4" }
@@ -99,6 +101,12 @@ exports.userparks = async (ctx, next) => {
     fc.deleteparking(ctx.request.body.parkId)
   }
   else if (ctx.request.body.type == "open") {
+    await fc.selectparkingtime("parking",ctx.request.body.parkId,function(option){
+      for(let i=0;i<option.length;i++){
+        if(option){
+        fc.deleteparkingtime(option[i].id)}
+      }
+    })
     var now = new Date()
     var year = now.getFullYear()
     var month = now.getMonth() + 1
@@ -107,7 +115,7 @@ exports.userparks = async (ctx, next) => {
     var minute = now.getMinutes()
     if (ctx.request.body.kind == 3) {
       if (ctx.request.body.openType == "weekly") {
-        fc.addparkingtime(ctx.request.body.parkId,
+        await fc.addparkingtime(ctx.request.body.parkId,
           ctx.request.body.startDay+"."
           + ctx.request.body.startTime.replace(/:/g, ".")
           + "-" + ctx.request.body.endDay+"."
@@ -116,7 +124,7 @@ exports.userparks = async (ctx, next) => {
         //这里要添加更新rentNumber的东西
       }
       else if (ctx.request.body.openType == "once") {
-        fc.addparkingtime(ctx.request.body.parkId,
+        await fc.addparkingtime(ctx.request.body.parkId,
            year + "." + month + "." + day + "." 
            + ctx.request.body.startTime.replace(/:/g, ".") 
            + "-" + year + "." + month + "." + day + "." 
@@ -124,37 +132,42 @@ exports.userparks = async (ctx, next) => {
            ctx.request.body.price, null, 1)
       }
       else if (ctx.request.body.openType == "date") {
-        fc.addparkingtime(ctx.request.body.parkId, 
+        await fc.addparkingtime(ctx.request.body.parkId, 
           ctx.request.body.startDay.replace(/-/g, ".") +"."
           + ctx.request.body.startTime.replace(/:/g, ".") 
           + "-" + ctx.request.body.endDay.replace(/-/g, ".") +"."
           + ctx.request.body.endTime.replace(/:/g, "."),
            ctx.request.body.price, null, 1)
+           
       }
     }
     else if (ctx.request.body.kind == 4) {
       if (ctx.request.body.openType == "weekly") {
-        fc.addparkingtime(ctx.request.body.parkId, 
+        await fc.addparkingtime(ctx.request.body.parkId, 
           ctx.request.body.startDay +"."
           + ctx.request.body.startTime.replace(/:/g, ".") 
           + "-" + ctx.request.body.endDay +"."
           + ctx.request.body.endTime.replace(/:/g, "."), null, null, 0)
       }
       else if (ctx.request.body.openType == "once") {
-        fc.addparkingtime(ctx.request.body.parkId, year 
+        await fc.addparkingtime(ctx.request.body.parkId, year 
           + "." + month + "." + day + "." 
           + ctx.request.body.startTime.replace(/:/g, ".") 
           + "-" + year + "." + month + "." + day + "." 
           + ctx.request.body.endTime.replace(/:/g, "."), null, null, 1)
       }
       else if (ctx.request.body.openType == "date") {
-        fc.addparkingtime(ctx.request.body.parkId, 
+        await fc.addparkingtime(ctx.request.body.parkId, 
           ctx.request.body.startDay.replace(/-/g, ".") +"."
           + ctx.request.body.startTime.replace(/:/g, ".") 
           + "-" + ctx.request.body.endDay.replace(/-/g, ".") +"."
           + ctx.request.body.endTime.replace(/:/g, "."), null, null, 1)
       }
     }
+    fc.changeone("parking",ctx.request.body.parkId,"name",ctx.request.body.parkName)
+    
+
+
   }
   else if (ctx.request.body.type == "add") {
     fc.addparking(ctx.request.body.openId,
