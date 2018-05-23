@@ -2,19 +2,19 @@
 <view class="closestparking">
     <view class="closesttapname">
         <text>离我最近</text>
-        </view>
+    </view>
     <block>
         <view bindtap="clickclosest" class="parkingView">
-        <!--image class="parkingImage" src="{{item.parkingImage}}" 停车场图片调用-->
-        <view class="parkingRightView">
-            <text class="parkingName">东北大学停车场<!--{{item.parkingsName}}--> </text>
-            <text class="parkingPrice">￥0<!--{{item.parkingsPrice}}--></text>
+        <image class="parkingImage" src="../../components/closest/parking.png" /><!--{{item.parkingImage}}-->
+            <view class="parkingLeftView">
+                <text class="parkingName">东北大学停车场<!--{{item.parkingsName}}--> </text>
+                <text class="parkingPrice">￥0<!--{{item.parkingsPrice}}--></text>
             <!--距离-->
-            <view class="parkingMsg">
-                <text class="parkingtext">关于东北大学停车场<!--{{item.abtmsg}}--></text>
-                <text class="parkingRightText">距离10m<!--{{item.metersnum}}--></text>
+                <view class="parkingMsg">
+                    <text class="parkingtext">关于东北大学停车场<!--{{item.abtmsg}}--></text>
+                    <text class="parkingRightText">距离10m<!--{{item.metersnum}}--></text>
+                </view>
             </view>
-        </view>
         </view>
     </block>
 </view>
@@ -23,19 +23,23 @@
 <style scoped>
 /**
  * 停车场样式
-
+*/
 
 .parkingImage {
-    width: 60rpx;
-    height: 60rpx;
+    width: 60px;
+    height: 60px;
+    float: left;
 }
-*/
+
+.closesttapname{
+    text-align: center;
+}
 
 /*右侧文本整体样式*/
 
-.parkingRightView {
-    width: 100rpx;
-    margin-left: 15rpx;
+.parkingLeftView {
+    width: 250px;
+    margin-left: 60rpx;
     display: flex;
     flex-direction: column;
 }
@@ -43,9 +47,14 @@
 /*名称样式*/
 
 .parkingName {
-    font-size: 25rpx;
+    font-weight: bold;
+    color: #333;
 }
-
+.parkingPrice {
+    font-size: 30rpx;
+    color: red;
+    margin-top: 10rpx;
+}
 
 /*简介*/
 
@@ -55,9 +64,6 @@
 }
 
 .parkingtext {
-    position: absolute;
-    right: 0;
-    margin-right: 10rpx;
     font-size: 25rpx;
 }
 
@@ -69,14 +75,15 @@
 }
 
 /*整体view样式*/
-
-.closestparking {
-    box-sizing: border-box;
-    height: 60rpx;
-    width: 100%;
-    background-color: white;
-    flex-direction: column;
+.clickclosest{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 10rpx;
+    margin-bottom: 25rpx;
+    border-bottom: solid 2px #ebebeb;
 }
+
 </style>
 
 <script>
