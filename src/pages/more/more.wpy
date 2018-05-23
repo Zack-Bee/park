@@ -12,7 +12,7 @@
                     <text>我的车牌号</text>
                 </view>
             </view>
-            <Actionsheet :actions.sync="plateNumber" :show.sync="isActionSheetShow" :cancel="hideActionSheet" />
+            <Actionsheet :actionClick="actionClick" :actions.sync="plateNumber" :show.sync="isActionSheetShow" :cancel="hideActionSheet" />
         </view>
         <view class="padding" />
         <Parks :parks.sync="parks" />
@@ -109,12 +109,27 @@ export default class Index extends wepy.page {
                 name: '选项2',
                 subname: '选项描述语2',
                 loading: true
+            },
+            {
+                name: '选项2',
+                subname: '选项描述语2',
+                loading: true
+            },
+            {
+                name: "管理车牌号",
+                loading: false
             }
         ],
         isActionSheetShow: false,
         hideActionSheet: () => {
             this.isActionSheetShow = false
             this.$apply()
+        },
+        actionClick: (event) => {
+            console.log(event)
+            if (event.currentTarget.dataset.index === this.plateNumber.length - 1) {
+                console.log("i will navigate to manage page")
+            }
         }
     }
 

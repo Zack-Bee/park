@@ -172,12 +172,10 @@ import wepy from 'wepy'
 export default class Button extends wepy.component {
     props = {
         type: {
-            type: String,
-            default: 'primary'
+            type: String
         },
         size: {
-            type: String,
-            default: 'large'
+            type: String
         },
         plain: {
             type: Boolean,

@@ -1,5 +1,10 @@
 <template>
     <view>
+        <view class="add-park">
+            <Button type="primary">
+                增加停车位
+            </Button>
+        </view>
         <view class="park" wx:for="{{parks}}" wx:key="parkId-{{item.parkId}}">
             <view class="park-left">
                 <view class="park-icon-wrapper">
@@ -36,6 +41,11 @@
 </template>
 
 <style scoped>
+.add-park {
+    margin: 0 20rpx 10rpx 20rpx;
+    padding: 10rpx 20rpx;
+}
+
 .park {
     margin: 10rpx 20rpx;
     padding: 10rpx 40rpx;
@@ -162,10 +172,12 @@ import wepy from 'wepy'
 import Dialog from "../dialog/dialog"
 import post from "../../common/post.js"
 import config from "../../config.js"
+import Button from "../button/button"
 
 export default class Parks extends wepy.component {
     components = {
-        Dialog
+        Dialog,
+        Button
     }
 
     props = {
