@@ -173,6 +173,11 @@ exports.userparks = async (ctx, next) => {
     fc.addparking(ctx.request.body.openId,
        ctx.request.body.kind, null, null, 
        ctx.request.body.longitude + "," + ctx.request.body.latitude, null, null)
+       fc.selectowner("openId",ctx.request.body.openId,function(option){
+         if(a==""){
+           fc.addowner(ctx.request.body.openId)
+         }
+       })
   }
   else if (ctx.request.body.type == "close") {
     function c(option) {
