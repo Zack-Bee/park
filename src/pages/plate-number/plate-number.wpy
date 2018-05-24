@@ -1,0 +1,19 @@
+<template>
+    <view>hhhh
+    </view>
+</template>
+
+<script>
+import wepy from 'wepy'
+
+export default class PlateNumber extends wepy.page {
+    components = {
+    }
+
+    data = {
+    }
+
+    onLoad() {
+    }
+}
+</script>

@@ -213,7 +213,9 @@ export default class Button extends wepy.component {
 
     methods = {
         onTap: (event) => {
-            this.bindTap(event)
+            if (this.bindTap) {
+                this.bindTap(event)
+            }
         }
     }
 }
