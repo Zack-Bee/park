@@ -151,24 +151,33 @@ eg: 十月八号到十一月十一号
 }
 ```
 
+### /user/upload
 #### Method: POST
 #### Usage：用于用户提供停车场相关信息进行认证
 ```
-requestDataType
+发送地理位置和停车位的种类
+requestDataType: json
 eg:
 {
-    type: "add",
-    openId: "123456789",
-    longitude: "13.323",
-    latitude: "21.223",
-    kind: 3
+    kind: 3,
+    latitude: 123.45,
+    longitude: 678.9,
+    openId: 123456789,
+    imageNumber: 10 // 图片的总数
 }
+
+上传的图片, 图片的名字即标号, openId(用于分辨用户)
+requestDataType: multipart/form-data **not json**
+eg: no eg
+
+返回分配停车位的parkId
+responseDataType: json
 ```
 
 #### Method: POST
 #### Usage: 用于停止发布停车场
 ```
-requestDataType
+requestDataType: json
 eg:
 {
     type: "close",
