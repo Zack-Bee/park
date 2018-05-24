@@ -5,14 +5,17 @@
     </view>
     <block>
         <view bindtap="clickclosest" class="parkingView">
-        <image class="parkingImage" src="../../components/closest/parking.png" /><!--{{item.parkingImage}}-->
+            <view class="parkingLeft">
+            <image class="parkingImage" src="../../components/closest/company.png" /><!--{{item.parkingImage}}-->
+            <view class="parkingType">企业类</view>
+            </view>
             <view class="parkingLeftView">
                 <text class="parkingName">东北大学停车场<!--{{item.parkingsName}}--> </text>
                 <text class="parkingPrice">￥0<!--{{item.parkingsPrice}}--></text>
-            <!--距离-->
+                <!--距离-->
                 <view class="parkingMsg">
-                    <text class="parkingtext">关于东北大学停车场<!--{{item.abtmsg}}--></text>
-                    <text class="parkingRightText">距离10m<!--{{item.metersnum}}--></text>
+                    <bottom>现在停车</bottom>
+                    <bottom class="parkingRightText">距离10m<!--{{item.metersnum}}--></bottom>
                 </view>
             </view>
         </view>
@@ -21,21 +24,32 @@
 </template>
 
 <style scoped>
-/**
- * 停车场样式
-*/
 
-.parkingImage {
-    width: 60px;
-    height: 60px;
-    float: left;
-}
 
 .closesttapname{
     text-align: center;
+    border-bottom:1px solid #C0C0C0;
+    border-top: 1px solid #C0C0C0;
 }
-
-/*右侧文本整体样式*/
+/**
+ * 停车场样式
+*/
+.parkingLeft{
+    float: left;
+}
+.parkingImage {
+    margin-top:10rpx;
+    width: 140rpx;
+    height: 140rpx;
+}
+.parkingType {
+    width: 150rpx;
+    line-height: 20rpx;
+    font-size: 30rpx;
+    text-align: center;
+    color: #888;
+}
+/*左侧文本整体样式*/
 
 .parkingLeftView {
     width: 250px;
@@ -51,8 +65,8 @@
     color: #333;
 }
 .parkingPrice {
-    font-size: 30rpx;
-    color: red;
+    font-size: 35rpx;
+    color: 	rgba(3, 161, 11, 0.87);
     margin-top: 10rpx;
 }
 
@@ -63,15 +77,10 @@
     flex-direction: row;
 }
 
-.parkingtext {
-    font-size: 25rpx;
-}
-
 .parkingRightText {
     position: absolute;
     right: 0;
     margin-right: 10rpx;
-    font-size: 25rpx;
 }
 
 /*整体view样式*/
