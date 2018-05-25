@@ -151,6 +151,44 @@ eg: 十月八号到十一月十一号
 }
 ```
 
+#### Method: POST
+#### Usage: 用于停止发布停车场
+```
+requestDataType: json
+eg:
+{
+    type: "close",
+    openId: "1232142141",
+    parkId: "12131231"
+}
+```
+
+#### Method: POST
+#### Usage: 用于获得停车场的详细信息
+```
+requestDataType: json
+eg:
+{
+    type: "detail",
+    openId: "123314",
+    padkId: "23131231"
+}
+
+responseDataType: json
+eg:
+{
+    kind: 3,
+    parkName: "王邦铮的停车场",
+    isOpen: true,
+    openType: "weekly",
+    startDay: "1",
+    endDay: "7",
+    startTime: "08:00",
+    endTime: "21:00"
+}
+```
+
+
 ### /user/upload
 #### Method: POST
 #### Usage：用于用户提供停车场相关信息进行认证
@@ -172,18 +210,6 @@ eg: no eg
 
 返回分配停车位的parkId
 responseDataType: json
-```
-
-#### Method: POST
-#### Usage: 用于停止发布停车场
-```
-requestDataType: json
-eg:
-{
-    type: "close",
-    openId: "1232142141",
-    parkId: "12131231"
-}
 ```
 
 ### /user/platenumber
