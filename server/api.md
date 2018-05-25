@@ -1,30 +1,5 @@
 ### /user/parks
 
-#### Method: POST
-#### Usage: 用于获得停车场的详细信息
-```
-requestDataType: json
-eg:
-{
-    type: "detail",
-    openId: "123314",
-    parkId: "23131231"
-}
-
-responseDataType: json
-eg:
-{
-    kind: 3,
-    parkName: "王邦铮的停车场",
-    isOpen: true,
-    openType: "weekly",
-    startDay: "1",
-    endDay: "7",
-    startTime: "08:00",
-    endTime: "21:00"
-}
-```
-
 
 ### /user/upload
 #### Method: POST
@@ -47,36 +22,4 @@ eg: no eg
 
 返回分配停车位的parkId
 responseDataType: json
-```
-
-### /user/platenumber
-#### Method: POST
-#### Usage: 获取用户的车牌信息
-```
-requestDataType: json
-eg:
-{
-    openId: "123456789",
-    type: "get"
-}
-```
-```
-responseDataType: json
-eg:
-[
-    "甲A-12345",
-    "鄂A-12345"
-]
-```
-
-#### Method: POST
-#### Usage: 添加用户的车牌信息
-````
-requestDataType: json
-eg:
-{
-    openId: "123456789",
-    type: "add",
-    plateNumber: "甲A-12345"
-}
 ```

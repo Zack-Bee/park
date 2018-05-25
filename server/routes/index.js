@@ -10,5 +10,5 @@ const ct = require('../../server/controllers/controllers')
 router.post('/login', ct.login)
 router.post('/user/parks',ct.userparks)
 router.post('/user/platenumber', ct.userplatenumber)
-
+router.post('/upload', ct.upload)
 module.exports = router

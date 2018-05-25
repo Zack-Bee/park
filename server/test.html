@@ -1,8 +1,9 @@
 <html>
 <head>
     <title>123</title>
+    <script src="http://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script> 
 </head>
-    <form class="ui form segment" action="/user/parks" method="POST">
+    <form class="ui form segment" action="/upload" method="POST" enctype="multipart/form-data">
         <body>
             type<input type="text" name="type" value="open">
             openId<input type="text" name="openId" value="3">
@@ -17,7 +18,9 @@
             longitude<input type="text" name="longitude" value="13.323"> 
             latitude<input type="text" name="latitude" value="21.223">
             parkName<input type="text" name="parkName" value="王邦铮的停车场">
+            <input type="file" name="file"/>  
             <input type="submit" class="ui button fluid" value="post测试">
+            <br>
         </body>
     </form>    
 </html>

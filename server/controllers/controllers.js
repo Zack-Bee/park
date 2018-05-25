@@ -6,11 +6,9 @@ const async = require('async');
 exports.login = async (ctx, next) => {
   code = ctx.request.body.code
   function c(option) {
-    ctx.response.body = { openId: JSON.parse(option).openId, err: JSON.parse(option) }
-    return
+    ctx.response.body = { openId: JSON.parse(option).openid, err: JSON.parse(option) }
   }
   var res = await ofc.xcxlogin(code, c);
-  return
 }
 
 
@@ -286,3 +284,11 @@ exports.userplatenumber = async (ctx, next) => {
   }
 }
 
+exports.upload = async (ctx, next) => {
+  const file = ctx.request.body.files.file; // 获取上传文件
+  const reader = fs.createReadStream(file.path); // 创建可读流
+  const ext = file.name.split('.').pop(); // 获取上传文件扩展名
+  const upStream = fs.createWriteStream(`upload/`+ctx.request.body.openId+`/`+file.name); // 创建可写流
+  reader.pipe(upStream); // 可读流通过管道写入可写流
+  return ctx.body = '上传成功';
+}
