@@ -321,6 +321,7 @@ mkdir(`upload/`+ctx.request.body.fields.openId)}
   const file = ctx.request.body.files.image;
   const reader = fs.createReadStream(file.path);
   const ext = file.name.split('.').pop(); 
+  console.log(ctx.request.body.fields.index)
   let upStream = fs.createWriteStream(`upload/`+ctx.request.body.fields.openId+`/`+ctx.request.body.fields.index+`.jpg`);
   reader.pipe(upStream);
 })}
