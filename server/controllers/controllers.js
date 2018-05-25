@@ -284,16 +284,16 @@ exports.upload = async (ctx, next) => {
       ctx.request.body.kind, null, null,
       ctx.request.body.longitude + "," + ctx.request.body.latitude, null, null)
       console.log("up                                              ")
-    fc.selectowner("openId", ctx.request.body.openId, function (option) {
+    fc.selectowner("openId", '"'+ctx.request.body.openId+'"', function (option) {
       if (option == "") {
-        fc.addowner(ctx.request.body.openId)
+        fc.addowner('"'+ctx.request.body.openId+'"')
       }
     })
   }
   if(ctx.request.body.files){
   if(ctx.request.body.fields.imageNumber==ctx.request.body.fields.index){
     console.log("down                                              ")
-    await fc.selectparking("openId", ctx.request.body.fields.openId,function(option){
+    await fc.selectparking("openId", '"'+ctx.request.body.fields.openId+'"',function(option){
       if(option!=""){
       ctx.body={parkId:option[option.length-1].id}}
       else{ctx.body={err:"该用户停车场上传失败"}}
