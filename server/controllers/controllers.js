@@ -290,8 +290,7 @@ exports.upload = async (ctx, next) => {
     })
   }
   if(ctx.request.body.files){
-  if(ctx.request.body.fields.imageNumber==ctx.request.body.files.image.name.split(".")[0]){
-    console.log(ctx.request.body.files.image.name.split(".")[0])
+  if(ctx.request.body.fields.imageNumber==ctx.request.body.fields.index){
     await fc.selectparking("openId", ctx.request.body.fields.openId,function(option){
       if(option!=""){
       ctx.body={parkId:option[option.length-1].id}}
