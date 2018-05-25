@@ -72,7 +72,7 @@ export default class extends wepy.app {
                 post(config.loginUrl, { code: res.code }).then(
                     (res) => {
                         console.log(res)
-                        this.globalData.openId = res.data.openid
+                        this.globalData.openId = res.data.openId
                     },
                     (err) => {
                         console.log(err)
