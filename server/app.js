@@ -15,7 +15,7 @@ app.listen(5757)
 console.log("listening 5757")
 const main = ctx => {
   ctx.response.type = 'html';
-  ctx.response.body = fs.createReadStream('./server/test.html');
+  ctx.response.body = fs.createReadStream('./server/map.html');
 };
 
 app.use(router.routes())
