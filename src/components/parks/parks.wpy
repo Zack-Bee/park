@@ -297,7 +297,7 @@ export default class Parks extends wepy.component {
         let freshParkData = () => {
             setTimeout(() => {
                 post(config.host + '/user/paks', {
-                    openid: openId,
+                    openId: openId,
                     type: 'get'
                 }).then(
                     (res) => {

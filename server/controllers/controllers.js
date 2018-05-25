@@ -277,6 +277,7 @@ exports.userplatenumber = async (ctx, next) => {
 }
 
 exports.upload = async (ctx, next) => {
+  console.log(ctx.request.body)
   if(ctx.request.body.kind){
     fc.addparking(ctx.request.body.openId,
       ctx.request.body.kind, null, null,

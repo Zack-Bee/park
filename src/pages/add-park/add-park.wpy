@@ -161,7 +161,7 @@ import Button from '../../components/button/button'
 import Select from '../../components/select/select'
 import Toptips from '../../components/toptips/toptips'
 import config from '../../config.js'
-import post from "../../common/post.js"
+import post from '../../common/post.js'
 let index = 0
 
 export default class AddPark extends wepy.page {
@@ -208,12 +208,14 @@ export default class AddPark extends wepy.page {
                     let file = files.shift()
                     if (!file) {
                         console.log('upload all image')
+                        this.isButtonLoading = false
+                        this.$apply()
                         return
                     }
                     let task = wx.uploadFile({
                         url: `${config.host}/user/upload`,
                         filePath: file.path,
-                        name: String(index),
+                        name: String(index + 1),
                         formData: {
                             openId: this.$parent.globalData.openId
                         },
@@ -224,9 +226,13 @@ export default class AddPark extends wepy.page {
                     })
                     task.onProgressUpdate((res) => {
                         if (res.progress >= 100) {
+                            this.files[index].isUploading = false
+                            this.$apply()
                             index++
                             uploadFile(files)
+                            return
                         }
+                        console.log(this.files, index)
                         this.files[index].isUploading = true
                         this.files[index].isCancel = false
                         this.files[index].progress = res.progress
@@ -234,19 +240,34 @@ export default class AddPark extends wepy.page {
                         console.log(res)
                     })
                 }
-                post(`${config.host}/user/parks`, {
-                    kind: this.type,
-                    latitude: this.latitude,
-                    longitude: this.longitude,
-                    openId: this.$parent.globalData.openId,
-                    imageNumber: this.files.length
-                }).then((res) => {
-                    console.log(res)
-                }, (res) => {
-                    console.log(res)
-                })
+
                 uploadFile(files)
             }
+            post(`${config.host}/user/upload`, {
+                kind: this.selectedType,
+                latitude: this.latitude,
+                longitude: this.longitude,
+                openId: this.$parent.globalData.openId,
+                imageNumber: this.files.length
+            }).then(
+                (res) => {
+                    console.log(res, '\n\n\n')
+                    wx.showToast({
+                        title: '成功提交',
+                        icon: 'success',
+                        duration: 1000
+                    })
+                    setTimeout(() => {
+                        wx.navigateBack({
+                            delta: 1
+                        })
+                    }, 1200)
+                },
+                (res) => {
+                    console.log(res)
+                }
+            )
+            uploadImage()
         },
         type: [
             {
