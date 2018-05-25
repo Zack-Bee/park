@@ -215,7 +215,7 @@ export default class AddPark extends wepy.page {
                     let task = wx.uploadFile({
                         url: `${config.host}/user/upload`,
                         filePath: file.path,
-                        name: String(index + 1),
+                        name: "image",
                         formData: {
                             openId: this.$parent.globalData.openId
                         },
