@@ -1,7 +1,7 @@
 const fc = require('./function')
-let mysql = require('mysql');
-var async = require('async');
-var request = require('request');
+const mysql = require('mysql');
+const async = require('async');
+const request = require('request');
 exports.xcxlogin = function (code, callback) {
   return new Promise(function (resolve, reject) {
     request('https://api.weixin.qq.com/sns/jscode2session?appid=wx5fbbb4d25168eb48&secret=106619eb311c77a93dbfd697ff06f709&js_code=' + code + '&grant_type=authorization_code', function (error, response, body) {

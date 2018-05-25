@@ -1,6 +1,7 @@
 const fc = require('../../server/function')
 const ofc = require('../../server/otherfunction')
 const fs = require('fs');
+var path = require('path');  
 const async = require('async');
 
 exports.login = async (ctx, next) => {
@@ -229,16 +230,7 @@ exports.userparks = async (ctx, next) => {
     })
     ctx.response.body = all
   }
-  else if (ctx.request.body.type == "add") {
-    fc.addparking(ctx.request.body.openId,
-      ctx.request.body.kind, null, null,
-      ctx.request.body.longitude + "," + ctx.request.body.latitude, null, null)
-    fc.selectowner("openId", ctx.request.body.openId, function (option) {
-      if (a == "") {
-        fc.addowner(ctx.request.body.openId)
-      }
-    })
-  }
+  
   else if (ctx.request.body.type == "close") {
     fc.changeone("parking",ctx.request.body.parkId,"isOpen",0)
     function c(option) {
@@ -285,10 +277,48 @@ exports.userplatenumber = async (ctx, next) => {
 }
 
 exports.upload = async (ctx, next) => {
-  const file = ctx.request.body.files.file; // 获取上传文件
-  const reader = fs.createReadStream(file.path); // 创建可读流
-  const ext = file.name.split('.').pop(); // 获取上传文件扩展名
-  const upStream = fs.createWriteStream(`upload/`+ctx.request.body.openId+`/`+file.name); // 创建可写流
-  reader.pipe(upStream); // 可读流通过管道写入可写流
-  return ctx.body = '上传成功';
+  if(ctx.request.body.fields.imageNumber==ctx.request.body.files.file.name.split(".")[0]){
+   // await fc.selectparking("openId", ctx.request.body.fields.openId,funtion(option){
+      ctx.body={parkId:1,err:"来不及了,回来再写"}
+  }
+  if(ctx.request.body.kind){
+    fc.addparking(ctx.request.body.openId,
+      ctx.request.body.kind, null, null,
+      ctx.request.body.longitude + "," + ctx.request.body.latitude, null, null)
+    fc.selectowner("openId", ctx.request.body.openId, function (option) {
+      if (option == "") {
+        fc.addowner(ctx.request.body.openId)
+      }
+    })
+  }
+  await fs.exists(`upload/`+ctx.request.body.fields.openId, function(exists) {  
+    if(!exists){ 
+      function mkdir(dirpath,dirname) {  
+        if(typeof dirname === "undefined"){   
+            if(fs.existsSync(dirpath)){  
+                return;  
+            }else{  
+                mkdir(dirpath,path.dirname(dirpath));  
+            }  
+        }else{  
+            if(dirname !== path.dirname(dirpath)){   
+                mkdir(dirpath);  
+                return;  
+            }  
+            if(fs.existsSync(dirname)){  
+                fs.mkdirSync(dirpath)  
+            }else{  
+                mkdir(dirname,path.dirname(dirname));  
+                fs.mkdirSync(dirpath);  
+            }  
+        }  
+      } 
+mkdir(`upload/`+ctx.request.body.fields.openId)} 
+  const file = ctx.request.body.files.file;
+  const reader = fs.createReadStream(file.path);
+  const ext = file.name.split('.').pop(); 
+  let upStream = fs.createWriteStream(`upload/`+ctx.request.body.fields.openId+`/`+file.name);
+  reader.pipe(upStream);
+})
+  
 }
