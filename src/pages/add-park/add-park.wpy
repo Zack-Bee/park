@@ -234,7 +234,7 @@ export default class AddPark extends wepy.page {
                         console.log(res)
                     })
                 }
-                post(`${config.host}/user/park`, {
+                post(`${config.host}/user/parks`, {
                     kind: this.type,
                     latitude: this.latitude,
                     longitude: this.longitude,

@@ -1,26 +1,51 @@
 <template>
     <view>
-        <view class="publish-time">
-            <view class="publish-time-desc">车位名:</view>
-            <view class="publish-time-value">王邦铮的停车场</view>
+        <view class="park-detail">
+            <view class="park-detail-desc">车位名:</view>
+            <view class="park-detail-value">{{parkName}}</view>
         </view>
-        <view class="publish-time">
-            <view class="publish-time-desc">类别:</view>
-            <view class="publish-time-value">企业类停车位</view>
+        <view class="park-detail">
+            <view class="park-detail-desc">类别:</view>
+            <view class="park-detail-value">{{kind === 3 ? "企业类停车场" : "个人类停车位"}}</view>
         </view>
-        <view class="publish-time">
-            <view class="publish-time-desc">经纬度:</view>
-            <view class="publish-time-value">123.34, 456.78</view>
+        <view class="park-detail">
+            <view class="park-detail-desc">经纬度:</view>
+            <view class="park-detail-value">{{location}}</view>
         </view>
-        <view class="padding"/>
-        <Button type="danger">
+        <view wx:if="{{startDate}}" class="park-detail">
+            <view class="park-detail-desc">开始日期</view>
+            <view class="park-detail-value">{{startDate}}</view>
+        </view>
+        <view wx:if="{{endDate}}" class="park-detail">
+            <view class="park-detail-desc">截止日期</view>
+            <view class="park-detail-value">{{endDate}}</view>
+        </view>
+        <view wx:if="{{startDay}}" class="park-detail">
+            <view class="park-detail-desc">开始日期</view>
+            <view class="park-detail-value">{{weeks[startDay - 1]}}</view>
+        </view>
+        <view wx:if="{{endDay}}" class="park-detail">
+            <view class="park-detail-desc">截止日期</view>
+            <view class="park-detail-value">{{weeks[endDay - 1]}}</view>
+        </view>
+        <view wx:if="{{startTime}}" class="park-detail">
+            <view class="park-detail-desc">开始时间</view>
+            <view class="park-detail-value">{{startTime}}</view>
+        </view>
+        <view wx:if="{{endTime}}" class="park-detail">
+            <view class="park-detail-desc">截止时间</view>
+            <view class="park-detail-value">{{endTime}}</view>
+        </view>
+        <view class="padding" />
+        <Button type="danger" :loading.sync="isButtonLoading" :bindTap="showDialog">
             删除
         </Button>
+        <Dialog :show.sync="isDialogShow" :message.sync="dialogMessage" :buttons="buttons" :handleMaskClick="hideDialog" :handleButtonClick="onDialogClick" />
     </view>
 </template>
 
 <style scoped>
-.publish-time {
+.park-detail {
     display: flex;
     font-size: 14px;
     line-height: 24px;
@@ -28,11 +53,11 @@
     padding: 9px 15px;
 }
 
-.publish-time-desc {
+.park-detail-desc {
     min-width: 65px;
 }
 
-.publish-time-value {
+.park-detail-value {
     padding-left: 20px;
 }
 
@@ -45,15 +70,115 @@
 <script>
 import wepy from 'wepy'
 import Button from '../../components/button/button'
+import Dialog from '../../components/dialog/dialog'
+import config from '../../config.js'
+import post from '../../common/post.js'
 
 export default class ParkDetail extends wepy.page {
     components = {
-        Button
+        Button,
+        Dialog
     }
 
-    data = {}
+    data = {
+        isButtonLoading: false,
+        isDialogShow: false,
+        dialogMessage: '删除后再次添加该停车位需要重新审核, 确认删除?',
+        parkName: '',
+        openType: '',
+        startDate: '',
+        endDate: '',
+        startDay: '',
+        endDay: '',
+        startTime: '',
+        endTime: '',
+        kind: '',
+        location: '',
+        showDialog: () => {
+            if (this.isButtonLoading) {
+                return
+            }
+            this.isDialogShow = true
+            this.$apply()
+        },
+        buttons: [
+            {
+                // 按钮文案
+                text: '确认',
+                // 按钮文字颜色
+                color: 'red',
+                // 按钮类型，用于在 then 中接受点击事件时，判断是哪一个按钮被点击
+                type: 'confirm'
+            },
+            {
+                text: '取消',
+                color: '#3CC51F',
+                type: 'cancel'
+            }
+        ],
+        hideDialog: () => {
+            this.isDialogShow = false
+            this.$apply()
+        },
+        onDialogClick: (event) => {
+            console.log(event)
+            this.hideDialog()
+            if (event.currentTarget.dataset.type === 'confirm') {
+                this.isButtonLoading = true
+                this.$apply()
+                post(`${config.host}/user/parks`, {
+                    type: 'delete',
+                    openId: this.$parent.globalData.openId,
+                    parkId: this.parkId
+                }).then((res) => {
+                    console.log(res)
+                    wx.showToast({
+                        title: '删除成功',
+                        icon: 'success',
+                        duration: 1000
+                    })
+                    setTimeout(() => {
+                        wx.navigateBack({
+                            delta: 1
+                        })
+                    }, 1000)
+                })
+            }
+        }
+    }
 
-    onLoad() {}
+    onLoad(option) {
+        console.log(option)
+        this.parkId = option.parkId
+        console.log(this.$parent.globalData.openId)
+        this.$apply()
+        wx.showLoading({
+            title: '正在加载',
+            mask: true,
+            success: (res) => {
+                console.log(res)
+            }
+        })
+        post(`${config.host}/user/parks`, {
+            type: 'detail',
+            openId: this.$parent.globalData.openId,
+            parkId: option.parkId
+        }).then(
+            (res) => {
+                console.log('success')
+                console.log(res)
+                for (let prop in res.data) {
+                    this[prop] = res.data[prop]
+                    this.kind = parseInt(res.data.kind)
+                    this.$apply()
+                    wx.hideLoading()
+                }
+            },
+            (err) => {
+                console.log(err)
+            }
+        )
+    }
 
     config = {
         navigationBarTitleText: '车位详细信息'
