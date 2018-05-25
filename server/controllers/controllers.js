@@ -1,16 +1,15 @@
 const fc = require('../../server/function')
 const ofc = require('../../server/otherfunction')
 const fs = require('fs');
+var path = require('path');  
 const async = require('async');
 
 exports.login = async (ctx, next) => {
   code = ctx.request.body.code
   function c(option) {
-    ctx.response.body = { openId: JSON.parse(option).openId, err: JSON.parse(option) }
-    return
+    ctx.response.body = { openId: JSON.parse(option).openid, err: JSON.parse(option) }
   }
   var res = await ofc.xcxlogin(code, c);
-  return
 }
 
 
@@ -99,12 +98,16 @@ exports.userparks = async (ctx, next) => {
   }
   else if (ctx.request.body.type == "delete") {
     fc.deleteparking(ctx.request.body.parkId)
+    await fc.selectparkingtime("parking", ctx.request.body.parkId, function (option) {
+      fc.deleteparkingtime(option[0].id)})
   }
   else if (ctx.request.body.type == "open") {
-    await fc.selectparkingtime("parking",ctx.request.body.parkId,function(option){
-      for(let i=0;i<option.length;i++){
-        if(option){
-        fc.deleteparkingtime(option[i].id)}
+    fc.changeone("parking",ctx.request.body.parkId,"isOpen",1)
+    await fc.selectparkingtime("parking", ctx.request.body.parkId, function (option) {
+      for (let i = 0; i < option.length; i++) {
+        if (option) {
+          fc.deleteparkingtime(option[i].id)
+        }
       }
     })
     var now = new Date()
@@ -116,65 +119,120 @@ exports.userparks = async (ctx, next) => {
     if (ctx.request.body.kind == 3) {
       if (ctx.request.body.openType == "weekly") {
         await fc.addparkingtime(ctx.request.body.parkId,
-          ctx.request.body.startDay+"."
+          ctx.request.body.startDay + "."
           + ctx.request.body.startTime.replace(/:/g, ".")
-          + "-" + ctx.request.body.endDay+"."
-          + ctx.request.body.endTime.replace(/:/g, "."), 
+          + "-" + ctx.request.body.endDay + "."
+          + ctx.request.body.endTime.replace(/:/g, "."),
           ctx.request.body.price, null, 0)
         //这里要添加更新rentNumber的东西
       }
       else if (ctx.request.body.openType == "once") {
         await fc.addparkingtime(ctx.request.body.parkId,
-           year + "." + month + "." + day + "." 
-           + ctx.request.body.startTime.replace(/:/g, ".") 
-           + "-" + year + "." + month + "." + day + "." 
-           + ctx.request.body.endTime.replace(/:/g, "."), 
-           ctx.request.body.price, null, 1)
+          year + "." + month + "." + day + "."
+          + ctx.request.body.startTime.replace(/:/g, ".")
+          + "-" + year + "." + month + "." + day + "."
+          + ctx.request.body.endTime.replace(/:/g, "."),
+          ctx.request.body.price, null, 1)
       }
       else if (ctx.request.body.openType == "date") {
-        await fc.addparkingtime(ctx.request.body.parkId, 
-          ctx.request.body.startDay.replace(/-/g, ".") +"."
-          + ctx.request.body.startTime.replace(/:/g, ".") 
-          + "-" + ctx.request.body.endDay.replace(/-/g, ".") +"."
+        await fc.addparkingtime(ctx.request.body.parkId,
+          ctx.request.body.startDay.replace(/-/g, ".") + "."
+          + ctx.request.body.startTime.replace(/:/g, ".")
+          + "-" + ctx.request.body.endDay.replace(/-/g, ".") + "."
           + ctx.request.body.endTime.replace(/:/g, "."),
-           ctx.request.body.price, null, 1)
-           
+          ctx.request.body.price, null, 1)
+
       }
     }
     else if (ctx.request.body.kind == 4) {
       if (ctx.request.body.openType == "weekly") {
-        await fc.addparkingtime(ctx.request.body.parkId, 
-          ctx.request.body.startDay +"."
-          + ctx.request.body.startTime.replace(/:/g, ".") 
-          + "-" + ctx.request.body.endDay +"."
+        await fc.addparkingtime(ctx.request.body.parkId,
+          ctx.request.body.startDay + "."
+          + ctx.request.body.startTime.replace(/:/g, ".")
+          + "-" + ctx.request.body.endDay + "."
           + ctx.request.body.endTime.replace(/:/g, "."), null, null, 0)
       }
       else if (ctx.request.body.openType == "once") {
-        await fc.addparkingtime(ctx.request.body.parkId, year 
-          + "." + month + "." + day + "." 
-          + ctx.request.body.startTime.replace(/:/g, ".") 
-          + "-" + year + "." + month + "." + day + "." 
+        await fc.addparkingtime(ctx.request.body.parkId, year
+          + "." + month + "." + day + "."
+          + ctx.request.body.startTime.replace(/:/g, ".")
+          + "-" + year + "." + month + "." + day + "."
           + ctx.request.body.endTime.replace(/:/g, "."), null, null, 1)
       }
       else if (ctx.request.body.openType == "date") {
-        await fc.addparkingtime(ctx.request.body.parkId, 
-          ctx.request.body.startDay.replace(/-/g, ".") +"."
-          + ctx.request.body.startTime.replace(/:/g, ".") 
-          + "-" + ctx.request.body.endDay.replace(/-/g, ".") +"."
+        await fc.addparkingtime(ctx.request.body.parkId,
+          ctx.request.body.startDay.replace(/-/g, ".") + "."
+          + ctx.request.body.startTime.replace(/:/g, ".")
+          + "-" + ctx.request.body.endDay.replace(/-/g, ".") + "."
           + ctx.request.body.endTime.replace(/:/g, "."), null, null, 1)
       }
     }
-    fc.changeone("parking",ctx.request.body.parkId,"name",ctx.request.body.parkName)
-    
-
-
+    fc.changeone("parking", ctx.request.body.parkId, "name", ctx.request.body.parkName)
   }
-  else if (ctx.request.body.type == "add") {
-    fc.addparking(ctx.request.body.openId,
-       ctx.request.body.kind, null, null, 
-       ctx.request.body.longitude + "," + ctx.request.body.latitude, null, null)
+  else if (ctx.request.body.type == "detail") {
+    var all
+    var parking
+    function KIND() {
+      this.parkName = "return err"
+      this.kind = "return err"
+      this.isOpen = "return err"
+      this.openType = "return err"
+      this.startDay = "return err"
+      this.endDay = "return err"
+      this.startTime = "return err"
+      this.endTime = "return err"
+    }
+    await fc.selectparking("parking", ctx.request.body.parkId, function(option) {
+      parking = option
+      let t
+      t = new KIND
+      t.parkName = option[0].name
+      t.kind = option[0].kind
+      t.isOpen = option[0].isOpen
+      t.openType = "waiting"
+      t.startDay = "waiting"
+      t.endDay = "waiting"
+      t.startTime = "waiting"
+      t.endTime = "waiting"
+      all=t
+    })
+    await fc.selectparkingtime("parking", parking[0].id, function(option) {
+      if (option) {
+        let time = option[0].time
+        time = time.split("-")
+        let start = t[0]
+        start = start.split(".")
+        let end = t[1]
+        end = end.split(".")
+        if(start.length==3){
+        all.openType = "weekly"
+        all.startDay = start[0]
+        all.endDay = end[0]
+        all.startTime = start[1]+":"+start[2]
+        all.endTime = end[1]+":"+end[2]
+      }
+      if(start.length==5){
+        if(start[2]==end[2]){all.openType = "once"}
+        else{all.openType = "date"}
+        all.startDay = start[0]+"-"+start[1]+"-"+start[2]
+        all.endDay = end[0]+"-"+end[1]+"-"+end[2]
+        all.startTime = start[3]+":"+start[4]
+        all.endTime = end[3]+":"+end[4]
+      }
+      }
+      else {
+        all.openType = null
+        all.startDay = null
+        all.endDay = null
+        all.startTime = null
+        all.endTime = null
+      }
+    })
+    ctx.response.body = all
   }
+  
   else if (ctx.request.body.type == "close") {
+    fc.changeone("parking",ctx.request.body.parkId,"isOpen",0)
     function c(option) {
       for (let i = 0; i < option.length; i++) {
         fc.deleteparkingtime(option[i].id)
@@ -218,3 +276,53 @@ exports.userplatenumber = async (ctx, next) => {
   }
 }
 
+exports.upload = async (ctx, next) => {
+  if(ctx.request.body.kind){
+    fc.addparking(ctx.request.body.openId,
+      ctx.request.body.kind, null, null,
+      ctx.request.body.longitude + "," + ctx.request.body.latitude, null, null)
+    fc.selectowner("openId", ctx.request.body.openId, function (option) {
+      if (option == "") {
+        fc.addowner(ctx.request.body.openId)
+      }
+    })
+  }
+  if(ctx.request.body.files){
+  if(ctx.request.body.fields.imageNumber==ctx.request.body.files.file.name.split(".")[0]){
+    await fc.selectparking("openId", ctx.request.body.fields.openId,function(option){
+      if(option!=""){
+      ctx.body={parkId:option[option.length-1].id}}
+      else{ctx.body={err:"该用户停车场上传失败"}}
+  })}
+  
+  await fs.exists(`upload/`+ctx.request.body.fields.openId, function(exists) {  
+    if(!exists){ 
+      function mkdir(dirpath,dirname) {  
+        if(typeof dirname === "undefined"){   
+            if(fs.existsSync(dirpath)){  
+                return;  
+            }else{  
+                mkdir(dirpath,path.dirname(dirpath));  
+            }  
+        }else{  
+            if(dirname !== path.dirname(dirpath)){   
+                mkdir(dirpath);  
+                return;  
+            }  
+            if(fs.existsSync(dirname)){  
+                fs.mkdirSync(dirpath)  
+            }else{  
+                mkdir(dirname,path.dirname(dirname));  
+                fs.mkdirSync(dirpath);  
+            }  
+        }  
+      } 
+mkdir(`upload/`+ctx.request.body.fields.openId)} 
+  const file = ctx.request.body.files.file;
+  const reader = fs.createReadStream(file.path);
+  const ext = file.name.split('.').pop(); 
+  let upStream = fs.createWriteStream(`upload/`+ctx.request.body.fields.openId+`/`+file.name);
+  reader.pipe(upStream);
+})}
+  
+}

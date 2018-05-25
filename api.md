@@ -171,7 +171,7 @@ eg:
 {
     type: "detail",
     openId: "123314",
-    padkId: "23131231"
+    parkId: "23131231"
 }
 
 responseDataType: json

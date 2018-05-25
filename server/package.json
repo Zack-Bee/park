@@ -8,6 +8,8 @@
     "sequelize": "^4.37.6",
     "koa": "^2.5.1",
     "koa-router": "^7.4.0",
+    "koa-multer":"1.0.2",
+    "koa-body":"2.5.0",
     "deep-equal": "^1.0.1",
     "inflation": "^2.0.0",
     "keygrip": "^1.0.2",
