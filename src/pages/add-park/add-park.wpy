@@ -215,12 +215,28 @@ export default class AddPark extends wepy.page {
                     let task = wx.uploadFile({
                         url: `${config.host}/user/upload`,
                         filePath: file.path,
-                        name: "image",
+                        name: 'image',
                         formData: {
-                            openId: this.$parent.globalData.openId
+                            openId: this.$parent.globalData.openId,
+                            index: index + 1,
+                            imageNumber: this.files.length
                         },
-                        success: () => {
+                        success: (res) => {
                             console.log('upload success')
+                            console.log(index, this.files.length)
+                            if (index === this.files.length) {
+                                console.log('\n\n\n', res, '\n\n\n')
+                                wx.showToast({
+                                    title: '成功提交',
+                                    icon: 'success',
+                                    duration: 1500
+                                })
+                                setTimeout(() => {
+                                    wx.navigateBack({
+                                        delta: 1
+                                    })
+                                }, 1800)
+                            }
                         },
                         fail: () => {}
                     })
@@ -252,16 +268,6 @@ export default class AddPark extends wepy.page {
             }).then(
                 (res) => {
                     console.log(res, '\n\n\n')
-                    wx.showToast({
-                        title: '成功提交',
-                        icon: 'success',
-                        duration: 1000
-                    })
-                    setTimeout(() => {
-                        wx.navigateBack({
-                            delta: 1
-                        })
-                    }, 1200)
                 },
                 (res) => {
                     console.log(res)
