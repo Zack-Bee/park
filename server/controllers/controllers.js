@@ -277,12 +277,6 @@ exports.userplatenumber = async (ctx, next) => {
 }
 
 exports.upload = async (ctx, next) => {
-  if(ctx.request.body.fields.imageNumber==ctx.request.body.files.file.name.split(".")[0]){
-    await fc.selectparking("openId", ctx.request.body.fields.openId,function(option){
-      if(option!=""){
-      ctx.body={parkId:option[option.length-1].id}}
-      else{ctx.body={err:"该用户停车场上传失败"}}
-  })}
   if(ctx.request.body.kind){
     fc.addparking(ctx.request.body.openId,
       ctx.request.body.kind, null, null,
@@ -293,6 +287,14 @@ exports.upload = async (ctx, next) => {
       }
     })
   }
+  if(ctx.request.body.files){
+  if(ctx.request.body.fields.imageNumber==ctx.request.body.files.file.name.split(".")[0]){
+    await fc.selectparking("openId", ctx.request.body.fields.openId,function(option){
+      if(option!=""){
+      ctx.body={parkId:option[option.length-1].id}}
+      else{ctx.body={err:"该用户停车场上传失败"}}
+  })}
+  
   await fs.exists(`upload/`+ctx.request.body.fields.openId, function(exists) {  
     if(!exists){ 
       function mkdir(dirpath,dirname) {  
@@ -321,6 +323,6 @@ mkdir(`upload/`+ctx.request.body.fields.openId)}
   const ext = file.name.split('.').pop(); 
   let upStream = fs.createWriteStream(`upload/`+ctx.request.body.fields.openId+`/`+file.name);
   reader.pipe(upStream);
-})
+})}
   
 }
