@@ -3,8 +3,8 @@
 <template>
     <view>
         <FilterBar :filter.sync="filter"/>
-        <Map/>
-        <Closest>
+        <Map :height.sync="mapHeight"/>
+        <Closest/>
     </view>
 </template>
 

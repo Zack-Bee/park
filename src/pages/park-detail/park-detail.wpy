@@ -1,0 +1,62 @@
+<template>
+    <view>
+        <view class="publish-time">
+            <view class="publish-time-desc">车位名:</view>
+            <view class="publish-time-value">王邦铮的停车场</view>
+        </view>
+        <view class="publish-time">
+            <view class="publish-time-desc">类别:</view>
+            <view class="publish-time-value">企业类停车位</view>
+        </view>
+        <view class="publish-time">
+            <view class="publish-time-desc">经纬度:</view>
+            <view class="publish-time-value">123.34, 456.78</view>
+        </view>
+        <view class="padding"/>
+        <Button type="danger">
+            删除
+        </Button>
+    </view>
+</template>
+
+<style scoped>
+.publish-time {
+    display: flex;
+    font-size: 14px;
+    line-height: 24px;
+    color: #303030;
+    padding: 9px 15px;
+}
+
+.publish-time-desc {
+    min-width: 65px;
+}
+
+.publish-time-value {
+    padding-left: 20px;
+}
+
+.padding {
+    height: 20rpx;
+}
+</style>
+
+
+<script>
+import wepy from 'wepy'
+import Button from '../../components/button/button'
+
+export default class ParkDetail extends wepy.page {
+    components = {
+        Button
+    }
+
+    data = {}
+
+    onLoad() {}
+
+    config = {
+        navigationBarTitleText: '车位详细信息'
+    }
+}
+</script>

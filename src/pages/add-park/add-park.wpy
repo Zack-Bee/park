@@ -1,0 +1,334 @@
+<template>
+    <view>
+        <Toptips :isShow.sync="isToptipsShow" :content.sync="toptipsContent" />
+        <view class="select-desc">选择车位类别</view>
+        <Select :items="type" :checkedValue.sync="selectedType" :handleSelectChange="changeSelect" activeColor="#09bb07" />
+        <view class="publish-time" @tap="getLocation">
+            <view class="publish-time-desc">车位位置:</view>
+            <view class="publish-time-value">{{location}}</view>
+        </view>
+        <view class="upload-image">
+            <view class="weui-uploader">
+                <view class="weui-uploader__hd">
+                    <view class="weui-uploader__title">上传车位拥有凭证照片</view>
+                </view>
+                <view class="weui-uploader__bd">
+                    <view class="weui-uploader__files" id="uploaderFiles">
+                        <block wx:for="{{files}}" wx:key="{{item.index}}">
+                            <view data-index="{{item.index}}" @longpress="showDelete" class="weui-uploader__file {{(item.isUploading || item.isCancel) ? 'weui-uploader__file_status}}' : ''}}">
+                                <image @tap="previewImage" id="{{item.path}}" data-index="{{item.index}}" class="weui-uploader__img" src="{{item.path}}" mode="aspectFill" />
+                                <view @tap="deleteImage" wx:if="{{item.isCancel}}" data-index="{{item.index}}" class="weui-uploader__file-content">
+                                    <icon type="cancel" size="23" color="#F43530"></icon>
+                                </view>
+                                <view wx:if="{{item.isUploading}}" class="weui-uploader__file-content">{{item.progress}}</view>
+                            </view>
+                        </block>
+                    </view>
+                    <view class="weui-uploader__input-box">
+                        <view class="weui-uploader__input" @tap="chooseImage"></view>
+                    </view>
+                </view>
+            </view>
+        </view>
+        <view class="padding" />
+        <Button type="primary" :bindTap="submit" :loading.sync="isButtonLoading">
+            提交信息审核
+        </Button>
+    </view>
+</template>
+
+<style scoped>
+.select-desc {
+    font-size: 14px;
+    color: #353535;
+    padding: 10rpx 15px;
+}
+
+.publish-time {
+    display: flex;
+    font-size: 14px;
+    line-height: 24px;
+    color: #303030;
+    padding: 9px 15px;
+}
+
+.publish-time-desc {
+    min-width: 65px;
+}
+
+.publish-time-value {
+    padding-left: 20px;
+}
+
+.weui-uploader__hd {
+    display: flex;
+    padding: 10rpx 15px;
+    align-items: center;
+}
+.weui-uploader__title {
+    flex: 1;
+    font-size: 14px;
+    color: #353535;
+}
+.weui-uploader__bd {
+    margin-bottom: -4px;
+    margin-right: -9px;
+    overflow: hidden;
+}
+.weui-uploader__file {
+    float: left;
+    margin-right: 9px;
+    margin-bottom: 9px;
+}
+.weui-uploader__img {
+    display: block;
+    width: 79px;
+    height: 79px;
+}
+.weui-uploader__file_status {
+    position: relative;
+}
+.weui-uploader__file_status:before {
+    content: ' ';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+.weui-uploader__file-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    color: #fff;
+}
+.weui-uploader__input-box {
+    float: left;
+    position: relative;
+    margin-right: 9px;
+    margin-bottom: 9px;
+    width: 77px;
+    height: 77px;
+    border: 1px solid #d9d9d9;
+}
+.weui-uploader__input-box:after,
+.weui-uploader__input-box:before {
+    content: ' ';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    background-color: #d9d9d9;
+}
+.weui-uploader__input-box:before {
+    width: 2px;
+    height: 39.5px;
+}
+.weui-uploader__input-box:after {
+    width: 39.5px;
+    height: 2px;
+}
+.weui-uploader__input-box:active {
+    border-color: #999;
+}
+.weui-uploader__input-box:active:after,
+.weui-uploader__input-box:active:before {
+    background-color: #999;
+}
+.weui-uploader__input {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+}
+
+.padding {
+    height: 20rpx;
+}
+</style>
+
+
+<script>
+import wepy from 'wepy'
+import Button from '../../components/button/button'
+import Select from '../../components/select/select'
+import Toptips from '../../components/toptips/toptips'
+import config from '../../config.js'
+import post from "../../common/post.js"
+let index = 0
+
+export default class AddPark extends wepy.page {
+    components = {
+        Button,
+        Select,
+        Toptips
+    }
+
+    data = {
+        files: [],
+        location: '点击获取地理位置',
+        submit: () => {
+            if (this.isButtonLoading) {
+                return
+            }
+            if (!this.longitude || !this.latitude) {
+                this.toptipsContent = '请选取地理位置'
+                this.isToptipsShow = true
+                this.$apply()
+                setTimeout(() => {
+                    this.isToptipsShow = false
+                    this.$apply()
+                }, 3000)
+                return
+            }
+            if (this.files.length === 0) {
+                this.toptipsContent = '请选择车位凭证照片上传'
+                this.$apply()
+                this.isToptipsShow = true
+                this.$apply()
+                setTimeout(() => {
+                    this.isToptipsShow = false
+                    this.$apply()
+                }, 3000)
+                return
+            }
+            this.isButtonLoading = true
+            this.$apply()
+            const uploadImage = () => {
+                let files = this.files.slice(),
+                    index = 0
+                const uploadFile = (files) => {
+                    let file = files.shift()
+                    if (!file) {
+                        console.log('upload all image')
+                        return
+                    }
+                    let task = wx.uploadFile({
+                        url: `${config.host}/user/upload`,
+                        filePath: file.path,
+                        name: String(index),
+                        formData: {
+                            openId: this.$parent.globalData.openId
+                        },
+                        success: () => {
+                            console.log('upload success')
+                        },
+                        fail: () => {}
+                    })
+                    task.onProgressUpdate((res) => {
+                        if (res.progress >= 100) {
+                            index++
+                            uploadFile(files)
+                        }
+                        this.files[index].isUploading = true
+                        this.files[index].isCancel = false
+                        this.files[index].progress = res.progress
+                        this.$apply()
+                        console.log(res)
+                    })
+                }
+                post(`${config.host}/user/park`, {
+                    kind: this.type,
+                    latitude: this.latitude,
+                    longitude: this.longitude,
+                    openId: this.$parent.globalData.openId,
+                    imageNumber: this.files.length
+                }).then((res) => {
+                    console.log(res)
+                }, (res) => {
+                    console.log(res)
+                })
+                uploadFile(files)
+            }
+        },
+        type: [
+            {
+                value: '3',
+                name: '企业类'
+            },
+            {
+                value: '4',
+                name: '个人类'
+            }
+        ],
+        selectedType: '3',
+        changeSelect: (event) => {
+            this.selectedType = event.detail.value
+            this.$apply()
+        },
+        latitude: '',
+        longitude: '',
+        isToptipsShow: false,
+        toptipsContent: '',
+        isButtonLoading: false
+    }
+
+    methods = {
+        chooseImage(e) {
+            wx.chooseImage({
+                count: 9, // 默认9
+                sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
+                sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+                success: (res) => {
+                    // 返回选定照片的本地文件路径列表，tempFilePath可以作为img标签的src属性显示图片
+                    let tempFilePaths = res.tempFilePaths.map((path) => ({
+                        path,
+                        isUploading: false,
+                        isCancel: false,
+                        index: index++
+                    }))
+                    this.files = this.files.concat(tempFilePaths)
+                    this.$apply()
+                }
+            })
+        },
+        previewImage(e) {
+            wepy.previewImage({
+                current: e.currentTarget.id, // 当前显示图片的http链接
+                urls: [e.currentTarget.id] // 需要预览的图片http链接列表
+            })
+        },
+        showDelete: (event) => {
+            let activeIndex = parseInt(event.currentTarget.dataset.index)
+            this.files.forEach((value, index) => {
+                if (value.index === activeIndex) {
+                    this.files[index].isCancel = !this.files[index].isCancel
+                }
+            })
+            this.$apply()
+        },
+        deleteImage: (event) => {
+            let index = parseInt(event.currentTarget.dataset.index)
+            this.files = this.files.filter((value) => {
+                return value.index !== index
+            })
+            this.$apply()
+        },
+        getLocation: () => {
+            wx.getLocation({
+                type: 'wgs84',
+                altitude: true,
+                success: (res) => {
+                    this.location = `${res.latitude}, ${res.longitude}`
+                    this.latitude = res.latitude
+                    this.longitude = res.longitude
+                    this.$apply()
+                }
+            })
+        }
+    }
+
+    onLoad() {}
+
+    config = {
+        navigationBarTitleText: '新增停车位'
+    }
+}
+</script>

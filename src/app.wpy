@@ -6,7 +6,15 @@ import post from './common/post.js'
 
 export default class extends wepy.app {
     config = {
-        pages: ['pages/find/find', 'pages/more/more', "pages/publish-park/publish-park",'pages/search/search'],
+        pages: [
+            'pages/find/find',
+            'pages/more/more',
+            'pages/publish-park/publish-park',
+            'pages/search/search',
+            "pages/add-park/add-park",
+            "pages/plate-number/plate-number",
+            "pages/park-detail/park-detail"
+        ],
         window: {
             backgroundTextStyle: 'light',
             navigationBarBackgroundColor: '#fff',
@@ -43,7 +51,7 @@ export default class extends wepy.app {
     onLaunch() {
         console.log('launch')
         wx.getSystemInfo({
-            success: data => {
+            success: (data) => {
                 console.log(data)
                 this.globalData.mapHeight =
                     data.windowHeight - data.windowWidth * 0.48
@@ -60,13 +68,13 @@ export default class extends wepy.app {
         })
 
         wx.login({
-            success: res => {
+            success: (res) => {
                 post(config.loginUrl, { code: res.code }).then(
-                    res => {
+                    (res) => {
                         console.log(res)
                         this.globalData.openId = res.data.openid
                     },
-                    err => {
+                    (err) => {
                         console.log(err)
                     }
                 )
