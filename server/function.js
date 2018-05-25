@@ -28,7 +28,7 @@ var pool = mysql.createPool(options);
 
 
 exports.addowner = function (openId) {
-  sql = 'insert into owner (openId) values(' + openId + ')'
+  sql = 'insert into owner (openId) values("' + openId + '")'
   conn.query(sql, function (err, result) {
     if (err) throw err;
     console.log(result);
@@ -214,7 +214,7 @@ var query = function (sql, options, callback) {
 exports.selectowner = function (idORopenId, content, callback) {
   return new Promise(function (resolve, reject) {
     var option = new Array();
-    var sql = 'select * from owner where ' + String(idORopenId) + '=' + String(content)
+    var sql = 'select * from owner where ' + String(idORopenId) + '= "' + String(content)+'"'
     query(sql, [1], function (err, rows, fields) {
       if (err) {
         reject(err);
