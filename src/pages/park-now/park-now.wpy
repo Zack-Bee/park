@@ -1,0 +1,21 @@
+<template>
+<view>
+    <view>您车牌号为停在</view>
+    <view>东北大学停车场</view>
+</view>
+
+</template>
+
+<style scoped>
+
+</style>
+
+<script>
+import wepy from 'wepy'
+
+export default class ParkNow extends wepy.page {
+
+
+}
+</script>
+

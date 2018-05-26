@@ -14,39 +14,42 @@
 
 <script>
 import wepy from 'wepy'
+var QQMapWX = require('../../libs/qqmap-wx-jssdk.js')
+var qqmapsdk
 export default class Map extends wepy.component {
     props = {
         height: {
             type: Number,
             default: 375
         },
-        scale :{
+        scale: {
             type: Number,
             default: 18
         }
     }
     data = {
+        resData: [],
         scale: 16,
         latitude: '',
         longitude: '',
         markers: [
             //做个循环 search获取到的进行id分配 然而不会写循坏的id分配和关闭程序后free掉id
             {
-                iconPath: "../../components/map/parking.png",
+                iconPath: '../../components/map/parking.png',
                 id: 1,
-                latitude:41.65213,
-                longitude:123.423030,
-                width: 40*wx.getStorageSync("MapScreenW"),
-                height: 40*wx.getStorageSync("MapScreenW"),
-                callout:{
-                    content:'我是个气泡\n我会显示价格\n还有剩余车位量',
-                    fontSize:14,
-                    color:'#ffffff',
-                    bgColor:'#000000',
-                    padding:8,
-                    borderRadius:4,
-                    boxShadow:'4px 8px 16px 0 rgba(0)',
-                    display:"BYCLICK"
+                latitude: 41.65213,
+                longitude: 123.42303,
+                width: 40 * wx.getStorageSync('MapScreenW'),
+                height: 40 * wx.getStorageSync('MapScreenW'),
+                callout: {
+                    content: '我是个气泡\n我会显示价格\n还有剩余车位量',
+                    fontSize: 14,
+                    color: '#ffffff',
+                    bgColor: '#000000',
+                    padding: 8,
+                    borderRadius: 4,
+                    boxShadow: '4px 8px 16px 0 rgba(0)',
+                    display: 'BYCLICK'
                 }
             }
         ],
@@ -84,20 +87,24 @@ export default class Map extends wepy.component {
                 },
                 clickable: true
             }
-        ],
+        ]
     }
+
     onLoad() {
+        qqmapsdk = new QQMapWX({
+            key: 'SO6BZ-MGZW3-C563P-Y57QJ-Q3SOS-UDBF5'
+        })
         // wx.openSetting({
-            // success: res => {
-                // res.authSetting = {
-                    // 'scope.userLocation': true
-                // }
-            // }
+        // success: res => {
+        // res.authSetting = {
+        // 'scope.userLocation': true
+        // }
+        // }
         // })
         wx.getLocation({
             //获得用户当前位置
             type: 'gcj02',
-            success: res => {
+            success: (res) => {
                 var latitude = res.latitude
                 var longitude = res.longitude
                 this.latitude = latitude
@@ -106,8 +113,88 @@ export default class Map extends wepy.component {
                 console.log(res)
             }
         })
+        qqmapsdk.search({
+            keyword: '停车场',
+            success: (res) => {
+                console.log(res)
+                var resData = res.data
+                var lengthErr = resData.length
+                for (var i = 0; i < resData.length; i++) {
+                    resData[i]._distance = this.formatDistance(
+                        resData[i]._distance
+                    ) //转换一下距离的格式
+                    var parkLat = resData[i].location.lat
+                    var parkLong = resData[i].location.lng
+                    var id = resData[i].id
+                    var marker = {
+                        latitude: parkLat,
+                        longitude: parkLong,
+                        iconPath: '../../components/map/parking.png',
+                        id: id,
+                        width: 40 * wx.getStorageSync('MapScreenW'),
+                        height: 40 * wx.getStorageSync('MapScreenW'),
+                        callout: {
+                            content:
+                                '我是个气泡\n我会显示价格\n还有剩余车位量', //callout的content数据传入
+                            fontSize: 14,
+                            color: '#ffffff',
+                            bgColor: '#000000',
+                            padding: 8,
+                            borderRadius: 4,
+                            boxShadow: '4px 8px 16px 0 rgba(0)',
+                            display: 'BYCLICK'
+                        }
+                    }
+                    console.log(marker)
+                }
+                this.setData({ resData: resData })
+            },
+            fail: (res) => {
+                console.log('ERROR!!!!!')
+            }
+        })
+        /*qqmapsdk.reverseGeocoder({
+            success: (res) => {
+                console.log('444')
+                console.log(res)
+                console.log('555')
+                var resData = res.data
+                for (var i = 0; i < resData.length; i++) {
+                    var parkLat = Number(resData[i]._latitude)
+                    var parkLong = Number(resData[i]._longitude)
+                    var id = Number(i)
+                    var marker = {
+                        latitude: parkLat,
+                        longitude: parkLong,
+                        iconPath: '../../components/map/parking.png',
+                        id: id,
+                        width: 40 * wx.getStorageSync('MapScreenW'),
+                        height: 40 * wx.getStorageSync('MapScreenW'),
+                        callout: {
+                            content: '我是个气泡\n我会显示价格\n还有剩余车位量', //callout的content数据传入
+                            fontSize: 14,
+                            color: '#ffffff',
+                            bgColor: '#000000',
+                            padding: 8,
+                            borderRadius: 4,
+                            boxShadow: '4px 8px 16px 0 rgba(0)',
+                            display: 'BYCLICK'
+                        }
+                    }
+                }
+            },
+            fail: (res) => {
+                console.log('ERROR!!!!!????')
+            }
+        })*/
     }
-
+    formatDistance(num) {
+        if (num < 1000) {
+            return num.toFixed(0) + 'm'
+        } else if (num > 1000) {
+            return (num / 1000).toFixed(1) + 'km'
+        }
+    }
     /*getParkList() {
         //需要判断是否连入网络
         wx.request({
@@ -183,7 +270,7 @@ export default class Map extends wepy.component {
     },*/
 
     methods = {
-        markertap (e) {
+        markertap(e) {
             console.log(e.markerId)
             console.log(e.latitude)
             console.log(e.longitude)
@@ -194,7 +281,8 @@ export default class Map extends wepy.component {
                 this.mapCtx = wx.createMapContext('map-body')
                 this.mapCtx.moveToLocation()
                 this.scale = 16
-            }if (e.controlId === 3) {
+            }
+            if (e.controlId === 3) {
                 //点击搜索按钮进入搜索界面
                 wx.navigateTo({
                     url: '../search/search',
@@ -210,4 +298,3 @@ export default class Map extends wepy.component {
     }
 }
 </script>
-

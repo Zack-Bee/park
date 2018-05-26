@@ -4,7 +4,7 @@
         <text>离我最近</text>
     </view>
     <block>
-        <view bindtap="clickclosest" class="parkingView">
+        <view class="parkingView">
             <view class="parkingLeft">
             <image class="parkingImage" src="../../components/closest/company.png" /><!--{{item.parkingImage}}-->
             <view class="parkingType">企业类</view>
@@ -14,8 +14,16 @@
                 <text class="parkingPrice">￥0<!--{{item.parkingsPrice}}--></text>
                 <!--距离-->
                 <view class="parkingMsg">
-                    <bottom>现在停车</bottom>
-                    <bottom class="parkingRightText">距离10m<!--{{item.metersnum}}--></bottom>
+                    <view class="parkingLefttext" type="primary" bindtap="clicknow">
+                        <text style="font-size:30rpx">现在</text>
+                        <text style="color:#00dd00;font-size:40rpx"> 停车 </text>
+                        <text style="font-size:30rpx">吧</text>
+                    </view>
+                    <view class="parkingRightText">
+                        <text style="font-size:30rpx">距离</text>
+                        <text style="color:#00dd00;font-size:40rpx"> 10 <!--{{item.metersnum}}--></text>
+                        <text style="font-size:30rpx">米</text>
+                    </view>
                 </view>
             </view>
         </view>
@@ -25,11 +33,10 @@
 
 <style scoped>
 
-
+/*不自然的下横线*/
 .closesttapname{
     text-align: center;
-    border-bottom:1px solid #C0C0C0;
-    border-top: 1px solid #C0C0C0;
+    border-bottom:1px solid #C0C0C0;  
 }
 /**
  * 停车场样式
@@ -70,19 +77,35 @@
     margin-top: 10rpx;
 }
 
-/*简介*/
+/*两个按钮*/
 
-.parkingMsg {
-    margin-top: 8rpx;
-    flex-direction: row;
+.parkingMsg{
+    flex: row;
 }
-
+.parkingLefttext{
+    display: inline-block;
+}
 .parkingRightText {
+    float: right;
     position: absolute;
-    right: 0;
-    margin-right: 10rpx;
+    right: 0rpx;
+    
 }
-
+.parkingLefttext,.parkingRightText{
+    display: inline-block;
+    line-height:2;
+    margin-left:auto;
+    margin-right:auto;
+    padding-left:14px;
+    padding-right:14px;
+    box-sizing:border-box;
+    font-size:18px;
+    text-align:center;
+    text-decoration:none;
+    border-radius:5px;
+    -webkit-tap-highlight-color:transparent;
+    overflow:hidden;
+}
 /*整体view样式*/
 .clickclosest{
     display: flex;
@@ -97,7 +120,22 @@
 
 <script>
 import wepy from 'wepy'
+
 export default class Closest extends wepy.component {
+    methods = {
+        clicknow(){
+            //点击进入停车选择
+            wx.navigateTo({
+                    url: '../park-now/park-now',
+                    success: (res) => {
+                        console.log(res)
+                    },
+                    fail: (err) => {
+                        console.log(err)
+                    }
+                })
+        }
+    }
 }
 </script>
 
