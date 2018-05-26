@@ -9,8 +9,8 @@
             <image class="parkingImage" src="../../components/closest/company.png" /><!--{{item.parkingImage}}-->
             <view class="parkingType">企业类</view>
             </view>
-            <view class="parkingLeftView">
-                <text class="parkingName">东北大学停车场<!--{{item.parkingsName}}--> </text>
+            <view class="parkingLeftView"  wx:key="parking">
+                <text class="parkingName">{{post.title}}</text>
                 <text class="parkingPrice">￥0<!--{{item.parkingsPrice}}--></text>
                 <!--距离-->
                 <view class="parkingMsg">
@@ -21,7 +21,7 @@
                     </view>
                     <view class="parkingRightText">
                         <text style="font-size:30rpx">距离</text>
-                        <text style="color:#00dd00;font-size:40rpx"> 10 <!--{{item.metersnum}}--></text>
+                        <text style="color:#00dd00;font-size:40rpx">{{item._distance}}</text>
                         <text style="font-size:30rpx">米</text>
                     </view>
                 </view>
@@ -59,7 +59,6 @@
 /*左侧文本整体样式*/
 
 .parkingLeftView {
-    width: 250px;
     margin-left: 60rpx;
     display: flex;
     flex-direction: column;
@@ -120,8 +119,41 @@
 
 <script>
 import wepy from 'wepy'
-
+var QQMapWX = require('../../libs/qqmap-wx-jssdk.js')
+var qqmapsdk
 export default class Closest extends wepy.component {
+    data={
+        post:[]
+    }
+    onLoad() {
+        qqmapsdk = new QQMapWX({
+            key: 'SO6BZ-MGZW3-C563P-Y57QJ-Q3SOS-UDBF5'
+        })
+        qqmapsdk.search({
+            keyword: '停车场',
+            success: (res) => {
+                console.log(res)
+                var resData = res.data
+                for (var i = 0; i < resData.length; i++) {
+                    resData[i]._distance = this.formatDistance(
+                        resData[i]._distance
+                    ) //转换一下距离的格式
+                this.setData({  resData: resData,
+                                post : res.data[0]})
+                }                console.log(post)
+            },
+            fail: (res) => {
+                console.log('ERROR!!!!!')
+            }
+        })
+    }
+    formatDistance(num) {
+        if (num < 1000) {
+            return num.toFixed(0) + 'm'
+        } else if (num > 1000) {
+            return (num / 1000).toFixed(1) + 'km'
+        }
+    }
     methods = {
         clicknow(){
             //点击进入停车选择
