@@ -126,7 +126,7 @@ export default class Map extends wepy.component {
                     var parkLat = resData[i].location.lat
                     var parkLong = resData[i].location.lng
                     var id = resData[i].id
-                    var marker = {
+                    var markers = {
                         latitude: parkLat,
                         longitude: parkLong,
                         iconPath: '../../components/map/parking.png',
@@ -145,7 +145,7 @@ export default class Map extends wepy.component {
                             display: 'BYCLICK'
                         }
                     }
-                    console.log(marker)
+                    console.log(markers)
                 }
                 this.setData({ resData: resData })
             },

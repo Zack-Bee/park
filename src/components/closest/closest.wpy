@@ -14,7 +14,7 @@
                 <text class="parkingPrice">￥0<!--{{item.parkingsPrice}}--></text>
                 <!--距离-->
                 <view class="parkingMsg">
-                    <view class="parkingLefttext" type="primary" bindtap="clicknow">
+                    <view class="parkingLefttext" type="primary" catchtap="clicknow">
                         <text style="font-size:30rpx">现在</text>
                         <text style="color:#00dd00;font-size:40rpx"> 停车 </text>
                         <text style="font-size:30rpx">吧</text>

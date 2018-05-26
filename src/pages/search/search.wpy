@@ -16,73 +16,132 @@
         </view>
         <view class="weui-search-bar__cancel-btn" hidden="{{!inputShowed}}" bindtap="hideInput">取消</view>
     </view>
-    <view class="weui-cells searchbar-result" wx:if="{{inputVal.length > 0}}">
-        <navigator url="" class="weui-cell" hover-class="weui-cell_active">
-            <view class="weui-cell__bd">
-                <view>停车场数据1</view>
+    <!--循环出附近停车场-->
+    <view wx:for="{{resData}}" wx:key="parking" wx:if="{{inputVal.length === 0}}">
+        <view bindtap="navTo" data-item="{{item}}">
+            <view class="weui-panel">
+                <view class="weui-panel__bd">
+                    <view class="weui-media-box weui-media-box_text">
+                        <view class="weui-media-box__title weui-media-box__title_in-text">{{item.title}}</view>
+                        <view class="weui-media-box__desc">{{item.address}}</view>
+                        <view class="weui-media-box__info">
+                            <view class="weui-media-box__info__meta">￥0</view>
+                            <view class="weui-media-box__info__meta weui-media-box__info__meta_extra">
+                                <view class="distance_show">距离：{{item._distance}}</view></view>
+                            <view class="weui-media-box__info__meta weui-media-box__info__meta_extra">
+                                <view class="distance_show">剩余车位：10<!--动态获取--></view></view>
+                        </view>
+                    </view>
+                </view>
             </view>
-        </navigator>
-        <navigator url="" class="weui-cell" hover-class="weui-cell_active">
-            <view class="weui-cell__bd">
-                <view>停车场数据2</view>
+        </view>
+    </view>
+    <!--搜索关键词拓展-->
+    <view wx:for="{{resrchData}}" class="weui-cells searchbar-result" wx:if="{{inputVal.length > 0}}">
+        <view bindtap="navTo" data-item="{{item}}">
+            <view class="weui-panel">
+                <view class="weui-panel__bd">
+                    <view class="weui-media-box weui-media-box_text">
+                        <view class="weui-media-box__title weui-media-box__title_in-text">{{item.title}}</view>
+                        <view class="weui-media-box__desc">{{item.address}}</view>
+                        <view class="weui-media-box__info">
+                            <view class="weui-media-box__info__meta">￥0</view>
+                            <view class="weui-media-box__info__meta weui-media-box__info__meta_extra">
+                                <view class="distance_show">距离：{{item._distance}}</view></view>
+                            <view class="weui-media-box__info__meta weui-media-box__info__meta_extra">
+                                <view class="distance_show">剩余车位：10<!--动态获取--></view></view>
+                        </view>
+                    </view>
+                </view>
             </view>
-        </navigator>
-        <navigator url="" class="weui-cell" hover-class="weui-cell_active">
-            <view class="weui-cell__bd">
-                <view>停车场数据3</view>
-            </view>
-        </navigator>
-        <navigator url="" class="weui-cell" hover-class="weui-cell_active">
-            <view class="weui-cell__bd">
-                <view>停车场数据4</view>
-            </view>
-        </navigator>
+        </view>
     </view>
 </view>
 </template>
 
 <style scoped>
 @import './weui-searchbar.wxss';
-.searchbar-result{
+@import './weui-media-box.wxss';
+@import './weui-panel.wxss';
+.searchbar-result {
     margin-top: 0;
     font-size: 14px;
 }
-.searchbar-result:before{
+.searchbar-result:before {
     display: none;
 }
-.weui-cell{
+.weui-cell {
     padding: 50px 15px 50px 35px;
 }
 </style>
 
 <script>
 import wepy from 'wepy';
-
+var QQMapWX = require('../../libs/qqmap-wx-jssdk.js')
+var qqmapsdk
 export default class Search extends wepy.page {
     data = {
         inputShowed: false,
         inputVal: '',
     }
     onLoad(option) {
-        console.log('\n')
+        qqmapsdk = new QQMapWX({
+            key: 'SO6BZ-MGZW3-C563P-Y57QJ-Q3SOS-UDBF5'
+        })
         console.log(option)
-        console.log('\n')
     }
-        showInput () {
-            this.inputShowed = true
-            console.log('hhh')
+    onShow(){
+        qqmapsdk.search({
+            keyword: '停车场',
+            success: (res) => {
+                console.log(res)
+                var resData = res.data
+                for (var i = 0; i < resData.length; i++) {
+                    resData[i]._distance = this.formatDistance(
+                        resData[i]._distance
+                    ) //转换一下距离的格式
+                this.setData({ resData: resData })
+                }
+            },
+            fail: (res) => {
+                console.log('ERROR!!!!!')
+            }
+        })
+        qqmapsdk.getSuggestion({
+            keyword: '停车场',
+            region_fix: 1 ,
+            policy: 1,
+            success: (res) => {
+                console.log(res)
+                var resrchData = res.data
+            },
+            fail: (res) => {
+                console.log('ERROR!!!!!')
+            }
+        })
+    }
+    formatDistance(num) {
+        if (num < 1000) {
+            return num.toFixed(0) + 'm'
+        } else if (num > 1000) {
+            return (num / 1000).toFixed(1) + 'km'
         }
-        hideInput () {
-            this.inputVal = "",
-            this.inputShowed = false
-        }
-        clearInput () {
-            this.inputVal = ""
-        }
-        inputTyping (e) {
-            this.inputVal= e.detail.value
-            console.log('hhh')
-        }
+    }
+    showInput () {
+        this.inputShowed = true
+        console.log('hhh')
+    }
+    hideInput () {
+        this.inputVal = "",
+        this.inputShowed = false
+    }
+    clearInput () {
+        this.inputVal = ""
+    }
+    inputTyping (e) {
+        this.inputVal= e.detail.value
+        console.log('hhh')
+    }
 
 }
 </script>
