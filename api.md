@@ -21,7 +21,7 @@ eg:
 ### /user/parks
 #### Method: POST
 #### Usage: 获取租赁用户的停车位信息, 3类用户查看停车场信息, 4类用户查看本周的预计收入
-
+#### Type: get
 ```
 requestDataType: json
 eg:
@@ -53,6 +53,7 @@ eg:
 
 #### Method: POST
 #### Usage: 从数据库中删除指定的车位信息, 用于用户管理自己的车位
+#### Type: delete
 ```
 requestDataType: json
 eg:
@@ -65,6 +66,7 @@ eg:
 
 #### Method: POST
 #### Usage: 用于车位主发布车位信息, 开放车位, 3类用户可以选择车位的价格, 4类用户由我们确定
+#### Type: open
 ```
 requestDataType: json
 eg:
@@ -153,6 +155,7 @@ eg: 十月八号到十一月十一号
 
 #### Method: POST
 #### Usage: 用于停止发布停车场
+#### Type: close
 ```
 requestDataType: json
 eg:
@@ -165,6 +168,7 @@ eg:
 
 #### Method: POST
 #### Usage: 用于获得停车场的详细信息
+#### Type: detail
 ```
 requestDataType: json
 eg:
@@ -215,6 +219,7 @@ responseDataType: json
 ### /user/platenumber
 #### Method: POST
 #### Usage: 获取用户的车牌信息
+#### Type: get
 ```
 requestDataType: json
 eg:
@@ -234,12 +239,45 @@ eg:
 
 #### Method: POST
 #### Usage: 添加用户的车牌信息
-````
+#### Type: add
+```
 requestDataType: json
 eg:
 {
     openId: "123456789",
     type: "add",
     plateNumber: "甲A-12345"
+}
+```
+
+### /user/history
+#### Method: POST
+#### Usage: 获取用户停车的历史记录, 正在使用的行程
+#### Type: get
+```
+每次请求得到十条记录, delta表示离现在或者这个月里最近的信息批次,
+假如有100条历史记录, 最新的记录序号为100, 则当delta为1时, 返回100-91的记录
+requestDataType: json
+eg:
+{
+    openId: "12345566",
+    type: "get",
+    filter: "all" | "month",
+    delta: 1
+}
+
+responseDataType: json
+eg
+{
+    isPaid: true, // 表示是否已经完成付款
+    isDone: true, // 表示行程是否已经完成
+    parkLocation: "123.45, 456.78", // 表示停车场的坐标
+    startTime: "12:00" // 表示开始停车的时间,
+    startDate: "08-27" // 开始停车的日期,
+    endTime: "23:00" // 停车结束的事件,
+    endDate: "08-28" // 停车结束的日期 // 如果行程未完成则是当前的日期, 当前的时间
+    fee: 19.80, // 停车的费用
+    recordId: "1929292" // 这条记录的编号,
+    parkId: "31232" // 停车场的编号
 }
 ```
