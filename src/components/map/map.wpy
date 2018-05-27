@@ -127,6 +127,8 @@ export default class Map extends wepy.component {
                 console.log('ERROR!!!!!')
             }
         })    
+        /*
+        
         post(`${config.host}/user/upload`, {
             kind: this.selectedType,
             latitude: this.latitude,
@@ -139,7 +141,7 @@ export default class Map extends wepy.component {
             (res) => {
                 console.log(res)
             }
-        )
+        )*/
     }
     formatDistance(num) {
         if (num < 1000) {
