@@ -61,14 +61,14 @@ exports.addparkingtime = function (parking, time, price, rentNumber, kind) {
     console.log(result);
   })
 }
-exports.addhistory = function (parking, time, pay, carNumber, parkingName, openId) {
+exports.addhistory = function (parking, time, pay, carNumber, parkLocation, openId) {
   var bb = parking
   var cc = "'" + time + "'"
   var dd = "'" + pay + "'"
   var ee = "'" + carNumber + "'"
-  var ff = "'" + parkingName + "'"
+  var ff = "'" + parkLocation + "'"
   var gg = "'" + openId + "'"
-  sql = 'insert into history (parking, time, pay, carNumber,parkingName, openId) values(' + bb + ',' + cc + ',' + dd + ',' + ee + ',' + ff + ',' + gg + ')'
+  sql = 'insert into history (parking, time, pay, carNumber,parkLocation, openId) values(' + bb + ',' + cc + ',' + dd + ',' + ee + ',' + ff + ',' + gg + ')'
   conn.query(sql, function (err, result) {
     if (err) throw err;
     console.log(result);
@@ -85,7 +85,7 @@ exports.adduser = function (openId, carNumber) {
 }
 
 exports.changeone = function (pph, id, what, value) {
-  var modSql = 'UPDATE '+ pph +' SET '+what+' = ?'+' WHERE id = ?';
+  var modSql = 'UPDATE ' + pph + ' SET ' + what + ' = ?' + ' WHERE id = ?';
   var modSqlParams = [value, id];
   conn.query(modSql, modSqlParams, function (err, result) {
     if (err) {
@@ -95,7 +95,7 @@ exports.changeone = function (pph, id, what, value) {
 }
 
 exports.changeou = function (ou, openId, what, value) {
-  var modSql = 'UPDATE '+ ou +' SET '+what+' = ?'+' WHERE openId = ?';
+  var modSql = 'UPDATE ' + ou + ' SET ' + what + ' = ?' + ' WHERE openId = ?';
   var modSqlParams = [value, openId];
   conn.query(modSql, modSqlParams, function (err, result) {
     if (err) {
@@ -266,17 +266,17 @@ exports.selectparkingtime = function (idORparkingORtimeORpriceORrentNumberORkind
   })
 }
 
-exports.selecthistory = function (idORparkingORtimeORpayORcarNumberORparkingNameORopenId, content, callback) {
+exports.selecthistory = function (idORparkingORtimeORpayORcarNumberORparkingLocationORopenId, content, callback) {
   return new Promise(function (resolve, reject) {
     var option = new Array();
-    var sql = 'select * from history where ' + String(idORparkingORtimeORpayORcarNumberORparkingNameORopenId) + '=' + String(content)
+    var sql = 'select * from history where ' + String(idORparkingORtimeORpayORcarNumberORparkingLocationORopenId) + '=' + String(content)
     query(sql, [1], function (err, rows, fields) {
       if (err) {
         reject(err);
       } else {
         resolve(rows);
         for (var i = 0; i < rows.length; i++) {
-          option.push({ 'id': rows[i].id, 'parking': rows[i].parking, 'time': rows[i].time, 'pay': rows[i].pay, 'carNumber': rows[i].carNumber, 'parkingName': rows[i].parkingName, 'openId': rows[i].openId });
+          option.push({ 'id': rows[i].id, 'parking': rows[i].parking, 'time': rows[i].time, 'pay': rows[i].pay, 'carNumber': rows[i].carNumber, 'parkingLocation': rows[i].parkLocation, 'openId': rows[i].openId, 'isPaid': rows[i].isPaid, 'isDone': rows[i].isDone });
         }
         callback(option)
       }

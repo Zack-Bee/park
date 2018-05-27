@@ -28,8 +28,10 @@ CREATE TABLE `history` (
   `time` varchar(50) DEFAULT NULL,
   `pay` varchar(50) DEFAULT NULL,
   `carNumber` varchar(50) DEFAULT NULL,
-  `parkingName` varchar(50) DEFAULT NULL,
+  `parkLocation` varchar(50) DEFAULT NULL,
   `openId` varchar(50) NOT NULL,
+  `isPaid` int(11) DEFAULT 0,
+  `isDone` int(11) DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -40,7 +42,7 @@ CREATE TABLE `history` (
 
 LOCK TABLES `history` WRITE;
 /*!40000 ALTER TABLE `history` DISABLE KEYS */;
-INSERT INTO `history` VALUES (1,1,'2018.5.19.13.45-2018.5.20.15.30','20','辽abdkab','不知道是哪的停车场','1');
+INSERT INTO `history` VALUES (1,1,'2018.5.19.13.45-2018.5.20.15.30','20','辽abdkab','不知道是哪的停车场','1',1,1);
 /*!40000 ALTER TABLE `history` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -57,7 +59,7 @@ CREATE TABLE `owner` (
   `name` varchar(50) DEFAULT NULL,
   `idCard` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -66,7 +68,7 @@ CREATE TABLE `owner` (
 
 LOCK TABLES `owner` WRITE;
 /*!40000 ALTER TABLE `owner` DISABLE KEYS */;
-INSERT INTO `owner` VALUES (1,'1',NULL,NULL),(2,'2',NULL,NULL),(3,'3',NULL,NULL),(4,'odpVJ5Lutx-arHao6e2yZXr_tUOs',NULL,NULL);
+INSERT INTO `owner` VALUES (1,'1',NULL,NULL),(2,'2',NULL,NULL),(3,'3',NULL,NULL),(4,'odpVJ5Lutx-arHao6e2yZXr_tUOs',NULL,NULL),(5,'6',NULL,NULL),(6,'7',NULL,NULL),(7,'odpVJ5H4eD72NnoCaoIZ6PN5nSUY',NULL,NULL);
 /*!40000 ALTER TABLE `owner` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -86,9 +88,9 @@ CREATE TABLE `parking` (
   `lola` varchar(100) DEFAULT NULL,
   `number` int(11) DEFAULT NULL,
   `lease` varchar(255) DEFAULT NULL,
-  `isOpen` int(11) DEFAULT 0,
+  `isOpen` int(11) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -97,7 +99,7 @@ CREATE TABLE `parking` (
 
 LOCK TABLES `parking` WRITE;
 /*!40000 ALTER TABLE `parking` DISABLE KEYS */;
-INSERT INTO `parking` VALUES (1,'2',4,'出去','某地方','12,12',1,'wcarshg4we5',1),(2,'2',4,'某停车场2','某地方','12,12',1,'wcarshg4we5',0),(3,'5',4,'某停车场2','某地方','12,12',1,'wcarshg4we5',0),(4,'3',3,'某停车场2','某地方','12,12',500,'wcarshg4we5',0),(5,'4',3,'某停车场2','某地方','12,12',50,'wcarshg4we5',0),(6,'1',3,'某停车场2','某地方','12,12',5,'wcarshg4we5',0),(7,'1',3,'某停车场2','某地方','12,12',500,'wcarshg4we5',0),(8,'1',4,'某停车场2','某地方','12,12',1,'wcarshg4we5',0),(11,'1',4,NULL,NULL,'13.323,21.223',NULL,NULL,0),(12,'2',4,NULL,NULL,'13.323,21.223',NULL,NULL,0),(13,'3',4,'王邦铮的停车场',NULL,'13.323,21.223',NULL,NULL,1),(14,'100',3,'某停车场1','某地方','12,12',50,'wcarshg4we5rg',1);
+INSERT INTO `parking` VALUES (1,'2',4,'出去','某地方','12,12',1,'wcarshg4we5',1),(2,'2',4,'某停车场2','某地方','12,12',1,'wcarshg4we5',0),(3,'5',4,'某停车场2','某地方','12,12',1,'wcarshg4we5',0),(4,'3',3,'某停车场2','某地方','12,12',500,'wcarshg4we5',0),(5,'4',3,'某停车场2','某地方','12,12',50,'wcarshg4we5',0),(6,'1',3,'某停车场2','某地方','12,12',5,'wcarshg4we5',0),(7,'1',3,'某停车场2','某地方','12,12',500,'wcarshg4we5',0),(8,'1',4,'某停车场2','某地方','12,12',1,'wcarshg4we5',0),(11,'1',4,NULL,NULL,'13.323,21.223',NULL,NULL,0),(12,'2',4,NULL,NULL,'13.323,21.223',NULL,NULL,0),(13,'3',4,'王邦铮的停车场',NULL,'13.323,21.223',NULL,NULL,1),(14,'100',3,'某停车场1','某地方','12,12',50,'wcarshg4we5rg',1),(15,'6',4,'null','null','13.323,21.223',NULL,'null',0),(16,'7',4,'null','null','13.323,21.223',NULL,'null',0);
 /*!40000 ALTER TABLE `parking` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -116,7 +118,7 @@ CREATE TABLE `parkingtime` (
   `rentNumber` int(11) DEFAULT NULL,
   `kind` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -125,7 +127,7 @@ CREATE TABLE `parkingtime` (
 
 LOCK TABLES `parkingtime` WRITE;
 /*!40000 ALTER TABLE `parkingtime` DISABLE KEYS */;
-INSERT INTO `parkingtime` VALUES (1,1,'1.0.00-7.23.59','12',0,0),(2,1,'1.0.00-7.23.59','12',0,0),(3,6,'1.0.00-7.23.59','12',0,0),(4,3,'1.0.00-7.23.59','12',0,0),(5,4,'1.0.00-7.23.59','12',0,0),(6,7,'2018.5.14.12-2018.5.16.12','12',0,1),(7,8,'2018.5.14.12-2018.5.16.12','12',0,1),(8,1,'2018.5.14.12.00-2018.5.16.12.00','12',0,1),(10,6,'1.0.00-7.23.59','12',0,0),(12,6,'1.0.00-7.23.59','12',0,0),(13,7,'2018.5.14.12.00-2018.5.16.12.00','12',0,1),(14,8,'2018.5.14.12.00-2018.5.16.12.00','12',0,1),(15,7,'2018.5.14.12.00-2018.5.16.12.00','12',0,1),(17,14,'2018.1.1.0.00-2018.6.1.1.00','12',15,1),(18,14,'2019.1.1.0.00-2019.1.2.0.00','12',15,1),(20,9,'2018.1.1.8.00-2018.1.7.22.00',NULL,NULL,1),(27,13,'2018.1.1.8.00-2018.1.7.22.00',NULL,NULL,1);
+INSERT INTO `parkingtime` VALUES (1,1,'1.0.00-7.23.59','12',0,0),(2,1,'1.0.00-7.23.59','12',0,0),(3,6,'1.0.00-7.23.59','12',0,0),(4,3,'1.0.00-7.23.59','12',0,0),(5,4,'1.0.00-7.23.59','12',0,0),(6,7,'2018.5.14.12-2018.5.16.12','12',0,1),(7,8,'2018.5.14.12-2018.5.16.12','12',0,1),(8,1,'2018.5.14.12.00-2018.5.16.12.00','12',0,1),(10,6,'1.0.00-7.23.59','12',0,0),(12,6,'1.0.00-7.23.59','12',0,0),(13,7,'2018.5.14.12.00-2018.5.16.12.00','12',0,1),(14,8,'2018.5.14.12.00-2018.5.16.12.00','12',0,1),(15,7,'2018.5.14.12.00-2018.5.16.12.00','12',0,1),(17,14,'2018.1.1.0.00-2018.6.1.1.00','12',15,1),(18,14,'2019.1.1.0.00-2019.1.2.0.00','12',15,1),(20,9,'2018.1.1.8.00-2018.1.7.22.00',NULL,NULL,1),(31,13,'2018.1.1.8.00-2018.1.7.22.00','null',NULL,1);
 /*!40000 ALTER TABLE `parkingtime` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -163,4 +165,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-05-25 14:21:52
+-- Dump completed on 2018-05-28  0:24:13

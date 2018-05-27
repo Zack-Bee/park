@@ -1,7 +1,7 @@
 const fc = require('../../server/function')
 const ofc = require('../../server/otherfunction')
 const fs = require('fs');
-var path = require('path');  
+var path = require('path');
 const async = require('async');
 
 exports.login = async (ctx, next) => {
@@ -99,10 +99,11 @@ exports.userparks = async (ctx, next) => {
   else if (ctx.request.body.type == "delete") {
     fc.deleteparking(ctx.request.body.parkId)
     await fc.selectparkingtime("parking", ctx.request.body.parkId, function (option) {
-      fc.deleteparkingtime(option[0].id)})
+      fc.deleteparkingtime(option[0].id)
+    })
   }
   else if (ctx.request.body.type == "open") {
-    fc.changeone("parking",ctx.request.body.parkId,"isOpen",1)
+    fc.changeone("parking", ctx.request.body.parkId, "isOpen", 1)
     await fc.selectparkingtime("parking", ctx.request.body.parkId, function (option) {
       for (let i = 0; i < option.length; i++) {
         if (option) {
@@ -182,7 +183,7 @@ exports.userparks = async (ctx, next) => {
       this.startTime = "return err"
       this.endTime = "return err"
     }
-    await fc.selectparking("parking", ctx.request.body.parkId, function(option) {
+    await fc.selectparking("parking", ctx.request.body.parkId, function (option) {
       parking = option
       let t
       t = new KIND
@@ -194,9 +195,9 @@ exports.userparks = async (ctx, next) => {
       t.endDay = "waiting"
       t.startTime = "waiting"
       t.endTime = "waiting"
-      all=t
+      all = t
     })
-    await fc.selectparkingtime("parking", parking[0].id, function(option) {
+    await fc.selectparkingtime("parking", parking[0].id, function (option) {
       if (option) {
         let time = option[0].time
         time = time.split("-")
@@ -204,21 +205,21 @@ exports.userparks = async (ctx, next) => {
         start = start.split(".")
         let end = t[1]
         end = end.split(".")
-        if(start.length==3){
-        all.openType = "weekly"
-        all.startDay = start[0]
-        all.endDay = end[0]
-        all.startTime = start[1]+":"+start[2]
-        all.endTime = end[1]+":"+end[2]
-      }
-      if(start.length==5){
-        if(start[2]==end[2]){all.openType = "once"}
-        else{all.openType = "date"}
-        all.startDay = start[0]+"-"+start[1]+"-"+start[2]
-        all.endDay = end[0]+"-"+end[1]+"-"+end[2]
-        all.startTime = start[3]+":"+start[4]
-        all.endTime = end[3]+":"+end[4]
-      }
+        if (start.length == 3) {
+          all.openType = "weekly"
+          all.startDay = start[0]
+          all.endDay = end[0]
+          all.startTime = start[1] + ":" + start[2]
+          all.endTime = end[1] + ":" + end[2]
+        }
+        if (start.length == 5) {
+          if (start[2] == end[2]) { all.openType = "once" }
+          else { all.openType = "date" }
+          all.startDay = start[0] + "-" + start[1] + "-" + start[2]
+          all.endDay = end[0] + "-" + end[1] + "-" + end[2]
+          all.startTime = start[3] + ":" + start[4]
+          all.endTime = end[3] + ":" + end[4]
+        }
       }
       else {
         all.openType = null
@@ -230,9 +231,9 @@ exports.userparks = async (ctx, next) => {
     })
     ctx.response.body = all
   }
-  
+
   else if (ctx.request.body.type == "close") {
-    fc.changeone("parking",ctx.request.body.parkId,"isOpen",0)
+    fc.changeone("parking", ctx.request.body.parkId, "isOpen", 0)
     function c(option) {
       for (let i = 0; i < option.length; i++) {
         fc.deleteparkingtime(option[i].id)
@@ -277,52 +278,186 @@ exports.userplatenumber = async (ctx, next) => {
 }
 
 exports.upload = async (ctx, next) => {
-  if(ctx.request.body.kind){
+  if (ctx.request.body.kind) {
     fc.addparking(ctx.request.body.openId,
       ctx.request.body.kind, null, null,
       ctx.request.body.longitude + "," + ctx.request.body.latitude, null, null)
-    fc.selectowner("openId", '"'+ctx.request.body.openId+'"', function (option) {
+    fc.selectowner("openId", '"' + ctx.request.body.openId + '"', function (option) {
       if (option == "") {
-        fc.addowner('"'+ctx.request.body.openId+'"')
+        fc.addowner('"' + ctx.request.body.openId + '"')
       }
     })
   }
-  if(ctx.request.body.files){
-  if(ctx.request.body.fields.imageNumber==ctx.request.body.fields.index){
-    await fc.selectparking("openId", '"'+ctx.request.body.fields.openId+'"',function(option){
-      if(option!=""){
-      ctx.body={parkId:option[option.length-1].id}}
-      else{ctx.body={err:"该用户停车场上传失败"}}
-  })}
-  
-  await fs.exists(`upload/`+ctx.request.body.fields.openId, function(exists) {  
-    if(!exists){ 
-      function mkdir(dirpath,dirname) {  
-        if(typeof dirname === "undefined"){   
-            if(fs.existsSync(dirpath)){  
-                return;  
-            }else{  
-                mkdir(dirpath,path.dirname(dirpath));  
-            }  
-        }else{  
-            if(dirname !== path.dirname(dirpath)){   
-                mkdir(dirpath);  
-                return;  
-            }  
-            if(fs.existsSync(dirname)){  
-                fs.mkdirSync(dirpath)  
-            }else{  
-                mkdir(dirname,path.dirname(dirname));  
-                fs.mkdirSync(dirpath);  
-            }  
-        }  
-      } 
-mkdir(`upload/`+ctx.request.body.fields.openId)} 
-  const file = ctx.request.body.files.image;
-  const reader = fs.createReadStream(file.path);
-  const ext = file.name.split('.').pop(); 
-  let upStream = fs.createWriteStream(`upload/`+ctx.request.body.fields.openId+`/`+ctx.request.body.fields.index+`.jpg`);
-  reader.pipe(upStream);
-})}
-  
+  if (ctx.request.body.files) {
+
+
+    await fs.exists(`upload/` + ctx.request.body.fields.openId, function (exists) {
+      if (!exists) {
+        function mkdir(dirpath, dirname) {
+          if (typeof dirname === "undefined") {
+            if (fs.existsSync(dirpath)) {
+              return;
+            } else {
+              mkdir(dirpath, path.dirname(dirpath));
+            }
+          } else {
+            if (dirname !== path.dirname(dirpath)) {
+              mkdir(dirpath);
+              return;
+            }
+            if (fs.existsSync(dirname)) {
+              fs.mkdirSync(dirpath)
+            } else {
+              mkdir(dirname, path.dirname(dirname));
+              fs.mkdirSync(dirpath);
+            }
+          }
+        }
+        mkdir(`upload/` + ctx.request.body.fields.openId)
+      }
+      const file = ctx.request.body.files.image;
+      const reader = fs.createReadStream(file.path);
+      const ext = file.name.split('.').pop();
+      let upStream = fs.createWriteStream(`upload/` + ctx.request.body.fields.openId + `/` + ctx.request.body.fields.index + `.jpg`);
+      reader.pipe(upStream);
+      if (ctx.request.body.fields.imageNumber != ctx.request.body.fields.index) {
+        ctx.body = {}
+      }
+    })
+    if (ctx.request.body.fields.imageNumber == ctx.request.body.fields.index) {
+      await fc.selectparking("openId", '"' + ctx.request.body.fields.openId + '"', function (option) {
+        if (option != "") {
+          ctx.body = { parkId: option[option.length - 1].id }
+        }
+        else { ctx.body = { err: "该用户停车场上传失败" } }
+        fs.rename(`upload/` + ctx.request.body.fields.openId, `upload/` + ctx.request.body.fields.openId + "-" + option[option.length - 1].id, function (err) {
+          console.log("将文件名修改为openid+parkid失败");
+        })
+      })
+    }
+  }
+}
+
+exports.gethistory = async (ctx, next) => {
+  if (ctx.request.body.type == "get") {
+    await fc.selecthistory("openId", ctx.request.body.openId, function (option) {
+      if (option.length <= 10) {
+        all = []
+        function RESP() {
+          this.isPaid = "return err"
+          this.isDone = "return err"
+          this.parkLocation = "return err"
+          this.startTime = "return err"
+          this.startDate = "return err"
+          this.endTime = "return err"
+          this.endDate = "return err"
+          this.fee = "return err"
+          this.recordId = "return err"
+          this.parkId = "return err"
+        }
+        for (let i = 0; i < option.length; i++) {
+          let t = new RESP
+          t.isPaid = option[i].isPaid
+          t.isDone = option[i].isDone
+          t.parkLocation = option[i].parkLocation
+          t.fee = option[i].pay
+          t.recordId = option[i].id
+          t.parkId = option[i].parking
+          let time = option[i].time
+          time = time.split("-")
+          let s = time[0]
+          let e = time[1]
+          s = s.split(".")
+          e = e.split(".")
+          t.startTime = s[3] + ":" + s[4]
+          t.startDate = s[0] + "-" + s[1] + "-" + s[2]
+          t.endTime = e[3] + ":" + e[4]
+          t.endDate = e[0] + "-" + e[1] + "-" + e[2]
+          all.push(t)
+        }
+        all = all.reverse()
+        ctx.body = all
+      }
+      else if (ctx.request.body.filter == "month") {
+        all = []
+        function RESP() {
+          this.isPaid = "return err"
+          this.isDone = "return err"
+          this.parkLocation = "return err"
+          this.startTime = "return err"
+          this.startDate = "return err"
+          this.endTime = "return err"
+          this.endDate = "return err"
+          this.fee = "return err"
+          this.recordId = "return err"
+          this.parkId = "return err"
+        }
+        for (let i = 0; i < option.length; i++) {
+          let time = option[i].time
+          time = time.split("-")
+          let s = time[0]
+          let e = time[1]
+          s = s.split(".")
+          e = e.split(".")
+          var now = new Date()
+          var month = now.getMonth() + 1
+          if (s[1] == month) {
+            let t = new RESP
+            t.isPaid = option[i].isPaid
+            t.isDone = option[i].isDone
+            t.parkLocation = option[i].parkLocation
+            t.fee = option[i].pay
+            t.recordId = option[i].id
+            t.parkId = option[i].parking
+            t.startTime = s[3] + ":" + s[4]
+            t.startDate = s[0] + "-" + s[1] + "-" + s[2]
+            t.endTime = e[3] + ":" + e[4]
+            t.endDate = e[0] + "-" + e[1] + "-" + e[2]
+            all.push(t)
+          }
+        }
+        all = all.reverse()
+        ctx.body = all.slice((ctx.request.body.delta - 1) * 10, ctx.request.body.delta * 10)
+      }
+      else if (ctx.request.body.filter == "all") {
+        all = []
+        function RESP() {
+          this.isPaid = "return err"
+          this.isDone = "return err"
+          this.parkLocation = "return err"
+          this.startTime = "return err"
+          this.startDate = "return err"
+          this.endTime = "return err"
+          this.endDate = "return err"
+          this.fee = "return err"
+          this.recordId = "return err"
+          this.parkId = "return err"
+        }
+        for (let i = 0; i < option.length; i++) {
+          let time = option[i].time
+          time = time.split("-")
+          let s = time[0]
+          let e = time[1]
+          s = s.split(".")
+          e = e.split(".")
+
+          let t = new RESP
+          t.isPaid = option[i].isPaid
+          t.isDone = option[i].isDone
+          t.parkLocation = option[i].parkLocation
+          t.fee = option[i].pay
+          t.recordId = option[i].id
+          t.parkId = option[i].parking
+          t.startTime = s[3] + ":" + s[4]
+          t.startDate = s[0] + "-" + s[1] + "-" + s[2]
+          t.endTime = e[3] + ":" + e[4]
+          t.endDate = e[0] + "-" + e[1] + "-" + e[2]
+          all.push(t)
+
+        }
+        all = all.reverse()
+        ctx.body = all.slice((ctx.request.body.delta - 1) * 10, ctx.request.body.delta * 10)
+      }
+    })
+  }
 }
