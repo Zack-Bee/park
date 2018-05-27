@@ -5,7 +5,7 @@
             <view class="plate-number">{{item[2] + item[3] + item[4] + item[5] + item[6]}}</view>
             <view class="delete-button" @tap="deletePlateNumber" data-plate-number="{{item}}">删除</view>
         </view>
-        <view class="extra-info" wx:if="{{extraInfo}}">{{extraInfo}}</view>
+        <view class="extra-info" wx:if="{{!plateNumber || plateNumber.length === 0}}">{{extraInfo}}</view>
         <view class="add-plate">
             <picker mode="multiSelector" range="{{placeArray}}" bindchange="bindMultiPickerChange" bindcolumnchange="bindMultiPickerColumnChange">
                 <view class="add-place">{{place}}</view>
@@ -821,7 +821,7 @@ export default class PlateNumber extends wepy.page {
 
     onLoad() {
         let plateNumber = wx.getStorageSync('plateNumber')
-        if (plateNumber) {
+        if (plateNumber && plateNumber.length > 0) {
             this.plateNumber = plateNumber
         } else {
             this.plateNumber = []
