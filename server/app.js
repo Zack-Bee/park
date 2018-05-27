@@ -25,9 +25,5 @@ const main = ctx => {
   ctx.response.type = 'html';
   ctx.response.body = fs.createReadStream('./server/test.html');
 };
-fc.addhistory(1,"2018.5.19.13.45-2018.5.20.15.30",12,"1","1","1")
-fc.addhistory(2,"2018.5.19.13.45-2018.5.20.15.30",12,"1","1","1")
-fc.addhistory(3,"2018.5.19.13.45-2018.5.20.15.30",12,"1","1","1")
-fc.addhistory(4,"2018.5.19.13.45-2018.5.20.15.30",12,"1","1","1")
 app.use(router.routes())
 app.use(main)
