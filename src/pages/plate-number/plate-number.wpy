@@ -1,36 +1,845 @@
 <template>
-    <view>
-        <view class="plate-wrapper">
-            <view class="plate-place">鄂</view>
-            <view class="plate-number">12345</view>
-            <view class="delete-button">删除</view>
+    <view class="plate-page">
+        <view class="plate-wrapper" wx:for="{{plateNumber}}">
+            <view class="plate-place">{{item[0] + item[1]}}</view>
+            <view class="plate-number">{{item[2] + item[3] + item[4] + item[5] + item[6]}}</view>
+            <view class="delete-button" @tap="deletePlateNumber" data-plate-number="{{item}}">删除</view>
         </view>
+        <view class="extra-info" wx:if="{{extraInfo}}">{{extraInfo}}</view>
+        <view class="add-plate">
+            <picker mode="multiSelector" range="{{placeArray}}" bindchange="bindMultiPickerChange" bindcolumnchange="bindMultiPickerColumnChange">
+                <view class="add-place">{{place}}</view>
+            </picker>
+            <input class="add-number" maxlength="5" placeholder="请输入车牌号" value="{{number}}" bindinput="setNumber"/>
+        </view>
+        <Button type="primary" :bindTap="addPlateNumber" :loading.sync="isButtonLoading">添加车牌号</Button>
+        <Toptips :isShow.sync="isToptipsShow" :content.sync="toptipsContent"/>
     </view>
 </template>
 
 <style scoped>
+.plate-page {
+    background-color: #efeff4;
+    min-height: 100vh;
+}
+
 .plate-wrapper {
     display: flex;
-    line-height: 60rpx;
+    line-height: 100rpx;
     font-size: 30rpx;
+    text-align: center;
+    box-shadow: 0 2px 1px rgba(0, 0, 0, 0.3);
+    background-color: #fff;
+    margin-bottom: 10px;
 }
 
 .plate-place {
     width: 100rpx;
+    font-size: 40rpx;
+    color: #353535;
+    text-align: right;
+}
+
+.plate-number {
+    width: 530rpx;
+    color: #888;
+    text-align: left;
+    padding-left: 20rpx;
+}
+
+.delete-button {
+    width: 100rpx;
+    background-color: #e64340;
+    color: #fff;
+}
+
+.extra-info {
+    font-size: 14px;
+    color: #b2b2b2;
+    text-align: center;
+    margin: 10px 0;
+}
+
+.add-plate {
+    display: flex;
+    line-height: 80rpx;
+    background-color: #fff;
+    margin: 10px 0;
+    box-shadow: 0 2px 1px rgba(0, 0, 0, 0.3);
+}
+
+.add-place {
+    width: 100rpx;
+    color: #353535;
+    text-align: right;
+}
+
+.add-number {
+    width: 630rpx;
+    height: 80rpx;
+    padding-left: 20rpx;
+    font-size: 30rpx;
+    color: #888;
 }
 </style>
 
 <script>
 import wepy from 'wepy'
+import Button from '../../components/button/button'
+import Toptips from "../../components/toptips/toptips"
 
 export default class PlateNumber extends wepy.page {
     components = {
+        Button,
+        Toptips
     }
 
     data = {
+        isToptipsShow: false,
+        toptipsContent: "",
+        plateNumber: ['鄂A66666'],
+        extraInfo: '',
+        number: '',
+        placeArray: [
+            [
+                '京',
+                '辽',
+                '黑',
+                '吉',
+                '粤',
+                '沪',
+                '冀',
+                '津',
+                '苏',
+                '浙',
+                '闽',
+                '陕',
+                '鄂',
+                '川',
+                '渝',
+                '赣',
+                '晋',
+                '豫',
+                '湘',
+                '皖',
+                '鲁',
+                '甘',
+                '新',
+                '云',
+                '桂',
+                '蒙',
+                '贵',
+                '青',
+                '藏',
+                '琼',
+                '宁'
+            ],
+            [
+                'A',
+                'B',
+                'C',
+                'D',
+                'E',
+                'F',
+                'G',
+                'H',
+                'I',
+                'J',
+                'K',
+                'L',
+                'M',
+                'N',
+                'O',
+                'P',
+                'Q',
+                'R',
+                'S',
+                'T',
+                'U',
+                'V',
+                'W',
+                'X',
+                'Y',
+                'Z'
+            ]
+        ],
+        place: '辽A',
+        isButtonLoading: false,
+        addPlateNumber: () => {
+            console.log("\n\n\n\nhhh\n\n\n\n")
+            if (this.isButtonLoading) {
+                return
+            }
+            if (this.plateNumber.length >= 6) {
+                console.log('too much\n\n\n')
+                this.toptipsContent = "最多存储六个车牌号"
+                this.isToptipsShow = true
+                this.$apply()
+                setTimeout(() => {
+                    this.isToptipsShow = false
+                    this.$apply()
+                }, 1500);
+                return
+            }
+            let newPlateNumber = this.place + this.number
+            if (this.plateNumber.includes(newPlateNumber)) {
+                this.toptipsContent = "该车牌号已经存在"
+                this.isToptipsShow = true
+                this.$apply()
+                setTimeout(() => {
+                    this.isToptipsShow = false
+                    this.$apply()
+                }, 1500);
+                return
+            }
+            this.isButtonLoading = true
+            this.$apply()
+            let plateNumber = this.plateNumber.slice()
+            plateNumber.push(newPlateNumber)
+            wx.setStorage({
+                key: 'plateNumber',
+                data: plateNumber,
+                success: () => {
+                    wx.showToast({
+                        title: '添加成功',
+                        icon: 'success',
+                        duration: 1500
+                    })
+                    this.plateNumber = plateNumber
+                    this.isButtonLoading = false
+                    this.$apply()
+                },
+                fail: () => {
+                    wx.showToast({
+                        title: '添加失败',
+                        icon: 'none',
+                        duration: 1500
+                    })
+                    this.isButtonLoading = false
+                    this.$apply()
+                }
+            })
+        }
+    }
+
+    methods = {
+        bindMultiPickerColumnChange: (event) => {
+            console.log(event)
+            let res = event.detail
+            switch (res.column) {
+                case 0: {
+                    this.placeArray[1] = [
+                        'A',
+                        'B',
+                        'C',
+                        'D',
+                        'E',
+                        'F',
+                        'G',
+                        'H',
+                        'J',
+                        'K',
+                        'L',
+                        'M',
+                        'N',
+                        'P',
+                        'Q',
+                        'Y'
+                    ]
+                    break
+                }
+                case 1: {
+                    this.placeArray[1] = [
+                        'A',
+                        'B',
+                        'C',
+                        'D',
+                        'E',
+                        'F',
+                        'G',
+                        'H',
+                        'J',
+                        'K',
+                        'L',
+                        'M',
+                        'N',
+                        'P'
+                    ]
+                    break
+                }
+                case 2: {
+                    this.placeArray[1] = [
+                        'A',
+                        'B',
+                        'C',
+                        'D',
+                        'E',
+                        'F',
+                        'G',
+                        'H',
+                        'J',
+                        'K',
+                        'L',
+                        'M',
+                        'N',
+                        'P',
+                        'R'
+                    ]
+                    break
+                }
+                case 3: {
+                    this.placeArray[1] = [
+                        'A',
+                        'B',
+                        'C',
+                        'D',
+                        'E',
+                        'F',
+                        'G',
+                        'H',
+                        'J',
+                        'K'
+                    ]
+                    break
+                }
+                case 4: {
+                    this.placeArray[1] = [
+                        'A',
+                        'B',
+                        'C',
+                        'D',
+                        'E',
+                        'F',
+                        'G',
+                        'H',
+                        'J',
+                        'K',
+                        'L',
+                        'M',
+                        'N',
+                        'P',
+                        'Q',
+                        'R',
+                        'S',
+                        'T',
+                        'U',
+                        'V',
+                        'W',
+                        'X',
+                        'Y',
+                        'Z'
+                    ]
+                    break
+                }
+                case 5: {
+                    this.placeArray[1] = [
+                        'A',
+                        'B',
+                        'C',
+                        'D',
+                        'E',
+                        'G',
+                        'H',
+                        'J',
+                        'K',
+                        'L',
+                        'M',
+                        'N',
+                        'R'
+                    ]
+                    break
+                }
+                case 6: {
+                    this.placeArray[1] = [
+                        'A',
+                        'B',
+                        'C',
+                        'D',
+                        'E',
+                        'F',
+                        'G',
+                        'H',
+                        'J',
+                        'R',
+                        'T'
+                    ]
+                    break
+                }
+                case 7: {
+                    this.placeArray[1] = [
+                        'A',
+                        'B',
+                        'C',
+                        'D',
+                        'E',
+                        'F',
+                        'G',
+                        'H',
+                        'J',
+                        'K',
+                        'L',
+                        'M',
+                        'N',
+                        'Q',
+                        'R'
+                    ]
+                    break
+                }
+                case 8: {
+                    this.placeArray[1] = [
+                        'A',
+                        'B',
+                        'C',
+                        'D',
+                        'E',
+                        'F',
+                        'G',
+                        'H',
+                        'J',
+                        'K',
+                        'L',
+                        'M',
+                        'N'
+                    ]
+                    break
+                }
+                case 9: {
+                    this.placeArray[1] = [
+                        'A',
+                        'B',
+                        'C',
+                        'D',
+                        'E',
+                        'F',
+                        'G',
+                        'H',
+                        'J',
+                        'K',
+                        'L'
+                    ]
+                    break
+                }
+                case 10: {
+                    this.placeArray[1] = [
+                        'A',
+                        'B',
+                        'C',
+                        'D',
+                        'E',
+                        'F',
+                        'G',
+                        'H',
+                        'J',
+                        'K'
+                    ]
+                    break
+                }
+                case 11: {
+                    this.placeArray[1] = [
+                        'A',
+                        'B',
+                        'C',
+                        'D',
+                        'E',
+                        'F',
+                        'G',
+                        'H',
+                        'J',
+                        'K'
+                    ]
+                    break
+                }
+                case 12: {
+                    this.placeArray[1] = [
+                        'A',
+                        'B',
+                        'C',
+                        'D',
+                        'E',
+                        'F',
+                        'G',
+                        'H',
+                        'J',
+                        'K',
+                        'L',
+                        'M',
+                        'N',
+                        'P',
+                        'Q',
+                        'R',
+                        'S'
+                    ]
+                    break
+                }
+                case 13: {
+                    this.placeArray[1] = [
+                        'A',
+                        'B',
+                        'C',
+                        'D',
+                        'E',
+                        'F',
+                        'G',
+                        'H',
+                        'J',
+                        'K',
+                        'L',
+                        'M',
+                        'N',
+                        'Q',
+                        'R',
+                        'S',
+                        'T',
+                        'U',
+                        'V',
+                        'W',
+                        'X',
+                        'Y',
+                        'Z'
+                    ]
+                    break
+                }
+                case 14: {
+                    this.placeArray[1] = ['A', 'B', 'C', 'F', 'G', 'H']
+                    break
+                }
+                case 15: {
+                    this.placeArray[1] = [
+                        'A',
+                        'B',
+                        'C',
+                        'D',
+                        'E',
+                        'F',
+                        'G',
+                        'H',
+                        'J',
+                        'K',
+                        'L',
+                        'M'
+                    ]
+                    break
+                }
+                case 16: {
+                    this.placeArray[1] = [
+                        'A',
+                        'B',
+                        'C',
+                        'D',
+                        'E',
+                        'F',
+                        'G',
+                        'H',
+                        'J',
+                        'K',
+                        'L',
+                        'M'
+                    ]
+                    break
+                }
+                case 17: {
+                    this.placeArray[1] = [
+                        'A',
+                        'B',
+                        'C',
+                        'D',
+                        'E',
+                        'F',
+                        'G',
+                        'H',
+                        'J',
+                        'K',
+                        'L',
+                        'M',
+                        'N',
+                        'P',
+                        'Q',
+                        'R',
+                        'S',
+                        'U'
+                    ]
+                    break
+                }
+                case 18: {
+                    this.placeArray[1] = [
+                        'A',
+                        'B',
+                        'C',
+                        'D',
+                        'E',
+                        'F',
+                        'G',
+                        'H',
+                        'J',
+                        'K',
+                        'L',
+                        'M',
+                        'N',
+                        'S',
+                        'U'
+                    ]
+                    break
+                }
+                case 19: {
+                    this.placeArray[1] = [
+                        'A',
+                        'B',
+                        'C',
+                        'D',
+                        'E',
+                        'F',
+                        'G',
+                        'H',
+                        'J',
+                        'K',
+                        'L',
+                        'M',
+                        'N',
+                        'P',
+                        'Q',
+                        'R',
+                        'S'
+                    ]
+                    break
+                }
+                case 20: {
+                    this.placeArray[1] = [
+                        'A',
+                        'B',
+                        'C',
+                        'D',
+                        'E',
+                        'F',
+                        'G',
+                        'H',
+                        'J',
+                        'K',
+                        'L',
+                        'M',
+                        'N',
+                        'P',
+                        'Q',
+                        'R',
+                        'S',
+                        'U',
+                        'V',
+                        'W',
+                        'Y'
+                    ]
+                    break
+                }
+                case 21: {
+                    this.placeArray[1] = [
+                        'A',
+                        'B',
+                        'C',
+                        'D',
+                        'E',
+                        'F',
+                        'G',
+                        'H',
+                        'J',
+                        'K',
+                        'L',
+                        'M',
+                        'N',
+                        'P'
+                    ]
+                    break
+                }
+                case 22: {
+                    this.placeArray[1] = [
+                        'A',
+                        'B',
+                        'C',
+                        'D',
+                        'E',
+                        'F',
+                        'G',
+                        'H',
+                        'J',
+                        'K',
+                        'L',
+                        'M',
+                        'N',
+                        'P',
+                        'Q',
+                        'R'
+                    ]
+                    break
+                }
+                case 23: {
+                    this.placeArray[1] = [
+                        'A',
+                        'V',
+                        'C',
+                        'D',
+                        'E',
+                        'F',
+                        'G',
+                        'H',
+                        'J',
+                        'K',
+                        'L',
+                        'M',
+                        'N',
+                        'P',
+                        'Q',
+                        'R',
+                        'S'
+                    ]
+                    break
+                }
+                case 24: {
+                    this.placeArray[1] = [
+                        'A',
+                        'B',
+                        'C',
+                        'D',
+                        'E',
+                        'F',
+                        'G',
+                        'H',
+                        'J',
+                        'K',
+                        'L',
+                        'M',
+                        'N',
+                        'P',
+                        'R'
+                    ]
+                    break
+                }
+                case 25: {
+                    this.placeArray[1] = [
+                        'A',
+                        'B',
+                        'C',
+                        'D',
+                        'E',
+                        'F',
+                        'G',
+                        'H',
+                        'J',
+                        'K',
+                        'L',
+                        'M'
+                    ]
+                    break
+                }
+                case 26: {
+                    this.placeArray[1] = [
+                        'A',
+                        'B',
+                        'C',
+                        'D',
+                        'E',
+                        'F',
+                        'G',
+                        'H',
+                        'J'
+                    ]
+                    break
+                }
+                case 27: {
+                    this.placeArray[1] = [
+                        'A',
+                        'B',
+                        'C',
+                        'D',
+                        'E',
+                        'F',
+                        'G',
+                        'H'
+                    ]
+                    break
+                }
+                case 28: {
+                    this.placeArray[1] = [
+                        'A',
+                        'B',
+                        'C',
+                        'D',
+                        'E',
+                        'F',
+                        'G',
+                        'H',
+                        'J'
+                    ]
+                    break
+                }
+                case 29: {
+                    this.placeArray[1] = ['A', 'B', 'C', 'D', 'E', 'F']
+                    break
+                }
+                case 30: {
+                    this.placeArray[1] = ['A', 'B', 'C', 'D', 'E']
+                    break
+                }
+            }
+            this.$apply()
+        },
+        bindMultiPickerChange: (event) => {
+            console.log(event)
+            let res = event.detail.value
+            this.place = this.placeArray[0][res[0]] + this.placeArray[1][res[1]]
+            this.$apply()
+        },
+        setNumber: (event) => {
+            this.number = event.detail.value
+            this.$apply()
+        },
+        deletePlateNumber: (event) => {
+            let currentPlateNumber = event.currentTarget.dataset.plateNumber
+            let plateNumber = this.plateNumber.slice()
+            plateNumber.splice(plateNumber.indexOf(currentPlateNumber), 1)
+            wx.setStorage({
+                key: 'plateNumber',
+                data: plateNumber,
+                success: () => {
+                    wx.showToast({
+                        title: '删除成功',
+                        icon: 'success',
+                        duration: 1500
+                    })
+                    this.plateNumber = plateNumber
+                    this.isButtonLoading = false
+                    this.$apply()
+                },
+                fail: () => {
+                    wx.showToast({
+                        title: '删除失败',
+                        icon: 'none',
+                        duration: 1500
+                    })
+                    this.isButtonLoading = false
+                    this.$apply()
+                }
+            })
+        }
     }
 
     onLoad() {
+        let plateNumber = wx.getStorageSync('plateNumber')
+        if (plateNumber) {
+            this.plateNumber = plateNumber
+        } else {
+            this.plateNumber = []
+            this.extraInfo = '暂时没有车牌号, 快点添加吧'
+        }
+        console.log(this.plateNumber)
+        this.$apply()
+    }
+
+    onShow() {
+        let plateNumber = wx.getStorageSync('plateNumber')
+        if (plateNumber) {
+            this.plateNumber = plateNumber
+        } else {
+            this.plateNumber = []
+            this.extraInfo = '暂时没有车牌号, 快点添加吧'
+        }
+        this.$apply()
     }
 }
 </script>
