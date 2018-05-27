@@ -22,14 +22,14 @@
             <view class="weui-panel">
                 <view class="weui-panel__bd">
                     <view class="weui-media-box weui-media-box_text">
-                        <view class="weui-media-box__title weui-media-box__title_in-text">{{item.title}}</view>
-                        <view class="weui-media-box__desc">{{item.address}}</view>
+                        <view class="weui-media-box__title weui-media-box__title_in-text" style="color:black;font-weight:bold">{{item.title}}</view>
+                        <view class="weui-media-box__desc" style="color:gray">{{item.address}}</view>
                         <view class="weui-media-box__info">
                             <view class="weui-media-box__info__meta">￥0</view>
                             <view class="weui-media-box__info__meta weui-media-box__info__meta_extra">
-                                <view class="distance_show">距离：{{item._distance}}</view></view>
-                            <view class="weui-media-box__info__meta weui-media-box__info__meta_extra">
                                 <view class="distance_show">剩余车位：10<!--动态获取--></view></view>
+                            <view class="weui-media-box__info__meta weui-media-box__info__meta_extra">
+                                <view class="distance_show" style="color:#353535">距离：{{item._distance}}</view></view>
                         </view>
                     </view>
                 </view>
@@ -42,14 +42,14 @@
             <view class="weui-panel">
                 <view class="weui-panel__bd">
                     <view class="weui-media-box weui-media-box_text">
-                        <view class="weui-media-box__title weui-media-box__title_in-text">{{item.title}}</view>
-                        <view class="weui-media-box__desc">{{item.address}}</view>
+                        <view class="weui-media-box__title weui-media-box__title_in-text" style="color:black;font-weight:bold">{{item.title}}</view>
+                        <view class="weui-media-box__desc" style="color:gray">{{item.address}}</view>
                         <view class="weui-media-box__info">
                             <view class="weui-media-box__info__meta">￥0</view>
                             <view class="weui-media-box__info__meta weui-media-box__info__meta_extra">
-                                <view class="distance_show">距离：{{item._distance}}</view></view>
-                            <view class="weui-media-box__info__meta weui-media-box__info__meta_extra">
                                 <view class="distance_show">剩余车位：10<!--动态获取--></view></view>
+                            <view class="weui-media-box__info__meta weui-media-box__info__meta_extra">
+                                <view class="distance_show" style="color:#353535" >距离：{{item._distance}}</view></view>
                         </view>
                     </view>
                 </view>
@@ -83,6 +83,8 @@ export default class Search extends wepy.page {
     data = {
         inputShowed: false,
         inputVal: '',
+        resData:[],
+        resrchData:[]
     }
     onLoad(option) {
         qqmapsdk = new QQMapWX({
@@ -100,20 +102,9 @@ export default class Search extends wepy.page {
                     resData[i]._distance = this.formatDistance(
                         resData[i]._distance
                     ) //转换一下距离的格式
-                this.setData({ resData: resData })
+                    this.resData=res.data
+                    this.$apply()
                 }
-            },
-            fail: (res) => {
-                console.log('ERROR!!!!!')
-            }
-        })
-        qqmapsdk.getSuggestion({
-            keyword: '停车场',
-            region_fix: 1 ,
-            policy: 1,
-            success: (res) => {
-                console.log(res)
-                var resrchData = res.data
             },
             fail: (res) => {
                 console.log('ERROR!!!!!')
@@ -140,7 +131,25 @@ export default class Search extends wepy.page {
     }
     inputTyping (e) {
         this.inputVal= e.detail.value
-        console.log('hhh')
+        qqmapsdk.getSuggestion({
+            keyword: '停车场',
+            region_fix: 1 ,
+            policy: 1,
+            success: (res) => {
+                console.log(res)
+                this.resrchData = res.data
+                for (var i = 0; i < resrchData.length; i++) {
+                    resrchData[i]._distance = this.formatDistance(
+                        resrchData[i]._distance
+                    ) //转换一下距离的格式
+                    this.resrchData=res.data
+                    this.$apply()
+                }
+            },
+            fail: (res) => {
+                console.log('ERROR!!!!!')
+            }
+        })
     }
 
 }

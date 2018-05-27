@@ -14,6 +14,9 @@
 
 <script>
 import wepy from 'wepy'
+import post from '../../common/post.js'
+import config from '../../config.js'
+
 var QQMapWX = require('../../libs/qqmap-wx-jssdk.js')
 var qqmapsdk
 export default class Map extends wepy.component {
@@ -30,41 +33,12 @@ export default class Map extends wepy.component {
     data = {
         resData: [],
         scale: 16,
+        kind:'',
+        openId:'',
         latitude: '',
         longitude: '',
-        markers: [
-            //做个循环 search获取到的进行id分配 然而不会写循坏的id分配和关闭程序后free掉id
-            {
-                iconPath: '../../components/map/parking.png',
-                id: 1,
-                latitude: 41.65213,
-                longitude: 123.42303,
-                width: 40 * wx.getStorageSync('MapScreenW'),
-                height: 40 * wx.getStorageSync('MapScreenW'),
-                callout: {
-                    content: '我是个气泡\n我会显示价格\n还有剩余车位量',
-                    fontSize: 14,
-                    color: '#ffffff',
-                    bgColor: '#000000',
-                    padding: 8,
-                    borderRadius: 4,
-                    boxShadow: '4px 8px 16px 0 rgba(0)',
-                    display: 'BYCLICK'
-                }
-            }
-        ],
+        markers: [],
         controls: [
-            /*{
-                id: 1, //标记中心位置
-                iconPath: '../../components/map/iamhere.png',
-                position: {
-                    left: 177.5 * wx.getStorageSync('MapScreenW'),
-                    top: 177.5 * wx.getStorageSync('MapScreenH'),
-                    width: 30 * wx.getStorageSync('MapScreenW'),
-                    height: 40 * wx.getStorageSync('MapScreenW')
-                },
-                clickable: false
-            },*/
             {
                 id: 2, //点击回到当前位置
                 iconPath: '../../components/map/locate.png',
@@ -126,7 +100,7 @@ export default class Map extends wepy.component {
                     var parkLat = resData[i].location.lat
                     var parkLong = resData[i].location.lng
                     var id = resData[i].id
-                    var markers = {
+                    this.markers =[{
                         latitude: parkLat,
                         longitude: parkLong,
                         iconPath: '../../components/map/parking.png',
@@ -135,7 +109,7 @@ export default class Map extends wepy.component {
                         height: 40 * wx.getStorageSync('MapScreenW'),
                         callout: {
                             content:
-                                '我是个气泡\n我会显示价格\n还有剩余车位量', //callout的content数据传入
+                                resData[i].title, 
                             fontSize: 14,
                             color: '#ffffff',
                             bgColor: '#000000',
@@ -144,49 +118,28 @@ export default class Map extends wepy.component {
                             boxShadow: '4px 8px 16px 0 rgba(0)',
                             display: 'BYCLICK'
                         }
-                    }
-                    console.log(markers)
+                    }]
+                    this.resData=res.data
+                    this.$apply()  
                 }
-                this.setData({ resData: resData })
             },
             fail: (res) => {
                 console.log('ERROR!!!!!')
             }
-        })
-        /*qqmapsdk.reverseGeocoder({
-            success: (res) => {
-                console.log('444')
-                console.log(res)
-                console.log('555')
-                var resData = res.data
-                for (var i = 0; i < resData.length; i++) {
-                    var parkLat = Number(resData[i]._latitude)
-                    var parkLong = Number(resData[i]._longitude)
-                    var id = Number(i)
-                    var marker = {
-                        latitude: parkLat,
-                        longitude: parkLong,
-                        iconPath: '../../components/map/parking.png',
-                        id: id,
-                        width: 40 * wx.getStorageSync('MapScreenW'),
-                        height: 40 * wx.getStorageSync('MapScreenW'),
-                        callout: {
-                            content: '我是个气泡\n我会显示价格\n还有剩余车位量', //callout的content数据传入
-                            fontSize: 14,
-                            color: '#ffffff',
-                            bgColor: '#000000',
-                            padding: 8,
-                            borderRadius: 4,
-                            boxShadow: '4px 8px 16px 0 rgba(0)',
-                            display: 'BYCLICK'
-                        }
-                    }
-                }
+        })    
+        post(`${config.host}/user/upload`, {
+            kind: this.selectedType,
+            latitude: this.latitude,
+            longitude: this.longitude,
+            openId: this.$parent.globalData.openId,
+        }).then(
+            (res) => {
+                console.log(res, '\n\n\n')
             },
-            fail: (res) => {
-                console.log('ERROR!!!!!????')
+            (res) => {
+                console.log(res)
             }
-        })*/
+        )
     }
     formatDistance(num) {
         if (num < 1000) {
@@ -195,61 +148,13 @@ export default class Map extends wepy.component {
             return (num / 1000).toFixed(1) + 'km'
         }
     }
-    /*getParkList() {
-        //需要判断是否连入网络
-        wx.request({
-            url= this.data.ParkinglistUrl.getlist  //接口地址search
-            data=  this.data.getParkList  //data要什么 我也不知道
-            method=  'POST', // OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, CONNECT
-            // header: {}, // 设置请求的 header 我也不知道是啥
-            header=  {
-                //我怎么什么都不知道 照着文档写好累哦
-            },
-            success: res =>{
-                var message = res.data.message
-                var statu = res.data.status
-                wx.showToast({    //查询动画需不需要 有待商讨
-                    title: '查询附近停车场:\n' + message,
-                    icon: '../../components/map/success.png',
-                    duration: 2000,
-                })
-                var parkList = res.data.result
-                var markers = []
-                for (var i=0;i<parkList.length;i++) {
-                    var parkLat = Number(parkList[i].latitude)
-                    var parkLong = Number(parkList[i].longitude)
-                    var id = Number(parkList[i].park_id)  //search到的parklist数组
-                    var marker={
-                        latitude:parkLat,
-                        longitude:parkLong,
-                        iconPath: "../../components/map/parking.png",
-                        id: id,
-                        width: 40*wx.getStorageSync("MapScreenW"),
-                        height: 40*wx.getStorageSync("MapScreenW"),
-                        callout:{
-                            content:'我是个气泡\n我会显示价格\n还有剩余车位量',  //callout的content数据传入
-                            fontSize:14,
-                            color:'#ffffff',
-                            bgColor:'#000000',
-                            padding:8,
-                            borderRadius:4,
-                            boxShadow:'4px 8px 16px 0 rgba(0)',
-                            display:"BYCLICK"
-                        }
-                    }
-                markers.push(marker)
-                'markers' = markers
-                }
-                console.log(that.data.markers)
-            },
-        })
-    }
 
-    regionchange (e) {
+    /*这里还是一个比较严重的问题 不知道该怎么写 mark!*/
+    /*regionchange (e) {
         //得到地图中心点的位置
         this.mapCtx = wx.createMapContext('map-body')
         that.mapCtx.getCenterLocation({
-            success :res => {
+            success: (res) => {
                 //滑动屏幕 判断是否需要刷新“离我最近”的停车场
                 var longitudeFix = res.longitude
                 var latitudeFix = res.latitude
@@ -267,13 +172,11 @@ export default class Map extends wepy.component {
                 }
             }
         })
-    },*/
+    }*/
 
     methods = {
         markertap(e) {
             console.log(e.markerId)
-            console.log(e.latitude)
-            console.log(e.longitude)
         },
         clickcontrols(e) {
             if (e.controlId === 2) {
