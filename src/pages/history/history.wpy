@@ -1,0 +1,19 @@
+<template>
+    <view>
+        <view class="history-wrapper">
+
+        </view>
+    </view>
+</template>
+
+<style scoped>
+
+</style>
+
+<script>
+import wepy from "wepy"
+
+export default class History extends wepy.page {
+
+}
+</script>

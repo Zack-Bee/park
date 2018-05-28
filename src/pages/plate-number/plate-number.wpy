@@ -181,6 +181,16 @@ export default class PlateNumber extends wepy.page {
                 }, 1500);
                 return
             }
+            if (this.number.length !== 5) {
+                this.toptipsContent = "请正确填写车牌号"
+                this.isToptipsShow = true
+                this.$apply()
+                setTimeout(() => {
+                    this.isToptipsShow = false
+                    this.$apply()
+                }, 1500);
+                return
+            }
             let newPlateNumber = this.place + this.number
             if (this.plateNumber.includes(newPlateNumber)) {
                 this.toptipsContent = "该车牌号已经存在"

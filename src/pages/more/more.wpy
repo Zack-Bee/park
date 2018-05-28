@@ -3,14 +3,21 @@
         <view class="padding" />
         <User :nickName.sync="nickName" :avatarUrl.sync="avatarUrl" />
         <view class="padding" />
-        <view>
-            <view class="plate-number-item" @tap="navigateToPlateNumber">
-                <view class="plate-number-item-icon-wrapper">
-                    <image src="./plateNumberIcon.png" style="width: 100%; height: 100%" />
-                </view>
-                <view class="plate-number-item-text-wrapper">
-                    <text>我的车牌号</text>
-                </view>
+        <view class="item" @tap="navigateToPlateNumber">
+            <view class="item-icon-wrapper">
+                <image src="./plateNumberIcon.png" style="width: 100%; height: 100%" />
+            </view>
+            <view class="item-text-wrapper">
+                <text>我的车牌号</text>
+            </view>
+        </view>
+        <view class="padding" />
+        <view class="item" @tap="navigateToHistory">
+            <view class="item-icon-wrapper">
+                <image src="./historyIcon.png" style="width: 100%; height: 100%" />
+            </view>
+            <view class="item-text-wrapper">
+                <text>我的行程</text>
             </view>
         </view>
         <view class="padding" />
@@ -29,26 +36,26 @@
     box-shadow: 0 2rpx 2rpx 1rpx rgba(0, 0, 0, 0.1) inset;
 }
 
-.plate-number-item {
+.item {
     padding: 20rpx 30rpx;
     background-color: #fff;
     box-shadow: 0 2rpx 2rpx 1rpx rgba(0, 0, 0, 0.1);
 }
 
-.plate-number-item::before,
-.plate-number-item::after {
+.item::before,
+.item::after {
     content: '';
     display: block;
     clear: both;
 }
 
-.plate-number-item-icon-wrapper {
+.item-icon-wrapper {
     float: left;
     width: 60rpx;
     height: 60rpx;
 }
 
-.plate-number-item-text-wrapper {
+.item-text-wrapper {
     float: left;
     line-height: 60rpx;
     font-size: 30rpx;
@@ -106,6 +113,17 @@ export default class Index extends wepy.page {
         navigateToPlateNumber() {
             wx.navigateTo({
                 url: `../plate-number/plate-number`,
+                success: (res) => {
+                    console.log(res)
+                },
+                fail: (err) => {
+                    console.log(err)
+                }
+            })
+        },
+        navigateToHistory() {
+            wx.navigateTo({
+                url: `../history/history`,
                 success: (res) => {
                     console.log(res)
                 },
