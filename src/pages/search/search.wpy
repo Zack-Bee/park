@@ -76,15 +76,15 @@
 </style>
 
 <script>
-import wepy from 'wepy';
+import wepy from 'wepy'
 var QQMapWX = require('../../libs/qqmap-wx-jssdk.js')
 var qqmapsdk
 export default class Search extends wepy.page {
     data = {
         inputShowed: false,
         inputVal: '',
-        resData:[],
-        resrchData:[]
+        resData: [],
+        resrchData: []
     }
     onLoad(option) {
         qqmapsdk = new QQMapWX({
@@ -92,7 +92,7 @@ export default class Search extends wepy.page {
         })
         console.log(option)
     }
-    onShow(){
+    onShow() {
         qqmapsdk.search({
             keyword: '停车场',
             success: (res) => {
@@ -102,7 +102,7 @@ export default class Search extends wepy.page {
                     resData[i]._distance = this.formatDistance(
                         resData[i]._distance
                     ) //转换一下距离的格式
-                    this.resData=res.data
+                    this.resData = res.data
                     this.$apply()
                 }
             },
@@ -118,39 +118,38 @@ export default class Search extends wepy.page {
             return (num / 1000).toFixed(1) + 'km'
         }
     }
-    showInput () {
+    showInput() {
         this.inputShowed = true
         console.log('hhh')
     }
-    hideInput () {
-        this.inputVal = "",
-        this.inputShowed = false
+    hideInput() {
+        ;(this.inputVal = ''), (this.inputShowed = false)
     }
-    clearInput () {
-        this.inputVal = ""
+    clearInput() {
+        this.inputVal = ''
     }
-    inputTyping (e) {
-        this.inputVal= e.detail.value
+    inputTyping(e) {
+        /*搜索逻辑仍然有问题*/
+        this.inputVal = e.detail.value
         qqmapsdk.getSuggestion({
-            keyword: '停车场',
-            region_fix: 1 ,
+            keyword: this.inputVal + "停车场",
+            region_fix: 1,
             policy: 1,
             success: (res) => {
                 console.log(res)
                 this.resrchData = res.data
-                for (var i = 0; i < resrchData.length; i++) {
-                    resrchData[i]._distance = this.formatDistance(
-                        resrchData[i]._distance
+                for (var i = 0; i < this.resrchData.length; i++) {
+                    this.resrchData[i]._distance = this.formatDistance(
+                        this.resrchData[i]._distance
                     ) //转换一下距离的格式
-                    this.resrchData=res.data
-                    this.$apply()
                 }
+                this.resrchData = res.data
+                this.$apply()
             },
             fail: (res) => {
                 console.log('ERROR!!!!!')
             }
         })
     }
-
 }
 </script>
