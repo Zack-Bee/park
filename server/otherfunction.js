@@ -19,6 +19,50 @@ exports.xcxlogin = function (code, callback) {
   });
 }
 
+exports.addtest = function (a, b, c, d,city) {
+  return new Promise(function (resolve, reject) {
+    function randomNum(minNum, maxNum) {
+      switch (arguments.length) {
+        case 1:
+          return parseInt(Math.random() * minNum + 1, 10);
+          break;
+        case 2:
+          return parseInt(Math.random() * (maxNum - minNum + 1) + minNum, 10);
+          break;
+        default:
+          return 0;
+          break;
+      }
+    }
+    function sleep(numberMillis) {
+      var now = new Date();
+      var exitTime = now.getTime() + numberMillis;
+      while (true) {
+        now = new Date();
+        if (now.getTime() > exitTime)
+          return;
+      }
+    }
+    let aa = randomNum(a * 1000000, b * 1000000) / 1000000
+    let bb = randomNum(c * 1000000, d * 1000000) / 1000000
+    request('http://apis.map.qq.com/ws/geocoder/v1/?location=' + aa + ',' + bb + '&key=H4CBZ-CPYWK-2ZOJO-ACLVD-POMLE-FBBDZ&get_poi=1', function (error, response, body) {
+      if (error) {
+        reject(error);
+      }
+      else if (response.statusCode == 200) {
+        resolve(body);
+        if (JSON.parse(body).result.pois != "") {
+          fc.addparking(city+"-test", 4, city+"测试停车场", JSON.parse(body).result.formatted_addresses.recommend, aa + "," + bb, 1, "/upload/odpVJ5Lutx-arHao6e2yZXr_tUOs")
+        }
+      }
+      else {
+        reject("response.statusCode != 200");
+      }
+    })
+
+  });
+}
+
 
 exports.using = function (option) {
   var isuse = []
@@ -216,22 +260,22 @@ exports.income = async (parkingtimeId) => {
     parkingtime = option[0]
   }
   await fc.selectparkingtime("id", parkingtimeId, c)
-  if(parkingtime.kind==0){
-    let t=parkingtime.time.split("-")
-    t=t[0].split(".").concat(t[1].split("."))
-    let hour=parseInt(t[4])-parseInt(t[1])
-    let minute=parseInt(t[5])-parseInt(t[2])
-    let income=(hour*parkingtime.price+minute/60*parkingtime.price)*7
-    income=income.toFixed(1)
-    fc.changeone("parking",parkingtime.parking,"income",income)
+  if (parkingtime.kind == 0) {
+    let t = parkingtime.time.split("-")
+    t = t[0].split(".").concat(t[1].split("."))
+    let hour = parseInt(t[4]) - parseInt(t[1])
+    let minute = parseInt(t[5]) - parseInt(t[2])
+    let income = (hour * parkingtime.price + minute / 60 * parkingtime.price) * 7
+    income = income.toFixed(1)
+    fc.changeone("parking", parkingtime.parking, "income", income)
   }
-  else if(parkingtime.kind==1){
-    let t=parkingtime.time.split("-")
-    t=t[0].split(".").concat(t[1].split("."))
-    let hour=parseInt(t[8])-parseInt(t[3])
-    let minute=parseInt(t[9])-parseInt(t[4])
-    let income=(hour*parkingtime.price+minute/60*parkingtime.price)*7
-    income=income.toFixed(1)
-    fc.changeone("parking",parkingtime.parking,"income",income)
+  else if (parkingtime.kind == 1) {
+    let t = parkingtime.time.split("-")
+    t = t[0].split(".").concat(t[1].split("."))
+    let hour = parseInt(t[8]) - parseInt(t[3])
+    let minute = parseInt(t[9]) - parseInt(t[4])
+    let income = (hour * parkingtime.price + minute / 60 * parkingtime.price) * 7
+    income = income.toFixed(1)
+    fc.changeone("parking", parkingtime.parking, "income", income)
   }
 }
