@@ -8,12 +8,12 @@
 <body>
     <form class="ui form segment" action="/user/history" method="POST">
 
-        <input type="text" name="type" value="open"> openId
+        <input type="text" name="type" value="add"> openId
         <input type="text" name="openId" value="3"> parkId
         <input type="text" name="parkId" value="13"> openType
         <input type="text" name="openType" value="date"> startDay
-        <input type="text" name="startDay" value="2018-1-1"> endDay
-        <input type="text" name="endDay" value="2018-1-7"> startTime
+        <input type="text" name="startDate" value="2018-1-1"> endDay
+        <input type="text" name="endDate" value="2018-1-7"> startTime
         <input type="text" name="startTime" value="8:00"> endTime
         <input type="text" name="endTime" value="22:00"> price
         <input type="text" name="price" value="15"> kind
@@ -23,7 +23,10 @@
         <input type="text" name="parkName" value="王邦铮的停车场"> imageNumber
         <input type="text" name="imageNumber" value="4">
         <input type="text" name="index" value="4">
-        <input type="file" name="image"/> 
+        <input type="text" name="carNumber" value="4">
+        <input type="text" name="parkLocation" value="123,123">
+        
+        <!-- <input type="file" name="image"/>  -->
         <input type="submit" class="ui button fluid" value="post测试">
         <br>
 </body>

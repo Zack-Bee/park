@@ -460,4 +460,53 @@ exports.gethistory = async (ctx, next) => {
       }
     })
   }
+  else if (ctx.request.body.type == "add") {
+    ctx.body = {}
+    let time = ctx.request.body.startDate.split("-").concat(ctx.request.body.startTime.split(":"))
+    time = time[0] + "." + time[1] + "." + time[2] + "." + time[3] + "." + time[4]
+    fc.addhistory(ctx.request.body.parkId, time, null, ctx.request.body.carNumber, ctx.request.body.parkLocation, ctx.request.body.openId)
+  }
+  else if (ctx.request.body.type == "cancel") {
+    ctx.body = {}
+    fc.selecthistory("openid", ctx.request.body.openId, function (option) {
+      console.log(option)
+      for (let i = option.length - 1; i >= 0; i--) {
+        console.log(i)
+        if (ctx.request.body.carNumber == option[i].carNumber) {
+          console.log(option[i].id)
+          fc.deletehistory(option[i].id)
+          break
+        }
+      }
+    })
+    
+  }
+  else if (ctx.request.body.type == "done") {
+    ctx.body = {}
+    fc.selecthistory("openid", ctx.request.body.openId, function (option) {
+      for (let i = option.length - 1; i >= 0; i--) {
+        if (ctx.request.body.carNumber == option[i].carNumber) {
+          let time = ctx.request.body.endDate.split("-").concat(ctx.request.body.endTime.split(":"))
+          nt = option[i].time + "-" + time[0] + "." + time[1] + "." + time[2] + "." + time[3] + "." + time[4]
+          fc.changeone("history", option[i].id, "time", nt)
+          fc.changeone("history", option[i].id, "isDone", 1)
+          break
+        }
+      }
+    })
+  }
+  else if (ctx.request.body.type == "pay") {
+    ctx.body = {}
+    fc.selecthistory("openid", ctx.request.body.openId, function (option) {
+      let time = ctx.request.body.startDate.split("-").concat(ctx.request.body.startTime.split(":"))
+      time = time[0] + "." + time[1] + "." + time[2] + "." + time[3] + "." + time[4]
+      for (let i = option.length - 1; i >= 0; i--) {
+        if (ctx.request.body.carNumber == option[i].carNumber && option[i].time.split("-")[0] == time) {
+          fc.changeone("history", option[i].id, "pay", ctx.request.body.fee)
+          fc.changeone("history", option[i].id, "isPaid", 1)
+          break
+        }
+      }
+    })
+  }
 }

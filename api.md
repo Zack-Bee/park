@@ -281,3 +281,47 @@ eg
     parkId: "31232" // 停车场的编号
 }
 ```
+在点开始导航（准备停车）时：
+requestDataType: json
+eg:
+{
+    type: "add",
+    openId: "12345566",//车主的
+    carNumber："xxxx",
+    startTime: "12:00" // 表示开始停车的时间,
+    startDate: "08-27" // 开始停车的日期,
+    parkLocation:"123,123",
+    parkId:123//如果有的话，没有就返回null
+}
+
+在取消导航时：
+requestDataType: json
+eg:
+{
+    type: "cancel",
+    openId: "12345566",
+    carNumber："xxxx",
+}
+
+在停完车准备开走时：
+requestDataType: json
+eg:
+{
+    type: "done",
+    openId: "12345566",//车主的
+    carNumber："xxxx",
+    endTime: "23:00" 
+    endDate: "08-28" 
+}
+
+在支付后：
+requestDataType: json
+eg:
+{
+    type: "pay",
+    openId: "12345566",//车主的
+    carNumber："xxxx",
+    startTime: "12:00" // 表示开始停车的时间,
+    startDate: "08-27" // 开始停车的日期,
+    fee：12
+}
