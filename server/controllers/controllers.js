@@ -331,7 +331,8 @@ exports.upload = async (ctx, next) => {
         }
         else { ctx.body = { err: "该用户停车场上传失败" } }
         fs.rename(`upload/` + ctx.request.body.fields.openId, `upload/` + ctx.request.body.fields.openId + "-" + option[option.length - 1].id, function (err) {
-          console.log("将文件名修改为openid+parkid失败");
+          if(err){
+          console.log("将文件名修改为openid+parkid失败");}
         })
       })
     }
