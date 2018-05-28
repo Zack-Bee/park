@@ -265,21 +265,25 @@ eg:
     filter: "all" | "month",
     delta: 1
 }
-
+```
+```
 responseDataType: json
 eg
 {
     isPaid: true, // 表示是否已经完成付款
     isDone: true, // 表示行程是否已经完成
-    parkLocation: "123.45, 456.78", // 表示停车场的坐标
+    parkLocation: "东北大学", // 表示停车场的大致位置
     startTime: "12:00" // 表示开始停车的时间,
     startDate: "08-27" // 开始停车的日期,
     endTime: "23:00" // 停车结束的事件,
     endDate: "08-28" // 停车结束的日期 // 如果行程未完成则是当前的日期, 当前的时间
     fee: 19.80, // 停车的费用
     recordId: "1929292" // 这条记录的编号,
-    parkId: "31232" // 停车场的编号
+    parkId: "31232" // 停车场的编号,
+    parkLatitude: 123.45,
+    parkLongitude: 678.9
 }
+```
 ```
 在点开始导航（准备停车）时：
 requestDataType: json
@@ -293,7 +297,8 @@ eg:
     parkLocation:"123,123",
     parkId:123//如果有的话，没有就返回null
 }
-
+```
+```
 在取消导航时：
 requestDataType: json
 eg:
@@ -302,7 +307,8 @@ eg:
     openId: "12345566",
     carNumber："xxxx",
 }
-
+```
+```
 在停完车准备开走时：
 requestDataType: json
 eg:
@@ -310,10 +316,11 @@ eg:
     type: "done",
     openId: "12345566",//车主的
     carNumber："xxxx",
-    endTime: "23:00" 
-    endDate: "08-28" 
+    endTime: "23:00"
+    endDate: "08-28"
 }
-
+```
+```
 在支付后：
 requestDataType: json
 eg:
@@ -325,3 +332,4 @@ eg:
     startDate: "08-27" // 开始停车的日期,
     fee：12
 }
+```
