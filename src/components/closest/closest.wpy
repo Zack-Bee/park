@@ -14,7 +14,9 @@
                     <text class="parkingName">{{resData[0].title}}</text>
                     <view>
                         <text class="parkingPrice">￥0<!--{{item.parkingsPrice}}--></text>
-                        <Button class="parkingNow" type="primary" >现在停车!</Button>
+                        <picker bindchange="bindPickerChange" value="{{index}}" range="{{array}}">
+                            <Button class="parkingNow" type="primary" >现在停车!</Button>
+                        </picker>
                         <!--距离-->
                         <view class="parkingMsg">
                             <!--<view class="" type="primary" catchtap="clicknow">
@@ -37,20 +39,19 @@
 </template>
 
 <style scoped>
-
 /*不自然的下横线*/
-.closesttapname{
+.closesttapname {
     text-align: center;
-    border-bottom:1px solid #C0C0C0;  
+    border-bottom: 1px solid #c0c0c0;
 }
 /**
  * 停车场样式
 */
-.parkingLeft{
+.parkingLeft {
     float: left;
 }
 .parkingImage {
-    margin-top:10rpx;
+    margin-top: 10rpx;
     width: 140rpx;
     height: 140rpx;
 }
@@ -77,36 +78,37 @@
 }
 .parkingPrice {
     font-size: 40rpx;
-    color: 	rgba(3, 161, 11, 0.87);
+    color: rgba(3, 161, 11, 0.87);
     margin-top: 10rpx;
 }
 
 /*按钮*/
-.parkingNow{
-    float:right;
-    color:white;
-    background-color:#4b0;
+.parkingNow {
+    float: right;
+    color: white;
+    background-color: #4b0;
 }
 
 /*距离*/
-.parkingMsg{
+.parkingMsg {
     flex: row;
 }
-.parkingLefttext,.parkingNow{
+.parkingLefttext,
+.parkingNow {
     display: inline-block;
-    line-height:2;
-    margin-right:auto;
-    padding-right:14px;
-    box-sizing:border-box;
-    font-size:18px;
-    text-align:center;
-    text-decoration:none;
-    border-radius:5px;
-    -webkit-tap-highlight-color:transparent;
-    overflow:hidden;
+    line-height: 2;
+    margin-right: auto;
+    padding-right: 14px;
+    box-sizing: border-box;
+    font-size: 18px;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+    -webkit-tap-highlight-color: transparent;
+    overflow: hidden;
 }
 /*整体view样式*/
-.clickclosest{
+.clickclosest {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -114,7 +116,6 @@
     margin-bottom: 25rpx;
     border-bottom: solid 2px #ebebeb;
 }
-
 </style>
 
 <script>
@@ -131,7 +132,9 @@ export default class Closest extends wepy.component {
         }
     }
     data={
-        resData:[]
+        resData:[],
+        array:[],
+        index:0
     }
     onLoad() {
         qqmapsdk = new QQMapWX({
@@ -155,6 +158,11 @@ export default class Closest extends wepy.component {
             }
         })
     }
+    onShow() {
+        this.array= wx.getStorageSync("plateNumber")
+        console.log('hhhhhhh11')
+        this.$apply()
+    }
     formatDistance(num) {
         if (num < 1000) {
             return num.toFixed(0) + 'm'
@@ -162,20 +170,21 @@ export default class Closest extends wepy.component {
             return (num / 1000).toFixed(1) + 'km'
         }
     }
-    methods = {
-        clicknow(){
+
+    methods = {    
+        bindPickerChange(){
+            console.log('hhh')
             //点击进入停车选择
             wx.navigateTo({
-                    url: '../park-now/park-now',
-                    success: (res) => {
-                        console.log(res)
-                    },
-                    fail: (err) => {
-                        console.log(err)
-                    }
-                })
+                url: '../park-now/park-now',
+                success: (res) => {
+                    console.log(res)
+                },
+                fail: (err) => {
+                    console.log(err)
+                }
+            })
         }
     }
 }
 </script>
-

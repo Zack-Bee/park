@@ -127,14 +127,8 @@ export default class Map extends wepy.component {
                 console.log('ERROR!!!!!')
             }
         })    
-        /*
-        
-        post(`${config.host}/user/upload`, {
-            kind: this.selectedType,
-            latitude: this.latitude,
-            longitude: this.longitude,
-            openId: this.$parent.globalData.openId,
-        }).then(
+        /*post(`${config.host}/user/upload`, {})
+        .then(
             (res) => {
                 console.log(res, '\n\n\n')
             },
