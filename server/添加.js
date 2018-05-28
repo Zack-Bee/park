@@ -12,6 +12,6 @@ function randomNum(minNum,maxNum){
             break; 
     } 
 } 
-for(let i=0;i<5000;i++){
+for(let i=0;i<5;i++){
 fc.addparking("odpVJ5Lutx-arHao6e2yZXr_tUOs",4,"测试停车场","地点",randomNum(41652905,41918628)/1000000+","+randomNum(123191757,123669662)/1000000,1,"/upload/odpVJ5Lutx-arHao6e2yZXr_tUOs")
 }
