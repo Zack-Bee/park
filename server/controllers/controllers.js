@@ -331,8 +331,9 @@ exports.upload = async (ctx, next) => {
         }
         else { ctx.body = { err: "该用户停车场上传失败" } }
         fs.rename(`upload/` + ctx.request.body.fields.openId, `upload/` + ctx.request.body.fields.openId + "-" + option[option.length - 1].id, function (err) {
-          if(err){
-          console.log("将文件名修改为openid+parkid失败");}
+          if (err) {
+            console.log("将文件名修改为openid+parkid失败");
+          }
         })
       })
     }
@@ -355,12 +356,14 @@ exports.gethistory = async (ctx, next) => {
           this.fee = "return err"
           this.recordId = "return err"
           this.parkId = "return err"
+          this.parkLatitude = "return err"
+          this.parkLongitude = "return err"
         }
         for (let i = 0; i < option.length; i++) {
           let t = new RESP
           t.isPaid = option[i].isPaid
           t.isDone = option[i].isDone
-          t.parkLocation = option[i].parkLocation
+          t.parkLocation = option[i].location
           t.fee = option[i].pay
           t.recordId = option[i].id
           t.parkId = option[i].parking
@@ -374,6 +377,8 @@ exports.gethistory = async (ctx, next) => {
           t.startDate = s[0] + "-" + s[1] + "-" + s[2]
           t.endTime = e[3] + ":" + e[4]
           t.endDate = e[0] + "-" + e[1] + "-" + e[2]
+          t.parkLatitude = option[i].lola.split(",")[1]
+          t.parkLongitude = option[i].lola.split(",")[0]
           all.push(t)
         }
         all = all.reverse()
@@ -392,6 +397,8 @@ exports.gethistory = async (ctx, next) => {
           this.fee = "return err"
           this.recordId = "return err"
           this.parkId = "return err"
+          this.parkLatitude = "return err"
+          this.parkLongitude = "return err"
         }
         for (let i = 0; i < option.length; i++) {
           let time = option[i].time
@@ -414,6 +421,8 @@ exports.gethistory = async (ctx, next) => {
             t.startDate = s[0] + "-" + s[1] + "-" + s[2]
             t.endTime = e[3] + ":" + e[4]
             t.endDate = e[0] + "-" + e[1] + "-" + e[2]
+            t.parkLatitude = option[i].lola.split(",")[1]
+            t.parkLongitude = option[i].lola.split(",")[0]
             all.push(t)
           }
         }
@@ -433,6 +442,8 @@ exports.gethistory = async (ctx, next) => {
           this.fee = "return err"
           this.recordId = "return err"
           this.parkId = "return err"
+          this.parkLatitude = "return err"
+          this.parkLongitude = "return err"
         }
         for (let i = 0; i < option.length; i++) {
           let time = option[i].time
@@ -453,6 +464,8 @@ exports.gethistory = async (ctx, next) => {
           t.startDate = s[0] + "-" + s[1] + "-" + s[2]
           t.endTime = e[3] + ":" + e[4]
           t.endDate = e[0] + "-" + e[1] + "-" + e[2]
+          t.parkLatitude = option[i].lola.split(",")[1]
+          t.parkLongitude = option[i].lola.split(",")[0]
           all.push(t)
 
         }
@@ -465,7 +478,22 @@ exports.gethistory = async (ctx, next) => {
     ctx.body = {}
     let time = ctx.request.body.startDate.split("-").concat(ctx.request.body.startTime.split(":"))
     time = time[0] + "." + time[1] + "." + time[2] + "." + time[3] + "." + time[4]
-    fc.addhistory(ctx.request.body.parkId, time, null, ctx.request.body.carNumber, ctx.request.body.parkLocation, ctx.request.body.openId)
+    request('http://apis.map.qq.com/ws/geocoder/v1/?location=' + ctx.request.body.parkLocation + '&key=H4CBZ-CPYWK-2ZOJO-ACLVD-POMLE-FBBDZ&get_poi=1', function (error, response, body) {
+      if (error) {
+        ctx.body = { error }
+      }
+      else if (response.statusCode == 200) {
+        if (JSON.parse(body).result.pois != "") {
+          fc.addhistory(ctx.request.body.parkId, time, null, ctx.request.body.carNumber, ctx.request.body.parkLocation, ctx.request.body.openId,JSON.parse(body).result.formatted_addresses.recommend)
+       ctx.body={result:"ok"}
+        }
+        ctx.body={err:"经纬度不正常！"}
+      }
+      else {
+        ctx.body =("response.statusCode != 200");
+      }
+    })
+
   }
   else if (ctx.request.body.type == "cancel") {
     ctx.body = {}
@@ -480,7 +508,7 @@ exports.gethistory = async (ctx, next) => {
         }
       }
     })
-    
+
   }
   else if (ctx.request.body.type == "done") {
     ctx.body = {}
