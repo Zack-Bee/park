@@ -3,8 +3,10 @@
 <template>
     <view>
         <FilterBar :filter.sync="filter"/>
-        <Map :height.sync="mapHeight"/>
-        <Closest/>
+        <Map :height.sync="mapHeight" :filter.sync="filter" :markerFLAG.sync="markerFLAG"
+        :markerTitle.sync="markerTitle" :markerDstce.sync="markerDstce"/>
+        <Closest :FLAG.sync="markerFLAG" 
+        :nowTitle.sync="markerTitle" :nowDstce.sync="markerDstce"/>
     </view>
 </template>
 
@@ -24,7 +26,10 @@ export default class Index extends wepy.page {
     data = {
         filter: '综合',
         mapHeight: 355,
-        mapWidth: 375
+        mapWidth: 375,
+        markerFLAG:0,
+        markerTitle:'',
+        markerDstce:''
     }
 
     onLoad() {
