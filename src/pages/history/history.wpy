@@ -1,19 +1,96 @@
 <template>
-    <view>
+    <view class="page">
         <view class="history-wrapper">
-            <view class="history-place">东北大学浑南校区 ></view>
+            <view class="history-left">
+                <view class="history-place">
+                    <placeIcon type="location" style="lien-height: 60rpx; font-size: 24rpx;" />
+                    <view class="history-place-text text">东北大学浑南校区</view>
+                    <!-- <arrowIcon type="arrow" style="lien-height: 60rpx; font-size: 24rpx; color: #888;" /> -->
+                </view>
+                <view class="history-start-time">
+                    <startTimeIcon type="underway" style="line-height:40rpx; color:#09bb04; font-size: 24rpx"/>
+                    <view class="text">开始时间: 2018-07-27-08:20</view>
+                </view>
+                <view class="history-end-time">
+                    <endTimeIcon type="underway" style="line-height:40rpx; color:#09bbf1; font-size: 24rpx"/>
+                    <view class="text">结束时间: 2018-07-27-21:00</view>
+                </view>
+                <view class="history-plate-number">
+                    <view class="img-wrapper" style="position:relative; width:24rpx; height:24rpx;"><image src="./plateNumberIcon.png" style="width: 100%; height: 100%;"/></view>
+                    <view class="text">车牌号: 鄂A-12345</view>
+                </view>
+                <view class="history-fee text">
+                    <feeIcon type="balance-details" style="line-height:40rpx; color:#ff413a; font-size: 24rpx"/>
+                    <view class="text">费用: 100</view>
+                </view>
+            </view>
+            <view class="history-right">
+                <view></view>
+            </view>
         </view>
     </view>
 </template>
 
 <style scoped>
+.page {
+    background-color: rgb(245, 245, 245);
+    min-height: 100vh;
+}
 
+.history-wrapper {
+    display: flex;
+    background-color: #fff;
+    margin: 20rpx;
+    box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.1);
+    font-size: 28rpx;
+    line-height: 40rpx;
+    padding: 20rpx 0;
+    color: #666;
+}
+
+.history-left {
+    width: 610rpx;
+}
+
+.history-left > view {
+    padding-left: 30rpx;
+    display: flex;
+}
+
+.history-right {
+    width: 100rpx;
+}
+
+.history-place {
+    color: #353535;
+    line-height: 60rpx;
+    display: flex;
+}
+
+.history-place-text {
+    width: 315rpx;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    height: 60rpx;
+    white-space: nowrap;
+}
+
+.text {
+    padding-left: 8rpx;
+}
 </style>
 
 <script>
-import wepy from "wepy"
+import wepy from 'wepy'
+import Icon from '../../components/icon/icon'
 
 export default class History extends wepy.page {
-
+    components = {
+        placeIcon: Icon,
+        startTimeIcon: Icon,
+        endTimeIcon: Icon,
+        arrowIcon: Icon,
+        feeIcon: Icon
+    }
 }
 </script>
