@@ -48,7 +48,7 @@ export default class Map extends wepy.component {
     }
     data = {
         resData: [],
-        scale: 16,
+        scale: 18,
         latitude: '',
         longitude: '',
         markers: [],

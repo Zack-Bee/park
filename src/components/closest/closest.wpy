@@ -15,12 +15,9 @@
                     <text class="parkingName">{{resData[0].title}}</text>
                     <view>
                         <text class="parkingPrice">￥0<!--{{item.parkingsPrice}}--></text>
-                        <picker bindchange="bindPickerChange" value="{{index}}" range="{{numberArray}}" wx:if="{{numberArray.length > 1}}">
+                        <picker bindchange="bindPickerChange" value="{{index}}" range="{{numberArray}}" wx:if="{{numberArray.length > 0}}">
                             <Button class="parkingNow" type="primary" >现在停车!</Button>
                         </picker>
-                        <view wx:if="{{numberArray.length === 1}}">
-                            <Button class="parkingNow" type="primary" bindtap="justOneNumber">现在停车!</Button>
-                        </view>
                         <view wx:if="{{numberArray.length === 0}}">
                             <Button class="parkingNow" type="primary" wx:if="{{numberArray.length === 0}}" bindtap="emptynumber">现在停车!</Button>
                         </view>
