@@ -1,7 +1,7 @@
 <template>
     <view>
         <view class="history-wrapper">
-
+            <view class="history-place">东北大学浑南校区 ></view>
         </view>
     </view>
 </template>

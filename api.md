@@ -281,7 +281,8 @@ eg
     recordId: "1929292" // 这条记录的编号,
     parkId: "31232" // 停车场的编号,
     parkLatitude: 123.45,
-    parkLongitude: 678.9
+    parkLongitude: 678.9,
+    plateNumber: "辽A-12345"
 }
 ```
 ```
