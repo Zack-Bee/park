@@ -6,7 +6,8 @@
         <Map :height.sync="mapHeight" :filter.sync="filter" :markerFLAG.sync="markerFLAG"
         :markerTitle.sync="markerTitle" :markerDstce.sync="markerDstce"/>
         <Closest :FLAG.sync="markerFLAG" 
-        :nowTitle.sync="markerTitle" :nowDstce.sync="markerDstce"/>
+        :nowTitle.sync="markerTitle" :nowDstce.sync="markerDstce"
+        :numberArray.sync="numberArray"/>
     </view>
 </template>
 
@@ -29,13 +30,18 @@ export default class Index extends wepy.page {
         mapWidth: 375,
         markerFLAG:0,
         markerTitle:'',
-        markerDstce:''
+        markerDstce:'',
+        numberArray:[]
     }
 
     onLoad() {
         this.mapHeight = this.$parent.globalData.mapHeight
         this.mapWidth = this.$parent.globalData.mapWidth
         console.log(this.mapHeight, this.mapWidth)
+    }
+    onShow() {
+        this.numberArray = wx.getStorageSync('plateNumber')
+        this.$apply()
     }
 }
 </script>

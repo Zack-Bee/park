@@ -1,5 +1,5 @@
 <template>
-<view class="closestparking" bindtap="aaa">
+<view class="closestparking">
     <!-- 默认显示 -->
     <view wx:if="{{FLAG === 0}}">
         <view class="closesttapname">
@@ -15,11 +15,14 @@
                     <text class="parkingName">{{resData[0].title}}</text>
                     <view>
                         <text class="parkingPrice">￥0<!--{{item.parkingsPrice}}--></text>
-                        <picker bindchange="bindPickerChange" value="{{index}}" range="{{array}}" wx:if="{{array.length > 0}}">
+                        <picker bindchange="bindPickerChange" value="{{index}}" range="{{numberArray}}" wx:if="{{numberArray.length > 1}}">
                             <Button class="parkingNow" type="primary" >现在停车!</Button>
                         </picker>
-                        <view wx:if="{{array.length === 0}}">
-                            <Button class="parkingNow" type="primary" wx:if="{{array.length === 0}}" bindtap="emptynumber">现在停车!</Button>
+                        <view wx:if="{{numberArray.length === 1}}">
+                            <Button class="parkingNow" type="primary" bindtap="justOneNumber">现在停车!</Button>
+                        </view>
+                        <view wx:if="{{numberArray.length === 0}}">
+                            <Button class="parkingNow" type="primary" wx:if="{{numberArray.length === 0}}" bindtap="emptynumber">现在停车!</Button>
                         </view>
                         <!--距离-->
                         <view class="parkingMsg">
@@ -54,11 +57,11 @@
                     <text class="parkingName">{{nowTitle}}</text>
                     <view>
                         <text class="parkingPrice">￥0<!--{{item.parkingsPrice}}--></text>
-                        <picker bindchange="bindPickerChange" value="{{index}}" range="{{array}}" wx:if="{{array.length > 0}}">
+                        <picker bindchange="bindPickerChange" value="{{index}}" range="{{numberArray}}" wx:if="{{numberArray.length > 0}}">
                             <Button class="parkingNow" type="primary" >现在停车!</Button>
                         </picker>
-                        <view wx:if="{{array.length === 0}}">
-                            <Button class="parkingNow" type="primary" wx:if="{{array.length === 0}}" bindtap="emptynumber">现在停车!</Button>
+                        <view wx:if="{{numberArray.length === 0}}">
+                            <Button class="parkingNow" type="primary"  bindtap="emptynumber" wx:if="{{numberArray.length === 0}}">现在停车!</Button>
                         </view>
                         <!--距离-->
                         <view class="parkingMsg">
@@ -174,20 +177,24 @@ export default class Closest extends wepy.component {
             default: 0,
             twoWay: true
         },
-        nowTitle:{
-            type:String,
-            default:'找不到附近的停车场',
-            twoWay:true
+        nowTitle: {
+            type: String,
+            default: '找不到附近的停车场',
+            twoWay: true
         },
-        nowDstce:{
-            type:String,
-            default:'0.00m',
-            twoWay:true
+        nowDstce: {
+            type: String,
+            default: '0.00m',
+            twoWay: true
+        },
+        numberArray: {
+            type: Array,
+            default: '',
+            twoWay: true
         }
     }
     data = {
         resData: [],
-        array: [],
         index: 0
     }
     onLoad() {
@@ -211,12 +218,8 @@ export default class Closest extends wepy.component {
                 console.log('ERROR!!!!!')
             }
         })
-        console.log(this.array[0])
-        console.log(this.FLAG)
-    }
-    onShow() {
-        this.array = wx.getStorageSync('plateNumber')
-        this.$apply()
+        console.log('hhh')
+        console.log(this.numberArray)
     }
     formatDistance(num) {
         if (num < 1000) {
@@ -234,7 +237,7 @@ export default class Closest extends wepy.component {
                 cancelText: '我再看看',
                 confirmText: '现在就去',
                 success: (res) => {
-                    if (res.confirm === true){
+                    if (res.confirm === true) {
                         wx.navigateTo({
                             url: '../plate-number/plate-number',
                             success: (res) => {
@@ -261,8 +264,16 @@ export default class Closest extends wepy.component {
                 }
             })
         },
-        aaa(){
-            console.log(this.FLAG)
+        justOneNumber() {
+            wx.navigateTo({
+                url: '../park-now/park-now',
+                success: (res) => {
+                    console.log(res)
+                },
+                fail: (err) => {
+                    console.log(err)
+                }
+            })
         }
     }
 }
