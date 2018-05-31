@@ -278,7 +278,6 @@ exports.userplatenumber = async (ctx, next) => {
 }
 
 exports.upload = async (ctx, next) => {
-  response.status=200
   if (ctx.request.body.kind) {
     fc.addparking(ctx.request.body.openId,
       ctx.request.body.kind, null, null,
@@ -290,8 +289,6 @@ exports.upload = async (ctx, next) => {
     })
   }
   if (ctx.request.body.files) {
-
-
     await fs.exists(`upload/` + ctx.request.body.fields.openId, function (exists) {
       if (!exists) {
         function mkdir(dirpath, dirname) {
@@ -322,7 +319,7 @@ exports.upload = async (ctx, next) => {
       let upStream = fs.createWriteStream(`upload/` + ctx.request.body.fields.openId + `/` + ctx.request.body.fields.index + `.jpg`);
       reader.pipe(upStream);
       if (ctx.request.body.fields.imageNumber != ctx.request.body.fields.index) {
-        ctx.body = {}
+        ctx.body = {1:1}
       }
     })
     if (ctx.request.body.fields.imageNumber == ctx.request.body.fields.index) {
@@ -476,7 +473,7 @@ exports.gethistory = async (ctx, next) => {
     })
   }
   else if (ctx.request.body.type == "add") {
-    ctx.body = {}
+    ctx.body = {1:1}
     let time = ctx.request.body.startDate.split("-").concat(ctx.request.body.startTime.split(":"))
     time = time[0] + "." + time[1] + "." + time[2] + "." + time[3] + "." + time[4]
     request('http://apis.map.qq.com/ws/geocoder/v1/?location=' + ctx.request.body.parkLocation + '&key=H4CBZ-CPYWK-2ZOJO-ACLVD-POMLE-FBBDZ&get_poi=1', function (error, response, body) {
@@ -497,7 +494,7 @@ exports.gethistory = async (ctx, next) => {
 
   }
   else if (ctx.request.body.type == "cancel") {
-    ctx.body = {}
+    ctx.body = {1:1}
     fc.selecthistory("openid", ctx.request.body.openId, function (option) {
       console.log(option)
       for (let i = option.length - 1; i >= 0; i--) {
@@ -512,7 +509,7 @@ exports.gethistory = async (ctx, next) => {
 
   }
   else if (ctx.request.body.type == "done") {
-    ctx.body = {}
+    ctx.body = {1:1}
     fc.selecthistory("openid", ctx.request.body.openId, function (option) {
       for (let i = option.length - 1; i >= 0; i--) {
         if (ctx.request.body.carNumber == option[i].carNumber) {
@@ -526,7 +523,7 @@ exports.gethistory = async (ctx, next) => {
     })
   }
   else if (ctx.request.body.type == "pay") {
-    ctx.body = {}
+    ctx.body = {1:1}
     fc.selecthistory("openid", ctx.request.body.openId, function (option) {
       let time = ctx.request.body.startDate.split("-").concat(ctx.request.body.startTime.split(":"))
       time = time[0] + "." + time[1] + "." + time[2] + "." + time[3] + "." + time[4]
