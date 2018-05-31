@@ -18,13 +18,16 @@ app.use(koaBody({
 }));
 
 app.use(bodyParser());
-const router = require('./routes/index')
-app.listen(5757)
-console.log("listening 5757")
+const router = require('./routes/index');
+app.listen(5757);
+console.log("listening 5757");
 const main = ctx => {
   ctx.response.type = 'html';
   ctx.response.body = fs.createReadStream('./server/test.html');
 };
+<<<<<<< HEAD
 //app.response.status=200;
+=======
+>>>>>>> refs/remotes/origin/master
 app.use(router.routes());
 app.use(main);
