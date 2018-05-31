@@ -25,6 +25,6 @@ const main = ctx => {
   ctx.response.type = 'html';
   ctx.response.body = fs.createReadStream('./server/test.html');
 };
-
-app.use(router.routes())
-app.use(main)
+//app.response.status=200;
+app.use(router.routes());
+app.use(main);
