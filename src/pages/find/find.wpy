@@ -3,34 +3,49 @@
 <template>
     <view>
         <FilterBar :filter.sync="filter"/>
-        <Map :height.sync="mapHeight"/>
-        <Closest/>
+        <Map :height.sync="mapHeight" :filter.sync="filter" :markerFLAG.sync="markerFLAG"
+        :markerTitle.sync="markerTitle" :markerDstce.sync="markerDstce"/>
+        <Closest :FLAG.sync="markerFLAG" 
+        :nowTitle.sync="markerTitle" :nowDstce.sync="markerDstce"
+        :numberArray.sync="numberArray"/>
     </view>
 </template>
 
 <script>
 import wepy from 'wepy'
 import FilterBar from '../../components/filter-bar/filter-bar'
-import Map from "../../components/map/map"
-import Closest from "../../components/closest/closest"
+import Map from '../../components/map/map'
+import Closest from '../../components/closest/closest'
 
 export default class Index extends wepy.page {
     components = {
         FilterBar,
         Map,
-        Closest,
+        Closest
     }
 
     data = {
         filter: '综合',
         mapHeight: 355,
-        mapWidth: 375
+        mapWidth: 375,
+        markerFLAG: 0,
+        markerTitle: '',
+        markerDstce: '',
+        numberArray: []
     }
 
     onLoad() {
         this.mapHeight = this.$parent.globalData.mapHeight
         this.mapWidth = this.$parent.globalData.mapWidth
         console.log(this.mapHeight, this.mapWidth)
+    }
+    onShow() {
+        let array = wx.getStorageSync('plateNumber')
+        this.array = array.map(
+            (value) => `${value.slice(0, 2)}-${value.slice(2)}`
+        )
+        this.numberArray = this.array
+        this.$apply()
     }
 }
 </script>

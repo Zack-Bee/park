@@ -1,6 +1,7 @@
 <template>
 <view class="closestparking">
-    <view>
+    <!-- 默认显示 -->
+    <view wx:if="{{FLAG === 0}}">
         <view class="closesttapname">
             <text>离我最近</text>
         </view>
@@ -14,9 +15,12 @@
                     <text class="parkingName">{{resData[0].title}}</text>
                     <view>
                         <text class="parkingPrice">￥0<!--{{item.parkingsPrice}}--></text>
-                        <picker bindchange="bindPickerChange" value="{{index}}" range="{{array}}">
+                        <picker bindchange="bindPickerChange" value="{{index}}" range="{{numberArray}}" wx:if="{{numberArray.length > 0}}">
                             <Button class="parkingNow" type="primary" >现在停车!</Button>
                         </picker>
+                        <view wx:if="{{numberArray.length === 0}}">
+                            <Button class="parkingNow" type="primary" wx:if="{{numberArray.length === 0}}" bindtap="emptynumber">现在停车!</Button>
+                        </view>
                         <!--距离-->
                         <view class="parkingMsg">
                             <!--<view class="" type="primary" catchtap="clicknow">
@@ -27,6 +31,45 @@
                             <view class="parkingLefttext">
                                 <text style="font-size:30rpx">距您</text>
                                 <text style="color:#00dd00;font-size:40rpx"> {{resData[0]._distance}} </text>
+                                <text style="font-size:30rpx">远</text>
+                            </view>                
+                        </view>
+                    </view>
+                </view>
+            </view>
+        </block>
+    </view>
+    <!-- 当前显示 -->
+    <view wx:if="{{FLAG === 1}}">
+        <view class="closesttapname">
+            <text>当前选择</text>
+        </view>
+        <block>
+            <view class="parkingView">
+                <view class="parkingLeft">
+                <image class="parkingImage" src="../../components/closest/company.png" /><!--{{item.parkingImage}}-->
+                <view class="parkingType">企业类</view>
+                </view>
+                <view class="parkingLeftView"  wx:key="parking">
+                    <text class="parkingName">{{nowTitle}}</text>
+                    <view>
+                        <text class="parkingPrice">￥0<!--{{item.parkingsPrice}}--></text>
+                        <picker bindchange="bindPickerChange" value="{{index}}" range="{{numberArray}}" wx:if="{{numberArray.length > 0}}">
+                            <Button class="parkingNow" type="primary" >现在停车!</Button>
+                        </picker>
+                        <view wx:if="{{numberArray.length === 0}}">
+                            <Button class="parkingNow" type="primary"  bindtap="emptynumber" wx:if="{{numberArray.length === 0}}">现在停车!</Button>
+                        </view>
+                        <!--距离-->
+                        <view class="parkingMsg">
+                            <!--<view class="" type="primary" catchtap="clicknow">
+                                <text style="font-size:30rpx">现在</text>
+                                <text style="color:#00dd00;font-size:40rpx"> 停车 </text>
+                                <text style="font-size:30rpx">吧</text>
+                            </view>-->
+                            <view class="parkingLefttext">
+                                <text style="font-size:30rpx">距您</text>
+                                <text style="color:#00dd00;font-size:40rpx"> {{nowDstce}} </text>
                                 <text style="font-size:30rpx">远</text>
                             </view>                
                         </view>
@@ -128,13 +171,28 @@ export default class Closest extends wepy.component {
     props = {
         FLAG: {
             type: Number,
-            default: 1
+            default: 0,
+            twoWay: true
+        },
+        nowTitle: {
+            type: String,
+            default: '找不到附近的停车场',
+            twoWay: true
+        },
+        nowDstce: {
+            type: String,
+            default: '0.00m',
+            twoWay: true
+        },
+        numberArray: {
+            type: Array,
+            default: '',
+            twoWay: true
         }
     }
-    data={
-        resData:[],
-        array:[],
-        index:0
+    data = {
+        resData: [],
+        index: 0
     }
     onLoad() {
         qqmapsdk = new QQMapWX({
@@ -144,24 +202,21 @@ export default class Closest extends wepy.component {
             keyword: '停车场',
             success: (res) => {
                 console.log(res)
-                var resData = res.data
-                for (var i = 0; i < resData.length; i++) {
-                    resData[i]._distance = this.formatDistance(
-                        resData[i]._distance
+                this.resData = res.data
+                for (var i = 0; i < this.resData.length; i++) {
+                    this.resData[i]._distance = this.formatDistance(
+                        this.resData[i]._distance
                     ) //转换一下距离的格式
-                    this.resData=res.data
+                    this.resData = res.data
                     this.$apply()
-                }                
+                }
             },
             fail: (res) => {
                 console.log('ERROR!!!!!')
             }
         })
-    }
-    onShow() {
-        this.array= wx.getStorageSync("plateNumber")
-        console.log('hhhhhhh11')
-        this.$apply()
+        console.log('hhh')
+        console.log(this.numberArray)
     }
     formatDistance(num) {
         if (num < 1000) {
@@ -171,10 +226,42 @@ export default class Closest extends wepy.component {
         }
     }
 
-    methods = {    
-        bindPickerChange(){
+    methods = {
+        emptynumber() {
+            wx.showModal({
+                title: '哎呀！',
+                content: '貌似还没有绑定车牌号\n要现在绑定吗？',
+                cancelText: '我再看看',
+                confirmText: '现在就去',
+                success: (res) => {
+                    if (res.confirm === true) {
+                        wx.navigateTo({
+                            url: '../plate-number/plate-number',
+                            success: (res) => {
+                                console.log(res)
+                            },
+                            fail: (err) => {
+                                console.log(err)
+                            }
+                        })
+                    }
+                }
+            })
+        },
+        bindPickerChange() {
             console.log('hhh')
             //点击进入停车选择
+            wx.navigateTo({
+                url: '../park-now/park-now',
+                success: (res) => {
+                    console.log(res)
+                },
+                fail: (err) => {
+                    console.log(err)
+                }
+            })
+        },
+        justOneNumber() {
             wx.navigateTo({
                 url: '../park-now/park-now',
                 success: (res) => {
