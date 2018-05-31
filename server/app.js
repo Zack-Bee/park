@@ -25,9 +25,5 @@ const main = ctx => {
   ctx.response.type = 'html';
   ctx.response.body = fs.createReadStream('./server/test.html');
 };
-<<<<<<< HEAD
-//app.response.status=200;
-=======
->>>>>>> refs/remotes/origin/master
 app.use(router.routes());
 app.use(main);
