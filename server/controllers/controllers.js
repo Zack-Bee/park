@@ -288,8 +288,6 @@ exports.upload = async (ctx, next) => {
     })
   }
   if (ctx.request.body.files) {
-
-
     await fs.exists(`upload/` + ctx.request.body.fields.openId, function (exists) {
       if (!exists) {
         function mkdir(dirpath, dirname) {
