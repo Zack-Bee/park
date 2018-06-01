@@ -1,166 +1,118 @@
 <template>
-<view class="closestparking">
-    <!-- 默认显示 -->
-    <view wx:if="{{FLAG === 0}}">
-        <view class="closesttapname">
-            <text>离我最近</text>
-        </view>
-        <block>
-            <view class="parkingView">
-                <view class="parkingLeft">
-                <image class="parkingImage" src="../../components/closest/company.png" /><!--{{item.parkingImage}}-->
-                <view class="parkingType">企业类</view>
-                </view>
-                <view class="parkingLeftView"  wx:key="parking">
-                    <text class="parkingName">{{resData[0].title ? resData[0].title : "加载中"}}</text>
-                    <view>
-                        <text class="parkingPrice">￥0<!--{{item.parkingsPrice}}--></text>
-                        <picker bindchange="bindPickerChange" value="{{index}}" range="{{numberArray}}" wx:if="{{numberArray.length > 0}}">
-                            <view class="parkingNow">
-                                <Button1 :loading.sync="isLoading" type="primary" >现在停车!</Button1>
-                            </view>
-                        </picker>
-                        <view wx:if="{{numberArray.length === 0}}">
-                            <Button2 class="parkingNow" :loading.sync="isLoading" type="primary" wx:if="{{numberArray.length === 0}}" bindtap="emptynumber" >现在停车!</Button2>
+    <view class="closest-wrapper">
+        <!-- <image style="display: block; height: 4rpx; width: 100%;" src="./shadow-top.png" /> -->
+        <view class="closest-park">
+            <view class="closest-header">{{FLAG === 0 ? "离我最近" : "当前选择"}}</view>
+            <view class="closest-body">
+                <view class="closest-left">
+                    <view class="vertical-wrapper">
+                        <view class="icon-wrapper">
+                            <image style="width: 100%; height: 100%;" src="{{kind === 3 ? '../../components/closest/company.png' : '../../components/closest/person.png'}}" />
                         </view>
-                        <!--距离-->
-                        <view class="parkingMsg">
-                            <!--<view class="" type="primary" catchtap="clicknow">
-                                <text style="font-size:30rpx">现在</text>
-                                <text style="color:#00dd00;font-size:40rpx"> 停车 </text>
-                                <text style="font-size:30rpx">吧</text>
-                            </view>-->
-                            <view class="parkingLefttext">
-                                <text style="font-size:30rpx">距您</text>
-                                <text style="color:#00dd00;font-size:40rpx"> {{resData[0]._distance}} </text>
-                                <text style="font-size:30rpx">远</text>
-                            </view>                
+                        <view class="kind-desc">
+                            {{kind === 3 ? "企业类" : "个人类"}}
                         </view>
                     </view>
                 </view>
-            </view>
-        </block>
-    </view>
-    <!-- 当前显示 -->
-    <view wx:if="{{FLAG === 1}}">
-        <view class="closesttapname">
-            <text>当前选择</text>
-        </view>
-        <block>
-            <view class="parkingView">
-                <view class="parkingLeft">
-                <image class="parkingImage" src="../../components/closest/company.png" /><!--{{item.parkingImage}}-->
-                <view class="parkingType">企业类</view>
+                <view class="closest-middle">
+                    <view class="park-name">{{parkName}}</view>
+                    <view class="park-price">价格: {{parkPrice}}</view>
+                    <view class="park-distence">距离: {{parkDistence}}</view>
                 </view>
-                <view class="parkingLeftView"  wx:key="parking">
-                    <text class="parkingName">{{nowTitle ? nowTitle : "加载中"}}</text>
-                    <view>
-                        <text class="parkingPrice">￥0<!--{{item.parkingsPrice}}--></text>
-                        <picker bindchange="bindPickerChange" value="{{index}}" range="{{numberArray}}" wx:if="{{numberArray.length > 0}}">
-                            <view class="parkingNow">
-                                <Button3 :loading.sync="isLoading" type="primary" >现在停车!</Button3>
-                            </view>
-                        </picker>
-                        <view wx:if="{{numberArray.length === 0}}">
-                            <Button4 class="parkingNow" type="primary"  bindtap="emptynumber" :loading.sync="isLoading" 
-                            wx:if="{{numberArray.length === 0}}" >现在停车!</Button4>
-                        </view>
-                        <!--距离-->
-                        <view class="parkingMsg">
-                            <!--<view class="" type="primary" catchtap="clicknow">
-                                <text style="font-size:30rpx">现在</text>
-                                <text style="color:#00dd00;font-size:40rpx"> 停车 </text>
-                                <text style="font-size:30rpx">吧</text>
-                            </view>-->
-                            <view class="parkingLefttext">
-                                <text style="font-size:30rpx">距您</text>
-                                <text style="color:#00dd00;font-size:40rpx"> {{nowDstce}} </text>
-                                <text style="font-size:30rpx">远</text>
-                            </view>                
-                        </view>
+                <view class="closest-right">
+                    <view class="navigate-btn">
+                        <navigateBtn class="override-button" size="small">开始导航</navigateBtn>
+                    </view>
+                    <view class="padding" />
+                    <view class="park-btn">
+                        <parkBtn class="override-button" type="primary" size="small">现在停车</parkBtn>
                     </view>
                 </view>
             </view>
-        </block>
+        </view>
     </view>
-</view>
 </template>
 
 <style scoped>
-/*不自然的下横线*/
-.closesttapname {
+.closest-wrapper {
+    height: 240rpx;
+}
+
+.closest-park {
+    height: 240rpx;
+}
+
+.closest-header {
+    font-size: 32rpx;
+    line-height: 60rpx;
+    color: #888;
     text-align: center;
-    border-bottom: 1px solid #c0c0c0;
 }
-/**
- * 停车场样式
-*/
-.parkingLeft {
-    float: left;
+
+.closest-body {
+    display: flex;
 }
-.parkingImage {
-    margin-top: 10rpx;
-    width: 140rpx;
-    height: 140rpx;
+
+.closest-left {
+    width: 130rpx;
+    height: 180rpx;
+    line-height: 180rpx;
+    font-size: 0;
+    text-align: center;
 }
-.parkingType {
-    width: 150rpx;
-    line-height: 20rpx;
+
+.vertical-wrapper {
+    display: inline-block;
+    margin: 0 auto;
+    height: 130rpx;
+    width: 100rpx;
+    vertical-align: middle;
+}
+
+.icon-wrapper {
+    width: 100rpx;
+    height: 100rpx;
+}
+
+.kind-desc {
+    line-height: 30rpx;
+    font-size: 24rpx;
+    color: #888;
+    text-align: center;
+}
+
+.closest-middle {
+    width: 490rpx;
+}
+
+.closest-right {
+    width: 130rpx;
+}
+
+.override-button {
+    padding: 0 10rpx;
+}
+
+.padding {
+    height: 30rpx;
+}
+
+.park-name {
+    color: #353535;
+    font-size: 36rpx;
+    line-height: 80rpx;
+}
+
+.park-price {
+    line-height: 40rpx;
     font-size: 30rpx;
-    text-align: center;
     color: #888;
 }
-/*左侧文本整体样式*/
 
-.parkingLeftView {
-    margin-left: 60rpx;
-    display: flex;
-    flex-direction: column;
-}
-
-/*名称样式*/
-
-.parkingName {
-    font-weight: bold;
-    color: #333;
-}
-.parkingPrice {
-    font-size: 40rpx;
-    color: rgba(3, 161, 11, 0.87);
-    margin-top: 10rpx;
-}
-
-/*按钮*/
-.parkingNow {
-    float: right;
-    color: white;
-}
-
-/*距离*/
-.parkingMsg {
-    flex: row;
-}
-.parkingLefttext,
-{
-    line-height: 2;
-    margin-right: auto;
-    padding-right: 14px;
-    box-sizing: border-box;
-    font-size: 18px;
-    text-align: center;
-    text-decoration: none;
-    border-radius: 5px;
-    -webkit-tap-highlight-color: transparent;
-    overflow: hidden;
-}
-/*整体view样式*/
-.clickclosest {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    margin-top: 10rpx;
-    margin-bottom: 25rpx;
-    border-bottom: solid 2px #ebebeb;
+.park-distence {
+    line-height: 40rpx;
+    color: #888;
+    font-size: 30rpx;
 }
 </style>
 
@@ -172,10 +124,8 @@ var QQMapWX = require('../../libs/qqmap-wx-jssdk.js')
 var qqmapsdk
 export default class Closest extends wepy.component {
     components = {
-        Button1: Button,
-        Button2: Button,
-        Button3: Button,
-        Button4: Button
+        navigateBtn: Button,
+        parkBtn: Button
     }
 
     props = {
@@ -204,7 +154,10 @@ export default class Closest extends wepy.component {
         resData: [],
         index: 0,
         isLoading: true,
-        initTitle: "加载中"
+        initTitle: '加载中',
+        parkName: '东北大学停车场',
+        parkPrice: '100',
+        parkDistence: '3000m'
     }
     onLoad() {
         qqmapsdk = new QQMapWX({

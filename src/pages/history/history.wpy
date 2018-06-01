@@ -296,7 +296,7 @@ export default class History extends wepy.page {
                     if (res.data.length === 0) {
                         this.isNoMore = true
                     }
-                    this.history.push(res.data)
+                    this.history.push(...res.data)
                     this.$apply()
                 },
                 (err) => {
@@ -322,7 +322,7 @@ export default class History extends wepy.page {
                 if (res.data.length === 0) {
                     this.isNoMore = true
                 }
-                this.history.push(res.data)
+                this.history.push(...res.data)
                 this.$apply()
             },
             (err) => {
