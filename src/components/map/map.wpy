@@ -5,6 +5,7 @@
         markers="{{markers}}" bindmarkertap="markertap"
         show-location   bindregionchange="regionchange"
         style="width:100%;height:{{height}}px">
+        <cover-image style="display: block; height: 8rpx; width: 100%;" src="./shadow-top.png" />
     </map>
 </view>
 </template>
@@ -124,8 +125,8 @@ export default class Map extends wepy.component {
                         longitude: parkLong,
                         iconPath: '../../components/map/parking.png',
                         id: id,
-                        width: 40 * wx.getStorageSync('MapScreenW'),
-                        height: 40 * wx.getStorageSync('MapScreenW'),
+                        width: 18 * wx.getStorageSync('MapScreenW'),
+                        height: 18 * wx.getStorageSync('MapScreenW'),
                         callout: {
                             content: resData[i]._distance + '\n ￥10',
                             fontSize: 14,
@@ -256,10 +257,10 @@ export default class Map extends wepy.component {
                                                 '../../components/map/parking.png',
                                             id: id,
                                             width:
-                                                40 *
+                                                18 *
                                                 wx.getStorageSync('MapScreenW'),
                                             height:
-                                                40 *
+                                                18 *
                                                 wx.getStorageSync('MapScreenW'),
                                             callout: {
                                                 content:

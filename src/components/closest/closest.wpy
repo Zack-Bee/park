@@ -1,6 +1,5 @@
 <template>
     <view class="closest-wrapper">
-        <!-- <image style="display: block; height: 4rpx; width: 100%;" src="./shadow-top.png" /> -->
         <view class="closest-park">
             <view class="closest-header">{{FLAG === 0 ? "离我最近" : "当前选择"}}</view>
             <view class="closest-body">
