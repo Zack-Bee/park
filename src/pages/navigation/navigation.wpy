@@ -151,10 +151,10 @@ export default class Navigation extends wepy.page {
                 id: 2, //点击回到当前位置
                 iconPath: '../../components/map/locate.png',
                 position: {
-                    left: 20 * wx.getStorageSync('MapScreenW'),
+                    left: 300 * wx.getStorageSync('MapScreenW'),
                     top: 320 * wx.getStorageSync('MapScreenH'),
-                    width: 40 * wx.getStorageSync('MapScreenW'),
-                    height: 40 * wx.getStorageSync('MapScreenW')
+                    width: 67 * wx.getStorageSync('MapScreenW'),
+                    height: 60 * wx.getStorageSync('MapScreenW')
                 },
                 clickable: true
             }

@@ -59,10 +59,10 @@ export default class Map extends wepy.component {
                 id: 2, //点击回到当前位置
                 iconPath: '../../components/map/locate.png',
                 position: {
-                    left: 20 * wx.getStorageSync('MapScreenW'),
-                    top: 320 * wx.getStorageSync('MapScreenH'),
-                    width: 40 * wx.getStorageSync('MapScreenW'),
-                    height: 40 * wx.getStorageSync('MapScreenW')
+                    left: 300 * wx.getStorageSync('MapScreenW'),
+                    top: 260 * wx.getStorageSync('MapScreenH'),
+                    width: 67 * wx.getStorageSync('MapScreenW'),
+                    height: 60 * wx.getStorageSync('MapScreenW')
                 },
                 clickable: true
             },
@@ -70,10 +70,10 @@ export default class Map extends wepy.component {
                 id: 3, //点击打开搜索界面
                 iconPath: '../../components/map/search_bar.png',
                 position: {
-                    left: 320 * wx.getStorageSync('MapScreenW'),
+                    left: 300 * wx.getStorageSync('MapScreenW'),
                     top: 320 * wx.getStorageSync('MapScreenH'),
-                    width: 40 * wx.getStorageSync('MapScreenW'),
-                    height: 40 * wx.getStorageSync('MapScreenW')
+                    width: 65 * wx.getStorageSync('MapScreenW'),
+                    height: 60 * wx.getStorageSync('MapScreenW')
                 },
                 clickable: true
             }
@@ -165,7 +165,6 @@ export default class Map extends wepy.component {
         }
     }
 
-    /*这里还是一个比较严重的问题 不知道该怎么写 mark!*/
 
     methods = {
         changeflag() {
@@ -226,18 +225,29 @@ export default class Map extends wepy.component {
                                     longitude:longitudePrk
                                 },
                                 success: (res) => {
-                                    var resData = res.data
-                                    var lengthErr = resData.length
-                                    for (var i = 0; i < resData.length; i++) {
-                                        resData[
-                                            i
-                                        ]._distance = this.formatDistance(
-                                            resData[i]._distance
+                                    /*for(var i =0;i <  res.data.length;i++)
+                                    {
+                                        var pushit = 1
+                                        for(var j = 0;j <  this.resData.length; j++)
+                                        {
+                                            if(res.data[i].id === this.resData[j].id)
+                                                pushit = 0
+                                        }
+                                        if(pushit)
+                                        {
+                                            this.resData.push(res.data[i])
+                                        }
+                                    }*/
+                                    console.log(this.resData)
+                                    var lengthErr = this.resData.length
+                                    for (var i = 0; i < this.resData.length; i++) {
+                                        this.resData[i]._distance = this.formatDistance(
+                                            this.resData[i]._distance
                                         ) //转换一下距离的格式
-                                        var parkLat = resData[i].location.lat
-                                        var parkLong = resData[i].location.lng
-                                        var parkTitle = resData[i].title
-                                        var id = resData[i].id
+                                        var parkLat = this.resData[i].location.lat
+                                        var parkLong = this.resData[i].location.lng
+                                        var parkTitle = this.resData[i].title
+                                        var id = this.resData[i].id
                                         this.markers.push({
                                             title: parkTitle,
                                             latitude: parkLat,
@@ -253,7 +263,7 @@ export default class Map extends wepy.component {
                                                 wx.getStorageSync('MapScreenW'),
                                             callout: {
                                                 content:
-                                                    resData[i]._distance +
+                                                    this.resData[i]._distance +
                                                     '\n ￥10',
                                                 fontSize: 14,
                                                 color: '#ffffff',
@@ -266,7 +276,6 @@ export default class Map extends wepy.component {
                                             }
                                         })
                                         console.log(id)
-                                        this.resData = res.data
                                         this.$apply()
                                     }
                                 },

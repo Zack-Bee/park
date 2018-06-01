@@ -15,18 +15,22 @@
                     </view>
                 </view>
                 <view class="closest-middle">
-                    <view class="park-name">{{parkName}}</view>
-                    <view class="park-price">价格: {{parkPrice}}</view>
-                    <view class="park-distence">距离: {{parkDistence}}</view>
+                    <view class="park-name">{{resData[0].title ? (FLAG === 0 ? resData[0].title: nowTitle) :'加载中' }}</view>
+                    <view class="park-price">价格为￥{{parkPrice}}</view>
+                    <view class="park-distence">距离您 {{FLAG === 0 ? resData[0]._distance: nowDstce }} 远</view>
                 </view>
                 <view class="closest-right">
                     <view class="navigate-btn">
                         <navigateBtn class="override-button" size="small">开始导航</navigateBtn>
                     </view>
                     <view class="padding" />
-                    <view class="park-btn">
-                        <parkBtn class="override-button" type="primary" size="small">现在停车</parkBtn>
+                    <view class="park-btn" wx:if="{{numberArray.length === 0}}" bindtap="emptynumber">
+                        <parkBtn class="override-button" type="primary" size="small" >现在停车</parkBtn>
                     </view>
+                    <picker class="park-btn" bindchange="bindPickerChange" 
+                        value="{{index}}" range="{{numberArray}}" wx:if="{{numberArray.length > 0}}" >
+                        <parkBtn class="override-button" type="primary" size="small">现在停车</parkBtn>
+                    </picker>
                 </view>
             </view>
         </view>
@@ -82,11 +86,11 @@
 }
 
 .closest-middle {
-    width: 490rpx;
+    width: 480rpx;
 }
 
 .closest-right {
-    width: 130rpx;
+    width: 140rpx;
 }
 
 .override-button {
