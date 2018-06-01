@@ -2,6 +2,7 @@ const fc = require('../../server/function')
 const ofc = require('../../server/otherfunction')
 const fs = require('fs');
 var path = require('path');
+const request=require('request')
 const async = require('async');
 exports.login = async (ctx, next) => {
   code = ctx.request.body.code
@@ -481,6 +482,7 @@ exports.gethistory = async (ctx, next) => {
         ctx.body = { error }
       }
       else if (response.statusCode == 200) {
+console.log(body)
         if (JSON.parse(body).result.pois != "") {
           fc.addhistory(ctx.request.body.parkId, time, null, ctx.request.body.carNumber, ctx.request.body.parkLocation, ctx.request.body.openId,JSON.parse(body).result.formatted_addresses.recommend)
        ctx.body={result:"ok"}
