@@ -27,7 +27,7 @@
                     <view class="park-btn" wx:if="{{numberArray.length === 0}}" bindtap="emptynumber">
                         <parkBtn class="override-button" type="primary" size="small" >现在停车</parkBtn>
                     </view>
-                    <picker class="park-btn" bindchange="bindPickerChange" 
+                    <picker class="park-btn" bindchange="bindPickerChange"
                         value="{{index}}" range="{{numberArray}}" wx:if="{{numberArray.length > 0}}" >
                         <parkBtn class="override-button" type="primary" size="small">现在停车</parkBtn>
                     </picker>
@@ -90,11 +90,13 @@
 }
 
 .closest-right {
-    width: 140rpx;
+    width: 220rpx;
+    padding-right: 20rpx;
 }
 
 .override-button {
-    padding: 0 10rpx;
+    /* padding: 0 10rpx; */
+    width: 100%;
 }
 
 .padding {
@@ -118,6 +120,7 @@
     color: #888;
     font-size: 30rpx;
 }
+
 </style>
 
 <script>
