@@ -87,7 +87,7 @@ exports.userparks = async (ctx, next) => {
         all.push(t)
       }
     }
-    await fc.selectparking("openId", ctx.request.body.openId, c)
+    await fc.selectparking("openId", "'"+ctx.request.body.openId+"'", c)
     if (userparkserr == 1) { return }
     var m = 0
     while (m < parking.length) {
@@ -273,7 +273,7 @@ exports.userplatenumber = async (ctx, next) => {
         ctx.body = ctx.request.body.plateNumber
       }
     }
-    await fc.selectuser("openId", ctx.request.body.openId, c)
+    await fc.selectuser("openId", "'"+ctx.request.body.openId+"'", c)
   }
 }
 
@@ -341,7 +341,7 @@ exports.upload = async (ctx, next) => {
 
 exports.gethistory = async (ctx, next) => {
   if (ctx.request.body.type == "get") {
-    await fc.selecthistory("openId", ctx.request.body.openId, function (option) {
+    await fc.selecthistory("openId", "'"+ctx.request.body.openId+"'", function (option) {
       if (option.length <= 10) {
         all = []
         function RESP() {
@@ -483,7 +483,7 @@ exports.gethistory = async (ctx, next) => {
       }
       else if (response.statusCode == 200) {
         console.log(body)
-        if (JSON.parse(body).result != "") {
+        if (JSON.parse(body).result != null) {
           if (JSON.parse(body).result.pois != "") {
             fc.addhistory(ctx.request.body.parkId, time, null, ctx.request.body.carNumber, ctx.request.body.parkLocation, ctx.request.body.openId, JSON.parse(body).result.formatted_addresses.recommend)
             ctx.body = { result: "ok" }
@@ -499,7 +499,7 @@ exports.gethistory = async (ctx, next) => {
   }
   else if (ctx.request.body.type == "cancel") {
     ctx.body = { 1: 1 }
-    fc.selecthistory("openid", ctx.request.body.openId, function (option) {
+    fc.selecthistory("openid", "'"+ctx.request.body.openId+"'", function (option) {
       console.log(option)
       for (let i = option.length - 1; i >= 0; i--) {
         console.log(i)
@@ -514,7 +514,7 @@ exports.gethistory = async (ctx, next) => {
   }
   else if (ctx.request.body.type == "done") {
     ctx.body = { 1: 1 }
-    fc.selecthistory("openid", ctx.request.body.openId, function (option) {
+    fc.selecthistory("openid", "'"+ctx.request.body.openId+"'", function (option) {
       for (let i = option.length - 1; i >= 0; i--) {
         if (ctx.request.body.carNumber == option[i].carNumber) {
           let time = ctx.request.body.endDate.split("-").concat(ctx.request.body.endTime.split(":"))
@@ -528,7 +528,7 @@ exports.gethistory = async (ctx, next) => {
   }
   else if (ctx.request.body.type == "pay") {
     ctx.body = { 1: 1 }
-    fc.selecthistory("openid", ctx.request.body.openId, function (option) {
+    fc.selecthistory("openid", "'"+ctx.request.body.openId+"'", function (option) {
       let time = ctx.request.body.startDate.split("-").concat(ctx.request.body.startTime.split(":"))
       time = time[0] + "." + time[1] + "." + time[2] + "." + time[3] + "." + time[4]
       for (let i = option.length - 1; i >= 0; i--) {
