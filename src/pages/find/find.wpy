@@ -41,11 +41,13 @@ export default class Index extends wepy.page {
     }
     onShow() {
         let array = wx.getStorageSync('plateNumber')
-        this.array = array.map(
-            (value) => `${value.slice(0, 2)}-${value.slice(2)}`
-        )
-        this.numberArray = this.array
-        this.$apply()
+        if(array){
+            this.array = array.map(
+                (value) => `${value.slice(0, 2)}-${value.slice(2)}`
+            )
+            this.numberArray = this.array
+            this.$apply()
+        }
     }
 }
 </script>

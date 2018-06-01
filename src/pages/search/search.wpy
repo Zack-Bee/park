@@ -17,8 +17,9 @@
         <view class="weui-search-bar__cancel-btn" hidden="{{!inputShowed}}" bindtap="hideInput">取消</view>
     </view>
     <!--循环出附近停车场-->
-    <view wx:for="{{resData}}" wx:key="parking" wx:if="{{inputVal.length === 0}}">
-        <view bindtap="navTo" data-item="{{item}}">
+    <scroll-view wx:for="{{resData}}" wx:key="parking" wx:if="{{inputVal.length === 0}}" style="height: 200rpx;"
+    bindscrolltolower="showmore">
+        <view bindtap="navTo" data-item="{{item.id}}">
             <view class="weui-panel">
                 <view class="weui-panel__bd">
                     <view class="weui-media-box weui-media-box_text">
@@ -35,9 +36,10 @@
                 </view>
             </view>
         </view>
-    </view>
+    </scroll-view>
     <!--搜索关键词拓展-->
-    <view wx:for="{{resrchData}}" class="weui-cells searchbar-result" wx:if="{{inputVal.length > 0}}">
+    <scroll-view wx:for="{{resrchData}}" class="weui-cells searchbar-result" wx:if="{{inputVal.length > 0}}" 
+        bindscrolltolower="showmore" upper-threshold="refresh" style="height: 200rpx;">
         <view bindtap="navTo" data-item="{{item}}">
             <view class="weui-panel">
                 <view class="weui-panel__bd">
@@ -55,7 +57,7 @@
                 </view>
             </view>
         </view>
-    </view>
+    </scroll-view>
 </view>
 </template>
 
@@ -95,6 +97,8 @@ export default class Search extends wepy.page {
     onShow() {
         qqmapsdk.search({
             keyword: '停车场',
+            page_size: 20,
+            page_index: 1,
             success: (res) => {
                 console.log(res)
                 var resData = res.data
@@ -132,7 +136,7 @@ export default class Search extends wepy.page {
         /*搜索逻辑仍然有问题*/
         this.inputVal = e.detail.value
         qqmapsdk.getSuggestion({
-            keyword: this.inputVal + "停车场",
+            keyword: this.inputVal + '停车场',
             region_fix: 1,
             policy: 1,
             success: (res) => {
@@ -150,6 +154,42 @@ export default class Search extends wepy.page {
                 console.log('ERROR!!!!!')
             }
         })
+    }
+    navTo() {
+        console.log('hhh')
+        wx.navigateTo({
+            url: '../navigation/navigation',
+            success: (res) => {
+                console.log(res)
+            },
+            fail: (err) => {
+                console.log(err)
+            }
+        })
+    }
+    methods = {
+        showmore() {
+            console.log('hhh')
+            qqmapsdk.search({
+                keyword: '停车场',
+                page_size: 20,
+                page_index: 2,
+                success: (res) => {
+                    console.log(res)
+                    var resData = res.data
+                    for (var i = 0; i < resData.length; i++) {
+                        resData[i]._distance = this.formatDistance(
+                            resData[i]._distance
+                        ) //转换一下距离的格式
+                        this.resData = res.data
+                        this.$apply()
+                    }
+                },
+                fail: (res) => {
+                    console.log('ERROR!!!!!')
+                }
+            })
+        }
     }
 }
 </script>

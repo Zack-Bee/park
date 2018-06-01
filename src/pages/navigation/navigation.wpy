@@ -1,0 +1,252 @@
+<template>
+<view>
+    <view class="main-map">
+        <map id="map-body" longitude="{{longitude}}" latitude="{{latitude}}" scale="{{scale}}"
+            bindcontroltap="clickcontrols" controls="{{controls}}" 
+            markers="{{markers}}"
+            show-location 
+            style="width:100%;height:{{height}}px">
+        </map>
+    </view>
+    <view class="closesttapname">
+        <text>当前选择</text>
+    </view>
+    <block>
+        <view class="parkingView">
+            <view class="parkingLeft">
+            <image class="parkingImage" src="../../components/closest/company.png" /><!--{{item.parkingImage}}-->
+            <view class="parkingType">企业类</view>
+            </view>
+            <view class="parkingLeftView"  wx:key="parking">
+                <text class="parkingName">{{nowTitle}}</text>
+                <view>
+                    <text class="parkingPrice">￥0<!--{{item.parkingsPrice}}--></text>
+                    <picker bindchange="bindPickerChange" value="{{index}}" range="{{numberArray}}" wx:if="{{numberArray.length > 0}}">
+                        <Button class="parkingNow" type="primary" >现在停车!</Button>
+                    </picker>
+                    <view wx:if="{{numberArray.length === 0}}">
+                        <Button class="parkingNow" type="primary"  bindtap="emptynumber" 
+                        wx:if="{{numberArray.length === 0}}" >现在停车!</Button>
+                    </view>
+                    <!--距离-->
+                    <view class="parkingMsg">
+                        <view class="parkingLefttext">
+                            <text style="font-size:30rpx">距您</text>
+                            <text style="color:#00dd00;font-size:40rpx"> {{nowDstce}} </text>
+                            <text style="font-size:30rpx">远</text>
+                        </view>                
+                    </view>
+                </view>
+            </view>
+        </view>
+    </block>
+</view>
+</template>
+
+<style scoped>
+/*不自然的下横线*/
+.closesttapname {
+    text-align: center;
+    border-bottom: 1px solid #c0c0c0;
+}
+/**
+ * 停车场样式
+*/
+.parkingLeft {
+    float: left;
+}
+.parkingImage {
+    margin-top: 10rpx;
+    width: 140rpx;
+    height: 140rpx;
+}
+.parkingType {
+    width: 150rpx;
+    line-height: 20rpx;
+    font-size: 30rpx;
+    text-align: center;
+    color: #888;
+}
+/*左侧文本整体样式*/
+
+.parkingLeftView {
+    margin-left: 60rpx;
+    display: flex;
+    flex-direction: column;
+}
+
+/*名称样式*/
+
+.parkingName {
+    font-weight: bold;
+    color: #333;
+}
+.parkingPrice {
+    font-size: 40rpx;
+    color: rgba(3, 161, 11, 0.87);
+    margin-top: 10rpx;
+}
+
+/*按钮*/
+.parkingNow {
+    float: right;
+    color: white;
+    background-color: #4b0;
+}
+
+/*距离*/
+.parkingMsg {
+    flex: row;
+}
+.parkingLefttext,
+.parkingNow {
+    display: inline-block;
+    line-height: 2;
+    margin-right: auto;
+    padding-right: 14px;
+    box-sizing: border-box;
+    font-size: 18px;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+    -webkit-tap-highlight-color: transparent;
+    overflow: hidden;
+}
+/*整体view样式*/
+.clickclosest {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 10rpx;
+    margin-bottom: 25rpx;
+    border-bottom: solid 2px #ebebeb;
+}
+</style>
+
+<script>
+import wepy from 'wepy'
+import Button from '../../components/button/button'
+
+var QQMapWX = require('../../libs/qqmap-wx-jssdk.js')
+var qqmapsdk
+export default class Navigation extends wepy.page {
+    props = {
+        height: {
+            type: Number,
+            default: 375
+        }
+    }
+    data = {
+        numberArray:[],
+        resData: [],
+        index: 0,
+        oldLat: '',
+        oldLng: '',
+        scale: 18,
+        latitude: '',
+        longitude: '',
+        markers: [],
+        controls: [
+            {
+                id: 2, //点击回到当前位置
+                iconPath: '../../components/map/locate.png',
+                position: {
+                    left: 20 * wx.getStorageSync('MapScreenW'),
+                    top: 320 * wx.getStorageSync('MapScreenH'),
+                    width: 40 * wx.getStorageSync('MapScreenW'),
+                    height: 40 * wx.getStorageSync('MapScreenW')
+                },
+                clickable: true
+            }
+        ]
+    }
+    onShow() {
+        this.numberArray = wx.getStorageSync('plateNumber')
+        if(this.numberArray){
+            this.numberArray = this.numberArray.map(
+                (value) => `${value.slice(0, 2)}-${value.slice(2)}`
+            )
+            this.$apply()
+        }
+    }
+    onLoad() {
+        this.height = this.$parent.globalData.mapHeight
+        console.log(this.height)
+        wx.getLocation({
+            //获得用户当前位置
+            type: 'gcj02',
+            success: (res) => {
+                var latitude = res.latitude
+                var longitude = res.longitude
+                this.latitude = latitude
+                this.longitude = longitude
+                this.$apply()
+                console.log(res)
+            }
+        })
+    }
+    formatDistance(num) {
+        if (num < 1000) {
+            return num.toFixed(0) + 'm'
+        } else if (num > 1000) {
+            return (num / 1000).toFixed(1) + 'km'
+        }
+    }
+
+    methods = {
+        clickcontrols(e) {
+            if (e.controlId === 2) {
+                //点击定位按钮回到当前位置
+                this.mapCtx = wx.createMapContext('map-body')
+                this.mapCtx.moveToLocation()
+                this.scale = 16
+            }
+        },
+        emptynumber() {
+            wx.showModal({
+                title: '哎呀！',
+                content: '貌似还没有绑定车牌号\n要现在绑定吗？',
+                cancelText: '我再看看',
+                confirmText: '现在就去',
+                success: (res) => {
+                    if (res.confirm === true) {
+                        wx.navigateTo({
+                            url: '../plate-number/plate-number',
+                            success: (res) => {
+                                console.log(res)
+                            },
+                            fail: (err) => {
+                                console.log(err)
+                            }
+                        })
+                    }
+                }
+            })
+        },
+        bindPickerChange() {
+            console.log('hhh')
+            //点击进入停车选择
+            wx.navigateTo({
+                url: '../history/history',
+                success: (res) => {
+                    console.log(res)
+                },
+                fail: (err) => {
+                    console.log(err)
+                }
+            })
+        },
+        justOneNumber() {
+            wx.navigateTo({
+                url: '../history/history',
+                success: (res) => {
+                    console.log(res)
+                },
+                fail: (err) => {
+                    console.log(err)
+                }
+            })
+        }
+    }
+}
+</script>

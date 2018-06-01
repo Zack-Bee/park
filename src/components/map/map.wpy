@@ -48,6 +48,8 @@ export default class Map extends wepy.component {
     }
     data = {
         resData: [],
+        oldLat:'',
+        oldLng:'',
         scale: 18,
         latitude: '',
         longitude: '',
@@ -135,7 +137,6 @@ export default class Map extends wepy.component {
                             display: 'BYCLICK'
                         }
                     })
-                    console.log(id)
                     this.resData = res.data
                     this.$apply()
                 }
@@ -153,6 +154,8 @@ export default class Map extends wepy.component {
                 console.log(res)
             }
         )*/
+        this.oldLat=this.latitude
+        this.oldLng=this.lng
     }
     formatDistance(num) {
         if (num < 1000) {
@@ -207,13 +210,15 @@ export default class Map extends wepy.component {
                     if (e.type == 'begin') {
                         console.log('same')
                     } else {
-                        console.log('change')
                         var longitudePrk = res.longitude
                         var latitudePrk = res.latitude
                         if (
-                            this.longitude != longitudePrk &&
-                            this.latitude != latitudePrk
+                            Math.abs(this.oldLng - longitudePrk) > 0.003 ||
+                            Math.abs(this.oldLat - latitudePrk) > 0.003
                         ) {
+                            console.log('change')
+                            this.oldLng = longitudePrk
+                            this.oldLat = latitudePrk
                             qqmapsdk.search({
                                 keyword: '停车场',
                                 location:{
@@ -221,10 +226,8 @@ export default class Map extends wepy.component {
                                     longitude:longitudePrk
                                 },
                                 success: (res) => {
-                                    console.log(res)
                                     var resData = res.data
                                     var lengthErr = resData.length
-                                    this.markers = []
                                     for (var i = 0; i < resData.length; i++) {
                                         resData[
                                             i

@@ -15,7 +15,8 @@ export default class extends wepy.app {
             "pages/plate-number/plate-number",
             "pages/park-detail/park-detail",
             "pages/park-now/park-now",
-            "pages/history/history"
+            "pages/history/history",
+            "pages/navigation/navigation"
         ],
         window: {
             backgroundTextStyle: 'light',
