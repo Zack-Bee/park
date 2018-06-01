@@ -2,8 +2,8 @@ const fc = require('../../server/function')
 const ofc = require('../../server/otherfunction')
 const fs = require('fs');
 var path = require('path');
+const request = require('request')
 const async = require('async');
-
 exports.login = async (ctx, next) => {
   code = ctx.request.body.code
   function c(option) {
@@ -87,7 +87,7 @@ exports.userparks = async (ctx, next) => {
         all.push(t)
       }
     }
-    await fc.selectparking("openId", ctx.request.body.openId, c)
+    await fc.selectparking("openId", "'"+ctx.request.body.openId+"'", c)
     if (userparkserr == 1) { return }
     var m = 0
     while (m < parking.length) {
@@ -273,11 +273,12 @@ exports.userplatenumber = async (ctx, next) => {
         ctx.body = ctx.request.body.plateNumber
       }
     }
-    await fc.selectuser("openId", ctx.request.body.openId, c)
+    await fc.selectuser("openId", "'"+ctx.request.body.openId+"'", c)
   }
 }
 
 exports.upload = async (ctx, next) => {
+  ctx.response.status = 200;
   if (ctx.request.body.kind) {
     fc.addparking(ctx.request.body.openId,
       ctx.request.body.kind, null, null,
@@ -289,8 +290,6 @@ exports.upload = async (ctx, next) => {
     })
   }
   if (ctx.request.body.files) {
-
-
     await fs.exists(`upload/` + ctx.request.body.fields.openId, function (exists) {
       if (!exists) {
         function mkdir(dirpath, dirname) {
@@ -321,7 +320,7 @@ exports.upload = async (ctx, next) => {
       let upStream = fs.createWriteStream(`upload/` + ctx.request.body.fields.openId + `/` + ctx.request.body.fields.index + `.jpg`);
       reader.pipe(upStream);
       if (ctx.request.body.fields.imageNumber != ctx.request.body.fields.index) {
-        ctx.body = {}
+        ctx.body = { 1: 1 }
       }
     })
     if (ctx.request.body.fields.imageNumber == ctx.request.body.fields.index) {
@@ -331,8 +330,9 @@ exports.upload = async (ctx, next) => {
         }
         else { ctx.body = { err: "该用户停车场上传失败" } }
         fs.rename(`upload/` + ctx.request.body.fields.openId, `upload/` + ctx.request.body.fields.openId + "-" + option[option.length - 1].id, function (err) {
-          if(err){
-          console.log("将文件名修改为openid+parkid失败");}
+          if (err) {
+            console.log("将文件名修改为openid+parkid失败");
+          }
         })
       })
     }
@@ -341,7 +341,7 @@ exports.upload = async (ctx, next) => {
 
 exports.gethistory = async (ctx, next) => {
   if (ctx.request.body.type == "get") {
-    await fc.selecthistory("openId", ctx.request.body.openId, function (option) {
+    await fc.selecthistory("openId", "'"+ctx.request.body.openId+"'", function (option) {
       if (option.length <= 10) {
         all = []
         function RESP() {
@@ -355,12 +355,14 @@ exports.gethistory = async (ctx, next) => {
           this.fee = "return err"
           this.recordId = "return err"
           this.parkId = "return err"
+          this.parkLatitude = "return err"
+          this.parkLongitude = "return err"
         }
         for (let i = 0; i < option.length; i++) {
           let t = new RESP
           t.isPaid = option[i].isPaid
           t.isDone = option[i].isDone
-          t.parkLocation = option[i].parkLocation
+          t.parkLocation = option[i].location
           t.fee = option[i].pay
           t.recordId = option[i].id
           t.parkId = option[i].parking
@@ -374,6 +376,8 @@ exports.gethistory = async (ctx, next) => {
           t.startDate = s[0] + "-" + s[1] + "-" + s[2]
           t.endTime = e[3] + ":" + e[4]
           t.endDate = e[0] + "-" + e[1] + "-" + e[2]
+          t.parkLatitude = option[i].lola.split(",")[1]
+          t.parkLongitude = option[i].lola.split(",")[0]
           all.push(t)
         }
         all = all.reverse()
@@ -392,6 +396,8 @@ exports.gethistory = async (ctx, next) => {
           this.fee = "return err"
           this.recordId = "return err"
           this.parkId = "return err"
+          this.parkLatitude = "return err"
+          this.parkLongitude = "return err"
         }
         for (let i = 0; i < option.length; i++) {
           let time = option[i].time
@@ -414,6 +420,8 @@ exports.gethistory = async (ctx, next) => {
             t.startDate = s[0] + "-" + s[1] + "-" + s[2]
             t.endTime = e[3] + ":" + e[4]
             t.endDate = e[0] + "-" + e[1] + "-" + e[2]
+            t.parkLatitude = option[i].lola.split(",")[1]
+            t.parkLongitude = option[i].lola.split(",")[0]
             all.push(t)
           }
         }
@@ -433,6 +441,8 @@ exports.gethistory = async (ctx, next) => {
           this.fee = "return err"
           this.recordId = "return err"
           this.parkId = "return err"
+          this.parkLatitude = "return err"
+          this.parkLongitude = "return err"
         }
         for (let i = 0; i < option.length; i++) {
           let time = option[i].time
@@ -453,6 +463,8 @@ exports.gethistory = async (ctx, next) => {
           t.startDate = s[0] + "-" + s[1] + "-" + s[2]
           t.endTime = e[3] + ":" + e[4]
           t.endDate = e[0] + "-" + e[1] + "-" + e[2]
+          t.parkLatitude = option[i].lola.split(",")[1]
+          t.parkLongitude = option[i].lola.split(",")[0]
           all.push(t)
 
         }
@@ -462,14 +474,32 @@ exports.gethistory = async (ctx, next) => {
     })
   }
   else if (ctx.request.body.type == "add") {
-    ctx.body = {}
+    ctx.body = { 1: 1 }
     let time = ctx.request.body.startDate.split("-").concat(ctx.request.body.startTime.split(":"))
     time = time[0] + "." + time[1] + "." + time[2] + "." + time[3] + "." + time[4]
-    fc.addhistory(ctx.request.body.parkId, time, null, ctx.request.body.carNumber, ctx.request.body.parkLocation, ctx.request.body.openId)
+    request('http://apis.map.qq.com/ws/geocoder/v1/?location=' + ctx.request.body.parkLocation + '&key=H4CBZ-CPYWK-2ZOJO-ACLVD-POMLE-FBBDZ&get_poi=1', function (error, response, body) {
+      if (error) {
+        ctx.body = { error }
+      }
+      else if (response.statusCode == 200) {
+        console.log(body)
+        if (JSON.parse(body).result != null) {
+          if (JSON.parse(body).result.pois != "") {
+            fc.addhistory(ctx.request.body.parkId, time, null, ctx.request.body.carNumber, ctx.request.body.parkLocation, ctx.request.body.openId, JSON.parse(body).result.formatted_addresses.recommend)
+            ctx.body = { result: "ok" }
+          }
+        }
+        ctx.body = { err: "经纬度不正常！" }
+      }
+      else {
+        ctx.body = ("response.statusCode != 200");
+      }
+    })
+
   }
   else if (ctx.request.body.type == "cancel") {
-    ctx.body = {}
-    fc.selecthistory("openid", ctx.request.body.openId, function (option) {
+    ctx.body = { 1: 1 }
+    fc.selecthistory("openid", "'"+ctx.request.body.openId+"'", function (option) {
       console.log(option)
       for (let i = option.length - 1; i >= 0; i--) {
         console.log(i)
@@ -480,11 +510,11 @@ exports.gethistory = async (ctx, next) => {
         }
       }
     })
-    
+
   }
   else if (ctx.request.body.type == "done") {
-    ctx.body = {}
-    fc.selecthistory("openid", ctx.request.body.openId, function (option) {
+    ctx.body = { 1: 1 }
+    fc.selecthistory("openid", "'"+ctx.request.body.openId+"'", function (option) {
       for (let i = option.length - 1; i >= 0; i--) {
         if (ctx.request.body.carNumber == option[i].carNumber) {
           let time = ctx.request.body.endDate.split("-").concat(ctx.request.body.endTime.split(":"))
@@ -497,8 +527,8 @@ exports.gethistory = async (ctx, next) => {
     })
   }
   else if (ctx.request.body.type == "pay") {
-    ctx.body = {}
-    fc.selecthistory("openid", ctx.request.body.openId, function (option) {
+    ctx.body = { 1: 1 }
+    fc.selecthistory("openid", "'"+ctx.request.body.openId+"'", function (option) {
       let time = ctx.request.body.startDate.split("-").concat(ctx.request.body.startTime.split(":"))
       time = time[0] + "." + time[1] + "." + time[2] + "." + time[3] + "." + time[4]
       for (let i = option.length - 1; i >= 0; i--) {
