@@ -1,5 +1,8 @@
 <template>
 <view class="main-map">
+    <cover-view class="img-wrap">
+        <cover-image class="img" src="../../components/map/shadow-top.png"/>
+    </cover-view>
     <map id="map-body" longitude="{{longitude}}" latitude="{{latitude}}" scale="{{scale}}"
         bindcontroltap="clickcontrols" controls="{{controls}}" bindtap="changeflag"
         markers="{{markers}}" bindmarkertap="markertap"
@@ -7,7 +10,7 @@
         style="width:100%;height:{{height}}px">
     </map>
     <cover-view class="img-wrap">
-        <cover-image class="img" src="../../components/map/shadow.png"/>
+        <cover-image class="img" src="../../components/map/shadow-btm.png"/>
     </cover-view>
 </view>
 </template>

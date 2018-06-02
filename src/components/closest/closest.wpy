@@ -1,7 +1,10 @@
 <template>
     <view class="closest-wrapper">
         <view class="closest-park">
-            <view class="closest-header">{{FLAG === 0 ? "离我最近" : "当前选择"}}</view>
+            <view class="icon-place">
+                <placeIcon type="location" style="lien-height: 60rpx; font-size: 20rpx;" />
+                <view class="closest-header">{{FLAG === 0 ? "离我最近" : "当前选择"}}</view>
+            </view>
             <view class="closest-body">
                 <view class="closest-left">
                     <view class="vertical-wrapper">
@@ -49,11 +52,11 @@
     line-height: 60rpx;
     color: #888;
     text-align: center;
-    border-bottom: 1rpx #e0e0e0 solid;
 }
 
 .closest-body {
     display: flex;
+    border-top: 1rpx #e0e0e0 solid;
 }
 
 .closest-left {
@@ -119,6 +122,13 @@
     color: #888;
 }
 
+.icon-place {
+    color: #353535;
+    line-height: 60rpx;
+    display: flex;
+    justify-content:center;
+}
+
 .park-distence {
     line-height: 40rpx;
     color: #888;
@@ -129,6 +139,7 @@
 <script>
 import wepy from 'wepy'
 import Button from '../button/button'
+import Icon from '../icon/icon'
 
 const formatDistance = (num) => {
     if (num < 1000) {
@@ -143,7 +154,8 @@ var qqmapsdk
 export default class Closest extends wepy.component {
     components = {
         navigateBtn: Button,
-        parkBtn: Button
+        parkBtn: Button,
+        placeIcon: Icon,
     }
 
     props = {
@@ -190,6 +202,7 @@ export default class Closest extends wepy.component {
             console.log('hhh')
             console.log(this.nowLat)
             wx.openLocation({
+                name: this.nowTitle,
                 latitude: this.nowLat,
                 longitude: this.nowLng,
                 scale: 18

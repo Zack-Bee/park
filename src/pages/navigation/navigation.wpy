@@ -13,7 +13,7 @@
     </view>
     <view class="closest-wrapper">
         <view class="closest-park">
-            <view class="closest-header">{{FLAG === 0 ? "离我最近" : "当前选择"}}</view>
+            <view class="closest-header">当前选择</view>
             <view class="closest-body">
                 <view class="closest-left">
                     <view class="vertical-wrapper">
@@ -32,7 +32,7 @@
                 </view>
                 <view class="closest-right">
                     <view class="navigate-btn">
-                        <navigateBtn class="override-button" size="small">开始导航</navigateBtn>
+                        <navigateBtn class="override-button" size="small" :bindTap="navigatenow">开始导航</navigateBtn>
                     </view>
                     <view class="padding" />
                     <view class="park-btn" wx:if="{{numberArray.length === 0}}" bindtap="emptynumber">
@@ -121,6 +121,10 @@
     color: #353535;
     font-size: 36rpx;
     line-height: 80rpx;
+    height: 80rpx;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
 }
 
 .park-price {
@@ -208,7 +212,17 @@ export default class Navigation extends wepy.page {
                 },
                 clickable: true
             }
-        ]
+        ],
+        navigatenow: () => {
+            console.log('hhh')
+            console.log(this.nowLat)
+            wx.openLocation({
+                name: this.nowTitle,
+                latitude: this.nowLat,
+                longitude: this.nowLng,
+                scale: 18
+            })
+        }
     }
     onShow() {
         this.numberArray = wx.getStorageSync('plateNumber')
