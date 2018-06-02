@@ -192,7 +192,6 @@ export default class Closest extends wepy.component {
             wx.openLocation({
                 latitude: this.nowLat,
                 longitude: this.nowLng,
-                name: this.nowTitle,
                 scale: 18
             })
         }
@@ -222,7 +221,8 @@ export default class Closest extends wepy.component {
                 console.log('ERROR!!!!!')
             }
         })
-
+        console.log('hhh')
+        console.log(this.numberArray)
     }
 
     methods = {

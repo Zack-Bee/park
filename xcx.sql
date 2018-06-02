@@ -30,9 +30,9 @@ CREATE TABLE `history` (
   `carNumber` varchar(50) DEFAULT NULL,
   `lola` varchar(50) DEFAULT NULL,
   `openId` varchar(50) NOT NULL,
-  `isPaid` int(11) DEFAULT '0',
-  `isDone` int(11) DEFAULT '0',
+  `status` int(11) DEFAULT '1',
   `location` varchar(50) DEFAULT NULL,
+  `kind` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -43,7 +43,7 @@ CREATE TABLE `history` (
 
 LOCK TABLES `history` WRITE;
 /*!40000 ALTER TABLE `history` DISABLE KEYS */;
-INSERT INTO `history` VALUES (1,1,'2018.5.19.13.45-2018.5.20.15.30','20','辽abdkab','41,123','1',1,1,"x");
+INSERT INTO `history` VALUES (1,1,'2018.5.19.13.45-2018.5.20.15.30','20','辽abdkab','41,123','1',1,"x",1);
 /*!40000 ALTER TABLE `history` ENABLE KEYS */;
 UNLOCK TABLES;
 

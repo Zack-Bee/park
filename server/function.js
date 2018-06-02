@@ -61,7 +61,7 @@ exports.addparkingtime = function (parking, time, price, rentNumber, kind) {
     console.log(result);
   })
 }
-exports.addhistory = function (parking, time, pay, carNumber, parkLocation, openId, location) {
+exports.addhistory = function (parking, time, pay, carNumber, parkLocation, openId, location,kind) {
   var bb = parking
   var cc = "'" + time + "'"
   var dd = "'" + pay + "'"
@@ -69,7 +69,8 @@ exports.addhistory = function (parking, time, pay, carNumber, parkLocation, open
   var ff = "'" + parkLocation + "'"
   var gg = "'" + openId + "'"
   var hh = "'" + location + "'"
-  sql = 'insert into history (parking, time, pay, carNumber,parkLocation, openId,location) values(' + bb + ',' + cc + ',' + dd + ',' + ee + ',' + ff + ',' + gg + ',' + hh + ')'
+  var ii = kind
+  sql = 'insert into history (parking, time, pay, carNumber,parkLocation, openId,location) values(' + bb + ',' + cc + ',' + dd + ',' + ee + ',' + ff + ',' + gg + ',' + hh +',' + ii + ')'
   conn.query(sql, function (err, result) {
     if (err) throw err;
     console.log(result);
@@ -105,55 +106,6 @@ exports.changeou = function (ou, openId, what, value) {
   })
 }
 
-exports.changeowner = function (id, openId) {
-  var modSql = 'UPDATE owner SET openId = ? WHERE id = ?';
-  var modSqlParams = [openId, id];
-  conn.query(modSql, modSqlParams, function (err, result) {
-    if (err) {
-      console.log('[UPDATE ERROR] - ', err.message);
-    }
-  })
-}
-
-exports.changeparking = function (id, openId, kind, name, location, lola, number, lease, income) {
-  var modSql = 'UPDATE parking SET openId = ?,kind=?,name = ?, location=?,lola=?, number=?,lease=?,income=? WHERE id = ?';
-  var modSqlParams = [openId, kind, name, location, lola, number, lease, income, id];
-  conn.query(modSql, modSqlParams, function (err, result) {
-    if (err) {
-      console.log('[UPDATE ERROR] - ', err.message);
-    }
-  })
-}
-
-exports.changeparkingtime = function (id, parking, time, price, rentNumber, kind) {
-  var modSql = 'UPDATE parkingtime SET parking = ?,time = ?,price =?,rentNumber=?,kind=? WHERE id = ?';
-  var modSqlParams = [parking, time, price, rentNumber, kind, id];
-  conn.query(modSql, modSqlParams, function (err, result) {
-    if (err) {
-      console.log('[UPDATE ERROR] - ', err.message);
-    }
-  })
-}
-
-exports.changehistory = function (id, parking, time, pay, carNumber, parkingName, openId) {
-  var modSql = 'UPDATE history SET parking = ?,time = ?,pay =?,carNumber=?,parkingName=?,openId=? WHERE id = ?';
-  var modSqlParams = [parking, time, pay, carNumber, parkingName, openId, id];
-  conn.query(modSql, modSqlParams, function (err, result) {
-    if (err) {
-      console.log('[UPDATE ERROR] - ', err.message);
-    }
-  })
-}
-
-exports.changeuser = function (id, openId, carNumber) {
-  var modSql = 'UPDATE user SET carNumber=?,openId=? WHERE id = ?';
-  var modSqlParams = [carNumber, openId, id];
-  conn.query(modSql, modSqlParams, function (err, result) {
-    if (err) {
-      console.log('[UPDATE ERROR] - ', err.message);
-    }
-  })
-}
 exports.deleteowner = function (openId) {
   var delSql = 'DELETE FROM owner where openId=' + String(id);
   conn.query(delSql, function (err, result) {
@@ -277,7 +229,7 @@ exports.selecthistory = function (idORparkingORtimeORpayORcarNumberORparkingLoca
       } else {
         resolve(rows);
         for (var i = 0; i < rows.length; i++) {
-          option.push({ 'id': rows[i].id, 'parking': rows[i].parking, 'time': rows[i].time, 'pay': rows[i].pay, 'carNumber': rows[i].carNumber, 'parkingLocation': rows[i].parkLocation, 'openId': rows[i].openId, 'isPaid': rows[i].isPaid, 'isDone': rows[i].isDone, 'location': rows[i].location });
+          option.push({ 'id': rows[i].id, 'parking': rows[i].parking, 'time': rows[i].time, 'pay': rows[i].pay, 'carNumber': rows[i].carNumber, 'parkingLocation': rows[i].parkLocation, 'openId': rows[i].openId, 'status': rows[i].status, 'location': rows[i].location, 'kind': rows[i].kind });
         }
         callback(option)
       }
