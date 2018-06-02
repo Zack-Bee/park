@@ -474,41 +474,50 @@ exports.gethistory = async (ctx, next) => {
     })
   }
   else if (ctx.request.body.type == "add") {
+    let err = 0
     await fc.selecthistory("openid", "'" + ctx.request.body.openId + "'", function (option) {
       for (let i = option.length - 1; i >= 0; i--) {
+
+        console.log(option[i].status == 2)
         if (ctx.request.body.carNumber == option[i].carNumber) {
           if (option[i].status == 1) {
             fc.changeone("history", option[i].id, "status", 0)
           }
           else if (option[i].status == 3) {
             ctx.body = { message: "上一单未支付" }
+            err = 1
           }
           else if (option[i].status == 2) {
+            console.log(1)
             ctx.body = { message: "请结束本次停车并支付" }
+            err = 1
           }
           break
         }
       }
     })
-
-    request('http://apis.map.qq.com/ws/geocoder/v1/?location=' + ctx.request.body.parkLocation + '&key=H4CBZ-CPYWK-2ZOJO-ACLVD-POMLE-FBBDZ&get_poi=1', function (error, response, body) {
-      if (error) {
-        ctx.body = { error }
-      }
-      else if (response.statusCode == 200) {
-        if (JSON.parse(body).result != null) {
-          if (JSON.parse(body).result.pois != "") {
-            fc.addhistory(ctx.request.body.parkId, null, null, ctx.request.body.carNumber, ctx.request.body.parkLocation, ctx.request.body.openId, JSON.parse(body).result.formatted_addresses.recommend)
-            ctx.body = { result: "ok" }
-          }
+    if (err == 0) {
+      request('http://apis.map.qq.com/ws/geocoder/v1/?location=' + ctx.request.body.longitude + "," + ctx.request.body.latitude + '&key=H4CBZ-CPYWK-2ZOJO-ACLVD-POMLE-FBBDZ&get_poi=1', function (error, response, body) {
+        if (error) {
+          ctx.body = { error }
         }
-        ctx.body = { err: "经纬度不正常！" }
-      }
-      else {
-        ctx.body = ("response.statusCode != 200");
-      }
-    })
+        else if (response.statusCode == 200) {
+          if (JSON.parse(body).result != null) {
+            if (JSON.parse(body).result.pois != "") {
+              fc.selectparking("id", ctx.request.body.parkId, function (o) {
+                fc.addhistory(ctx.request.body.parkId, null, null, ctx.request.body.carNumber, ctx.request.body.longitude + "," + ctx.request.body.latitude, ctx.request.body.openId, JSON.parse(body).result.formatted_addresses.recommend, o[0].kind)
+                ctx.body = { result: "ok" }
+              })
 
+            }
+          }
+          ctx.body = { err: "经纬度不正常！" }
+        }
+        else {
+          ctx.body = ("response.statusCode != 200");
+        }
+      })
+    }
   }
 
   else if (ctx.request.body.type == "arrive") {
@@ -519,7 +528,7 @@ exports.gethistory = async (ctx, next) => {
           let time = ctx.request.body.startDate.split("-").concat(ctx.request.body.startTime.split(":"))
           nt = time[0] + "." + time[1] + "." + time[2] + "." + time[3] + "." + time[4]
           fc.changeone("history", option[i].id, "time", nt)
-          fc.changeone("history", option[i].id, "status", 3)
+          fc.changeone("history", option[i].id, "status", 2)
           break
         }
       }
@@ -531,7 +540,10 @@ exports.gethistory = async (ctx, next) => {
         if (ctx.request.body.carNumber == option[i].carNumber) {
           if (option[i].status == 1) {
             fc.changeone("history", option[i].id, "status", 0)
-            ctx.body = { 1: ok }
+            ctx.body = { 1: "ok" }
+          }
+          else if (option[i].status == 0) {
+            ctx.body = { message: "没有可取消的行程" }
           }
           else {
             ctx.body = { message: "本次停车不能取消！请结束并支付" }
@@ -546,19 +558,19 @@ exports.gethistory = async (ctx, next) => {
     fc.selecthistory("carNumber", "'" + ctx.request.body.carNumber + "'", function (option) {
       for (let i = option.length - 1; i >= 0; i--) {
         if (ctx.request.body.parkId == option[i].parking) {
-          ft=option[i].time
-          let st=ft.split(".")
-          st=st[0]+"-"+st[1]+"-"+st[2]+" "+st[3]+":"+st[4]+":00"
-          let et=ctx.request.body.endDate+" "+ctx.request.body.endTime+":00"
-          let mi=GetDateDiff(st,et)
-          fc.selectparkingtime("parking",ctx.request.body.parkId,function(op){
-            let pay=op[0].price*mi/60
-            fc.changeone("history", option[i].id,"pay",pay)
+          ft = option[i].time
+          let st = ft.split(".")
+          st = st[0] + "-" + st[1] + "-" + st[2] + " " + st[3] + ":" + st[4] + ":00"
+          let et = ctx.request.body.endDate + " " + ctx.request.body.endTime + ":00"
+          let mi = ofc.GetDateDiff(st, et)
+          fc.selectparkingtime("parking", ctx.request.body.parkId, function (op) {
+            let pay = op[0].price * mi / 60
+            fc.changeone("history", option[i].id, "pay", pay)
           })
           let time = ctx.request.body.endDate.split("-").concat(ctx.request.body.endTime.split(":"))
           nt = ft + "-" + time[0] + "." + time[1] + "." + time[2] + "." + time[3] + "." + time[4]
-          let pay=
-          fc.changeone("history", option[i].id, "time", nt)
+          let pay =
+            fc.changeone("history", option[i].id, "time", nt)
           fc.changeone("history", option[i].id, "status", 3)
           break
         }

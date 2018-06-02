@@ -262,8 +262,6 @@ exports.GetDateDiff=function(startTime, endTime, diffType="minute") {
 
   endTime = endTime.replace(/\-/g, "/");
 
-console.log(startTime,endTime) 
-
   //将计算间隔类性字符转换为小写
 
   diffType = diffType.toLowerCase();
