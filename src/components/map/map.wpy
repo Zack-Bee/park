@@ -196,7 +196,7 @@ export default class Map extends wepy.component {
             this.markerFLAG = 0
             this.$apply()
         },
-        markertap(e) {
+        markertap: (e) => {
             this.markerFLAG = 1
             for (var i = 0; i < this.resData.length; i++) {
                 if (e.markerId === this.resData[i].id) {
