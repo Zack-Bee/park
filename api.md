@@ -285,21 +285,31 @@ eg
 }
 ```
 ```
-在点开始导航（准备停车）时：
+在准备停车时：
 requestDataType: json
 eg:
 {
     type: "add",
     openId: "12345566",//车主的
     carNumber："xxxx",
-    startTime: "12:00" // 表示开始停车的时间,
-    startDate: "08-27" // 开始停车的日期,
     parkLocation:"123,123",
-    parkId:123//如果有的话，没有就返回null
+    parkId:123
 }
 ```
 ```
-在取消导航时：
+在到达停车场时：
+requestDataType: json
+eg:
+{
+    type: "arrive",
+    startTime: "12:00" // 表示开始停车的时间,
+    startDate: "2018-08-27" // 开始停车的日期,
+    carNumber："xxxx",
+    parkId:123
+}
+```
+```
+在取消停车时：
 requestDataType: json
 eg:
 {
@@ -314,10 +324,10 @@ requestDataType: json
 eg:
 {
     type: "done",
-    openId: "12345566",//车主的
     carNumber："xxxx",
-    endTime: "23:00"
-    endDate: "08-28"
+    parkId: xxx,
+    endTime: "23:00",
+    endDate: "2018-08-28",
 }
 ```
 ```

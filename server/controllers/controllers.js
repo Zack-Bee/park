@@ -87,7 +87,7 @@ exports.userparks = async (ctx, next) => {
         all.push(t)
       }
     }
-    await fc.selectparking("openId", "'"+ctx.request.body.openId+"'", c)
+    await fc.selectparking("openId", "'" + ctx.request.body.openId + "'", c)
     if (userparkserr == 1) { return }
     var m = 0
     while (m < parking.length) {
@@ -273,7 +273,7 @@ exports.userplatenumber = async (ctx, next) => {
         ctx.body = ctx.request.body.plateNumber
       }
     }
-    await fc.selectuser("openId", "'"+ctx.request.body.openId+"'", c)
+    await fc.selectuser("openId", "'" + ctx.request.body.openId + "'", c)
   }
 }
 
@@ -341,12 +341,12 @@ exports.upload = async (ctx, next) => {
 
 exports.gethistory = async (ctx, next) => {
   if (ctx.request.body.type == "get") {
-    await fc.selecthistory("openId", "'"+ctx.request.body.openId+"'", function (option) {
+    await fc.selecthistory("openId", "'" + ctx.request.body.openId + "'", function (option) {
       if (option.length <= 10) {
         all = []
         function RESP() {
-          this.isPaid = "return err"
-          this.isDone = "return err"
+          this.status = "return err"
+          this.kind = "return err"
           this.parkLocation = "return err"
           this.startTime = "return err"
           this.startDate = "return err"
@@ -360,8 +360,8 @@ exports.gethistory = async (ctx, next) => {
         }
         for (let i = 0; i < option.length; i++) {
           let t = new RESP
-          t.isPaid = option[i].isPaid
-          t.isDone = option[i].isDone
+          t.status = option[i].status
+          t.kind = option[i].kind
           t.parkLocation = option[i].location
           t.fee = option[i].pay
           t.recordId = option[i].id
@@ -386,8 +386,8 @@ exports.gethistory = async (ctx, next) => {
       else if (ctx.request.body.filter == "month") {
         all = []
         function RESP() {
-          this.isPaid = "return err"
-          this.isDone = "return err"
+          this.status = "return err"
+          this.kind = "return err"
           this.parkLocation = "return err"
           this.startTime = "return err"
           this.startDate = "return err"
@@ -410,8 +410,8 @@ exports.gethistory = async (ctx, next) => {
           var month = now.getMonth() + 1
           if (s[1] == month) {
             let t = new RESP
-            t.isPaid = option[i].isPaid
-            t.isDone = option[i].isDone
+            t.status = option[i].status
+            t.kind = option[i].kind
             t.parkLocation = option[i].parkLocation
             t.fee = option[i].pay
             t.recordId = option[i].id
@@ -431,8 +431,8 @@ exports.gethistory = async (ctx, next) => {
       else if (ctx.request.body.filter == "all") {
         all = []
         function RESP() {
-          this.isPaid = "return err"
-          this.isDone = "return err"
+          this.status = "return err"
+          this.kind = "return err"
           this.parkLocation = "return err"
           this.startTime = "return err"
           this.startDate = "return err"
@@ -453,8 +453,8 @@ exports.gethistory = async (ctx, next) => {
           e = e.split(".")
 
           let t = new RESP
-          t.isPaid = option[i].isPaid
-          t.isDone = option[i].isDone
+          t.status = option[i].status
+          t.kind = option[i].kind
           t.parkLocation = option[i].parkLocation
           t.fee = option[i].pay
           t.recordId = option[i].id
@@ -474,18 +474,31 @@ exports.gethistory = async (ctx, next) => {
     })
   }
   else if (ctx.request.body.type == "add") {
-    ctx.body = { 1: 1 }
-    let time = ctx.request.body.startDate.split("-").concat(ctx.request.body.startTime.split(":"))
-    time = time[0] + "." + time[1] + "." + time[2] + "." + time[3] + "." + time[4]
+    await fc.selecthistory("openid", "'" + ctx.request.body.openId + "'", function (option) {
+      for (let i = option.length - 1; i >= 0; i--) {
+        if (ctx.request.body.carNumber == option[i].carNumber) {
+          if (option[i].status == 1) {
+            fc.changeone("history", option[i].id, "status", 0)
+          }
+          else if (option[i].status == 3) {
+            ctx.body = { message: "上一单未支付" }
+          }
+          else if (option[i].status == 2) {
+            ctx.body = { message: "请结束本次停车并支付" }
+          }
+          break
+        }
+      }
+    })
+
     request('http://apis.map.qq.com/ws/geocoder/v1/?location=' + ctx.request.body.parkLocation + '&key=H4CBZ-CPYWK-2ZOJO-ACLVD-POMLE-FBBDZ&get_poi=1', function (error, response, body) {
       if (error) {
         ctx.body = { error }
       }
       else if (response.statusCode == 200) {
-        console.log(body)
         if (JSON.parse(body).result != null) {
           if (JSON.parse(body).result.pois != "") {
-            fc.addhistory(ctx.request.body.parkId, time, null, ctx.request.body.carNumber, ctx.request.body.parkLocation, ctx.request.body.openId, JSON.parse(body).result.formatted_addresses.recommend)
+            fc.addhistory(ctx.request.body.parkId, null, null, ctx.request.body.carNumber, ctx.request.body.parkLocation, ctx.request.body.openId, JSON.parse(body).result.formatted_addresses.recommend)
             ctx.body = { result: "ok" }
           }
         }
@@ -497,30 +510,46 @@ exports.gethistory = async (ctx, next) => {
     })
 
   }
-  else if (ctx.request.body.type == "cancel") {
+
+  else if (ctx.request.body.type == "arrive") {
     ctx.body = { 1: 1 }
-    fc.selecthistory("openid", "'"+ctx.request.body.openId+"'", function (option) {
-      console.log(option)
+    fc.selecthistory("carNumber", "'" + ctx.request.body.carNumber + "'", function (option) {
       for (let i = option.length - 1; i >= 0; i--) {
-        console.log(i)
-        if (ctx.request.body.carNumber == option[i].carNumber) {
-          console.log(option[i].id)
-          fc.deletehistory(option[i].id)
+        if (ctx.request.body.parkId == option[i].parking) {
+          let time = ctx.request.body.startDate.split("-").concat(ctx.request.body.startTime.split(":"))
+          time = time[0] + "." + time[1] + "." + time[2] + "." + time[3] + "." + time[4]
+          fc.changeone("history", option[i].id, "time", time)
+          fc.changeone("history", option[i].id, "status", 3)
           break
         }
       }
     })
-
+  }
+  else if (ctx.request.body.type == "cancel") {
+    await fc.selecthistory("openid", "'" + ctx.request.body.openId + "'", function (option) {
+      for (let i = option.length - 1; i >= 0; i--) {
+        if (ctx.request.body.carNumber == option[i].carNumber) {
+          if (option[i].status == 1) {
+            fc.changeone("history", option[i].id, "status", 0)
+            ctx.body = { 1: ok }
+          }
+          else {
+            ctx.body = { message: "本次停车不能取消！请结束并支付" }
+          }
+          break
+        }
+      }
+    })
   }
   else if (ctx.request.body.type == "done") {
     ctx.body = { 1: 1 }
-    fc.selecthistory("openid", "'"+ctx.request.body.openId+"'", function (option) {
+    fc.selecthistory("carNumber", "'" + ctx.request.body.carNumber + "'", function (option) {
       for (let i = option.length - 1; i >= 0; i--) {
-        if (ctx.request.body.carNumber == option[i].carNumber) {
+        if (ctx.request.body.parkId == option[i].parking) {
           let time = ctx.request.body.endDate.split("-").concat(ctx.request.body.endTime.split(":"))
           nt = option[i].time + "-" + time[0] + "." + time[1] + "." + time[2] + "." + time[3] + "." + time[4]
           fc.changeone("history", option[i].id, "time", nt)
-          fc.changeone("history", option[i].id, "isDone", 1)
+          fc.changeone("history", option[i].id, "status", 3)
           break
         }
       }
@@ -528,13 +557,13 @@ exports.gethistory = async (ctx, next) => {
   }
   else if (ctx.request.body.type == "pay") {
     ctx.body = { 1: 1 }
-    fc.selecthistory("openid", "'"+ctx.request.body.openId+"'", function (option) {
+    fc.selecthistory("openid", "'" + ctx.request.body.openId + "'", function (option) {
       let time = ctx.request.body.startDate.split("-").concat(ctx.request.body.startTime.split(":"))
       time = time[0] + "." + time[1] + "." + time[2] + "." + time[3] + "." + time[4]
       for (let i = option.length - 1; i >= 0; i--) {
         if (ctx.request.body.carNumber == option[i].carNumber && option[i].time.split("-")[0] == time) {
           fc.changeone("history", option[i].id, "pay", ctx.request.body.fee)
-          fc.changeone("history", option[i].id, "isPaid", 1)
+          fc.changeone("history", option[i].id, "status", 4)
           break
         }
       }
