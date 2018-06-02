@@ -210,7 +210,10 @@ export default class Closest extends wepy.component {
                         this.resData[i]._distance
                     ) //转换一下距离的格式
                     this.resData = res.data
-                    this.isLoading = false
+                    this.isLoading = false        
+                    this.nowLat = this.resData[0].location.lat
+                    this.nowLng = this.resData[0].location.lng
+                    this.nowTitle = this.resData[0].title
                     this.$apply()
                 }
             },
