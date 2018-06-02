@@ -5,12 +5,27 @@
         markers="{{markers}}" bindmarkertap="markertap"
         show-location   bindregionchange="regionchange"
         style="width:100%;height:{{height}}px">
-        <cover-image style="display: block; height: 8rpx; width: 100%;" src="./shadow-top.png" />
     </map>
+    <cover-view class="img-wrap">
+        <cover-image class="img" src="../../components/map/shadow.png"/>
+    </cover-view>
 </view>
 </template>
 
 <style scoped>
+.img-wrap {
+    position: relative;
+    width: 100%;
+    height: 4rpx;
+}
+
+.img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
 </style>
 
 <script>
@@ -49,8 +64,8 @@ export default class Map extends wepy.component {
     }
     data = {
         resData: [],
-        oldLat:'',
-        oldLng:'',
+        oldLat: '',
+        oldLng: '',
         scale: 18,
         latitude: '',
         longitude: '',
@@ -155,8 +170,8 @@ export default class Map extends wepy.component {
                 console.log(res)
             }
         )*/
-        this.oldLat=this.latitude
-        this.oldLng=this.lng
+        this.oldLat = this.latitude
+        this.oldLng = this.lng
     }
     formatDistance(num) {
         if (num < 1000) {
@@ -165,7 +180,6 @@ export default class Map extends wepy.component {
             return (num / 1000).toFixed(1) + 'km'
         }
     }
-
 
     methods = {
         changeflag() {
@@ -221,11 +235,12 @@ export default class Map extends wepy.component {
                             this.oldLat = latitudePrk
                             qqmapsdk.search({
                                 keyword: '停车场',
-                                location:{
-                                    latitude:latitudePrk,
-                                    longitude:longitudePrk
+                                location: {
+                                    latitude: latitudePrk,
+                                    longitude: longitudePrk
                                 },
                                 success: (res) => {
+                                    var resData = res.data
                                     /*for(var i =0;i <  res.data.length;i++)
                                     {
                                         var pushit = 1
@@ -239,16 +254,16 @@ export default class Map extends wepy.component {
                                             this.resData.push(res.data[i])
                                         }
                                     }*/
-                                    console.log(this.resData)
-                                    var lengthErr = this.resData.length
-                                    for (var i = 0; i < this.resData.length; i++) {
-                                        this.resData[i]._distance = this.formatDistance(
-                                            this.resData[i]._distance
+                                    for (var i = 0; i < resData.length; i++) {
+                                        resData[
+                                            i
+                                        ]._distance = this.formatDistance(
+                                            resData[i]._distance
                                         ) //转换一下距离的格式
-                                        var parkLat = this.resData[i].location.lat
-                                        var parkLong = this.resData[i].location.lng
-                                        var parkTitle = this.resData[i].title
-                                        var id = this.resData[i].id
+                                        var parkLat = resData[i].location.lat
+                                        var parkLong = resData[i].location.lng
+                                        var parkTitle = resData[i].title
+                                        var id = resData[i].id
                                         this.markers.push({
                                             title: parkTitle,
                                             latitude: parkLat,
@@ -277,6 +292,7 @@ export default class Map extends wepy.component {
                                             }
                                         })
                                         console.log(id)
+                                        this.resData = res.data
                                         this.$apply()
                                     }
                                 },

@@ -50,6 +50,7 @@
     line-height: 60rpx;
     color: #888;
     text-align: center;
+    border-bottom: 1rpx #E0E0E0 solid;
 }
 
 .closest-body {

@@ -6,7 +6,8 @@
     <scroll-view class="filter-bar-list" scroll-x="true">
         <view class="filter-bar-item" :class="{active: filter === '综合'}" @tap="setFilter('综合')">综合</view>
         <view class="filter-bar-item" :class="{active: filter === '免费'}" @tap="setFilter('免费')">免费</view>
-        <view class="filter-bar-item" :class="{active: filter === '最近'}" @tap="setFilter('最近')">最近</view>
+        <view class="filter-bar-item" :class="{active: filter === '企业'}" @tap="setFilter('企业')">企业</view>
+        <view class="filter-bar-item" :class="{active: filter === '个人'}" @tap="setFilter('个人')">个人</view>
     </scroll-view>
 </view>
 </template>
