@@ -29,17 +29,17 @@
                     </view>
                 </view>
                 <view class="history-right">
-                    <view wx:if="{{item.isPaid}}" class="history-status">
-                        已完成
+                    <view wx:if="{{item.status === 0}}" class="history-status">
+                        已取消
                     </view>
-                    <view wx:if="{{!item.isPaid && item.isDone}}" class="history-status" style="color:rgba(9, 187, 7, 0.5)">
-                        未支付
+                    <view wx:if="{{item.status === 1}}" class="history-status" style="color:rgba(9, 187, 7, 0.5)">
+                        前往停车
                     </view>
                     <view wx:if="{{!item.isDone}}" class="history-status" style="color:rgba(9, 187, 7, 0.5)">
                         停车中
                     </view>
                     <view class="history-padding"></view>
-                    <view class="history-button" wx:if="{{!item.isPaid && item.isDone}}">
+                    <view class="history-button" wx:if="{{item.status === 3}}">
                         <Button data-record-id="{{item.recordId}}" type="primary" size="mini">
                             支付
                         </Button>
@@ -157,8 +157,7 @@ export default class History extends wepy.page {
         delta: 1,
         history: [
             {
-                isPaid: true, // 表示是否已经完成付款
-                isDone: true, // 表示行程是否已经完成
+                status: 0,
                 parkLocation: '东北大学', // 表示停车场的大致位置
                 startTime: '12:00', // 表示开始停车的时间,
                 startDate: '08-27', // 开始停车的日期,
@@ -172,8 +171,7 @@ export default class History extends wepy.page {
                 plateNumber: '辽A-12345'
             },
             {
-                isPaid: false, // 表示是否已经完成付款
-                isDone: true, // 表示行程是否已经完成
+                status: 1,
                 parkLocation: '东北大学', // 表示停车场的大致位置
                 startTime: '12:00', // 表示开始停车的时间,
                 startDate: '08-27', // 开始停车的日期,
@@ -187,8 +185,7 @@ export default class History extends wepy.page {
                 plateNumber: '辽A-12345'
             },
             {
-                isPaid: false, // 表示是否已经完成付款
-                isDone: false, // 表示行程是否已经完成
+                status: 2,
                 parkLocation: '东北大学', // 表示停车场的大致位置
                 startTime: '12:00', // 表示开始停车的时间,
                 startDate: '08-27', // 开始停车的日期,
@@ -202,8 +199,7 @@ export default class History extends wepy.page {
                 plateNumber: '辽A-12345'
             },
             {
-                isPaid: false, // 表示是否已经完成付款
-                isDone: false, // 表示行程是否已经完成
+                status: 3,
                 parkLocation: '东北大学', // 表示停车场的大致位置
                 startTime: '12:00', // 表示开始停车的时间,
                 startDate: '08-27', // 开始停车的日期,
@@ -217,38 +213,7 @@ export default class History extends wepy.page {
                 plateNumber: '辽A-12345'
             },
             {
-                isPaid: false, // 表示是否已经完成付款
-                isDone: false, // 表示行程是否已经完成
-                parkLocation: '东北大学', // 表示停车场的大致位置
-                startTime: '12:00', // 表示开始停车的时间,
-                startDate: '08-27', // 开始停车的日期,
-                endTime: '23:00', // 停车结束的事件,
-                endDate: '08-28', // 停车结束的日期 // 如果行程未完成则是当前的日期, 当前的时间
-                fee: 19.8, // 停车的费用
-                recordId: '1929292', // 这条记录的编号,
-                parkId: '31232', // 停车场的编号,
-                parkLatitude: 123.45,
-                parkLongitude: 678.9,
-                plateNumber: '辽A-12345'
-            },
-            {
-                isPaid: false, // 表示是否已经完成付款
-                isDone: false, // 表示行程是否已经完成
-                parkLocation: '东北大学', // 表示停车场的大致位置
-                startTime: '12:00', // 表示开始停车的时间,
-                startDate: '08-27', // 开始停车的日期,
-                endTime: '23:00', // 停车结束的事件,
-                endDate: '08-28', // 停车结束的日期 // 如果行程未完成则是当前的日期, 当前的时间
-                fee: 19.8, // 停车的费用
-                recordId: '1929292', // 这条记录的编号,
-                parkId: '31232', // 停车场的编号,
-                parkLatitude: 123.45,
-                parkLongitude: 678.9,
-                plateNumber: '辽A-12345'
-            },
-            {
-                isPaid: false, // 表示是否已经完成付款
-                isDone: false, // 表示行程是否已经完成
+                status: 4,
                 parkLocation: '东北大学', // 表示停车场的大致位置
                 startTime: '12:00', // 表示开始停车的时间,
                 startDate: '08-27', // 开始停车的日期,

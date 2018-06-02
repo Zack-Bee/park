@@ -20,14 +20,13 @@
                 </view>
                 <view class="closest-right">
                     <view class="navigate-btn">
-                        <navigateBtn class="override-button" size="small">开始导航</navigateBtn>
+                        <navigateBtn class="override-button" size="small" :bindTap="navigatenow">开始导航</navigateBtn>
                     </view>
                     <view class="padding" />
                     <view class="park-btn" wx:if="{{numberArray.length === 0}}" bindtap="emptynumber">
-                        <parkBtn class="override-button" type="primary" size="small" >现在停车</parkBtn>
+                        <parkBtn class="override-button" type="primary" size="small">现在停车</parkBtn>
                     </view>
-                    <picker class="park-btn" bindchange="bindPickerChange"
-                        value="{{index}}" range="{{numberArray}}" wx:if="{{numberArray.length > 0}}" >
+                    <picker class="park-btn" bindchange="bindPickerChange" value="{{index}}" range="{{numberArray}}" wx:if="{{numberArray.length > 0}}">
                         <parkBtn class="override-button" type="primary" size="small">现在停车</parkBtn>
                     </picker>
                 </view>
@@ -50,7 +49,7 @@
     line-height: 60rpx;
     color: #888;
     text-align: center;
-    border-bottom: 1rpx #E0E0E0 solid;
+    border-bottom: 1rpx #e0e0e0 solid;
 }
 
 .closest-body {
@@ -92,6 +91,7 @@
 .closest-right {
     width: 220rpx;
     padding-right: 20rpx;
+    padding-top: 10rpx;
 }
 
 .override-button {
@@ -107,6 +107,10 @@
     color: #353535;
     font-size: 36rpx;
     line-height: 80rpx;
+    height: 80rpx;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
 }
 
 .park-price {
@@ -120,12 +124,19 @@
     color: #888;
     font-size: 30rpx;
 }
-
 </style>
 
 <script>
 import wepy from 'wepy'
 import Button from '../button/button'
+
+const formatDistance = (num) => {
+    if (num < 1000) {
+        return num.toFixed(0) + 'm'
+    } else if (num > 1000) {
+        return (num / 1000).toFixed(1) + 'km'
+    }
+}
 
 var QQMapWX = require('../../libs/qqmap-wx-jssdk.js')
 var qqmapsdk
@@ -155,6 +166,16 @@ export default class Closest extends wepy.component {
             type: Array,
             default: '',
             twoWay: true
+        },
+        nowLng: {
+            type: Number,
+            default: 123.42303,
+            twoWay: true
+        },
+        nowLat: {
+            type: Number,
+            default: 41.65213,
+            twoWay: true
         }
     }
     data = {
@@ -164,7 +185,16 @@ export default class Closest extends wepy.component {
         initTitle: '加载中',
         parkName: '东北大学停车场',
         parkPrice: '100',
-        parkDistence: '3000m'
+        parkDistence: '3000m',
+        navigatenow: () => {
+            console.log('hhh')
+            console.log(this.nowLat)
+            wx.openLocation({
+                latitude: this.nowLat,
+                longitude: this.nowLng,
+                scale: 18
+            })
+        }
     }
     onLoad() {
         qqmapsdk = new QQMapWX({
@@ -176,7 +206,7 @@ export default class Closest extends wepy.component {
                 console.log(res)
                 this.resData = res.data
                 for (var i = 0; i < this.resData.length; i++) {
-                    this.resData[i]._distance = this.formatDistance(
+                    this.resData[i]._distance = formatDistance(
                         this.resData[i]._distance
                     ) //转换一下距离的格式
                     this.resData = res.data
@@ -190,13 +220,6 @@ export default class Closest extends wepy.component {
         })
         console.log('hhh')
         console.log(this.numberArray)
-    }
-    formatDistance(num) {
-        if (num < 1000) {
-            return num.toFixed(0) + 'm'
-        } else if (num > 1000) {
-            return (num / 1000).toFixed(1) + 'km'
-        }
     }
 
     methods = {
@@ -222,7 +245,6 @@ export default class Closest extends wepy.component {
             })
         },
         bindPickerChange() {
-            console.log('hhh')
             //点击进入停车选择
             wx.navigateTo({
                 url: '../history/history',
