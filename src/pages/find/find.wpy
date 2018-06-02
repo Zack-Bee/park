@@ -4,10 +4,12 @@
     <view>
         <FilterBar :filter.sync="filter"/>
         <Map :height.sync="mapHeight" :filter.sync="filter" :markerFLAG.sync="markerFLAG"
-        :markerTitle.sync="markerTitle" :markerDstce.sync="markerDstce"/>
+        :markerTitle.sync="markerTitle" :markerDstce.sync="markerDstce"
+        :markerLng.sync="markerLng" :markerLat.sync="markerLat"/>
         <Closest :FLAG.sync="markerFLAG" 
         :nowTitle.sync="markerTitle" :nowDstce.sync="markerDstce"
-        :numberArray.sync="numberArray"/>
+        :numberArray.sync="numberArray"
+        :nowLng.sync="markerLng" :nowLat.sync="markerLat"/>
     </view>
 </template>
 
@@ -31,7 +33,9 @@ export default class Index extends wepy.page {
         markerFLAG: 0,
         markerTitle: '',
         markerDstce: '',
-        numberArray: []
+        markerLat: '',
+        markerLng: '',
+        numberArray: [],
     }
 
     onLoad() {

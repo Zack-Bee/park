@@ -20,7 +20,7 @@
                 </view>
                 <view class="closest-right">
                     <view class="navigate-btn">
-                        <navigateBtn class="override-button" size="small">开始导航</navigateBtn>
+                        <navigateBtn class="override-button" size="small" :bindTap="navigatenow">开始导航</navigateBtn>
                     </view>
                     <view class="padding" />
                     <view class="park-btn" wx:if="{{numberArray.length === 0}}" bindtap="emptynumber">
@@ -50,7 +50,7 @@
     line-height: 60rpx;
     color: #888;
     text-align: center;
-    border-bottom: 1rpx #E0E0E0 solid;
+    border-bottom: 1rpx #e0e0e0 solid;
 }
 
 .closest-body {
@@ -92,6 +92,7 @@
 .closest-right {
     width: 220rpx;
     padding-right: 20rpx;
+    padding-top: 10rpx;
 }
 
 .override-button {
@@ -120,7 +121,6 @@
     color: #888;
     font-size: 30rpx;
 }
-
 </style>
 
 <script>
@@ -155,6 +155,16 @@ export default class Closest extends wepy.component {
             type: Array,
             default: '',
             twoWay: true
+        },
+        nowLng: {
+            type:Number,
+            default:123.42303,
+            twoWay:true,
+        },
+        nowLat:{
+            type:Number,
+            default:41.65213,
+            twoWay:true,
         }
     }
     data = {
@@ -198,7 +208,14 @@ export default class Closest extends wepy.component {
             return (num / 1000).toFixed(1) + 'km'
         }
     }
-
+    navigatenow() {
+        console.log('hhh')
+        wx.openLocation({
+            latitude: this.nowLat,
+            longitude: this.nowLng,
+            scale: 18
+        })
+    }
     methods = {
         emptynumber() {
             wx.showModal({
@@ -222,7 +239,6 @@ export default class Closest extends wepy.component {
             })
         },
         bindPickerChange() {
-            console.log('hhh')
             //点击进入停车选择
             wx.navigateTo({
                 url: '../history/history',

@@ -59,7 +59,17 @@ export default class Map extends wepy.component {
         markerDstce: {
             type: String,
             default: '0.00m',
-            twoWay: true
+            twoWay: true,
+        },
+        markerLng: {
+            type:Number,
+            default:123.42303,
+            twoWay:true,
+        },
+        markerLat:{
+            type:Number,
+            default:41.65213,
+            twoWay:true,
         }
     }
     data = {
@@ -192,6 +202,9 @@ export default class Map extends wepy.component {
                 if (e.markerId === this.resData[i].id) {
                     this.markerTitle = this.resData[i].title
                     this.markerDstce = this.resData[i]._distance
+                    this.markerLng = this.resData[i].location.lng
+                    this.markerLat = this.resData[i].location.lat
+                    console.log(this.markerLat)
                 }
             }
             this.$apply()
