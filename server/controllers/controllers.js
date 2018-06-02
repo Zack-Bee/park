@@ -517,8 +517,8 @@ exports.gethistory = async (ctx, next) => {
       for (let i = option.length - 1; i >= 0; i--) {
         if (ctx.request.body.parkId == option[i].parking) {
           let time = ctx.request.body.startDate.split("-").concat(ctx.request.body.startTime.split(":"))
-          time = time[0] + "." + time[1] + "." + time[2] + "." + time[3] + "." + time[4]
-          fc.changeone("history", option[i].id, "time", time)
+          nt = time[0] + "." + time[1] + "." + time[2] + "." + time[3] + "." + time[4]
+          fc.changeone("history", option[i].id, "time", nt)
           fc.changeone("history", option[i].id, "status", 3)
           break
         }
@@ -546,8 +546,18 @@ exports.gethistory = async (ctx, next) => {
     fc.selecthistory("carNumber", "'" + ctx.request.body.carNumber + "'", function (option) {
       for (let i = option.length - 1; i >= 0; i--) {
         if (ctx.request.body.parkId == option[i].parking) {
+          ft=option[i].time
+          let st=ft.split(".")
+          st=st[0]+"-"+st[1]+"-"+st[2]+" "+st[3]+":"+st[4]+":00"
+          let et=ctx.request.body.endDate+" "+ctx.request.body.endTime+":00"
+          let mi=GetDateDiff(st,et)
+          fc.selectparkingtime("parking",ctx.request.body.parkId,function(op){
+            let pay=op[0].price*mi/60
+            fc.changeone("history", option[i].id,"pay",pay)
+          })
           let time = ctx.request.body.endDate.split("-").concat(ctx.request.body.endTime.split(":"))
-          nt = option[i].time + "-" + time[0] + "." + time[1] + "." + time[2] + "." + time[3] + "." + time[4]
+          nt = ft + "-" + time[0] + "." + time[1] + "." + time[2] + "." + time[3] + "." + time[4]
+          let pay=
           fc.changeone("history", option[i].id, "time", nt)
           fc.changeone("history", option[i].id, "status", 3)
           break
@@ -562,7 +572,6 @@ exports.gethistory = async (ctx, next) => {
       time = time[0] + "." + time[1] + "." + time[2] + "." + time[3] + "." + time[4]
       for (let i = option.length - 1; i >= 0; i--) {
         if (ctx.request.body.carNumber == option[i].carNumber && option[i].time.split("-")[0] == time) {
-          fc.changeone("history", option[i].id, "pay", ctx.request.body.fee)
           fc.changeone("history", option[i].id, "status", 4)
           break
         }

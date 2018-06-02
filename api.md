@@ -340,6 +340,5 @@ eg:
     carNumber："xxxx",
     startTime: "12:00" // 表示开始停车的时间,
     startDate: "08-27" // 开始停车的日期,
-    fee：12
 }
 ```
