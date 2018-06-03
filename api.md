@@ -33,14 +33,24 @@ eg:
 ```
 ```
 responseDataTYpe: json
-{
-    kind: 3,
-    parkName: "王邦铮的停车场",
-    price: 12,
-    longitude: 123.45,
-    latitude: 67.89,
-    parkId: 123124
-}
+[
+    {
+        kind: 3,
+        parkName: "王邦铮的停车场",
+        price: 12,
+        longitude: 123.45,
+        latitude: 67.89,
+        parkId: 123124
+    },
+    {
+        kind: 4,
+        parkName: "王邦铮的停车场",
+        price: 12,
+        longitude: 123.45,
+        latitude: 67.89,
+        parkId: 123124
+    },
+]
 ```
 
 ### /user/parks
