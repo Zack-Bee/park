@@ -40,7 +40,8 @@ responseDataTYpe: json
         price: 12,
         longitude: 123.45,
         latitude: 67.89,
-        parkId: 123124
+        parkId: 123124,
+        distence: 1000
     },
     {
         kind: 4,
@@ -48,7 +49,8 @@ responseDataTYpe: json
         price: 12,
         longitude: 123.45,
         latitude: 67.89,
-        parkId: 123124
+        parkId: 123124,
+        distence: 2000
     },
 ]
 ```
