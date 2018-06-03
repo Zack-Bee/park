@@ -17,9 +17,9 @@
         <view class="weui-search-bar__cancel-btn" hidden="{{!inputShowed}}" bindtap="hideInput">取消</view>
     </view>
     <!--循环出附近停车场-->
-    <scroll-view wx:for="{{resData}}" wx:key="parking" wx:if="{{inputVal.length === 0}}" style="height: 200rpx;"
-    bindscrolltolower="showmore">
-        <view bindtap="navTo" data-item="{{item.id}}">
+    <scroll-view  wx:key="parking" wx:if="{{inputVal.length === 0}}" style="height: 100vh;" scroll-y="{{true}}"
+        bindscrolltolower="showmore" enable-back-to-top="{{true}}">
+        <view wx:for="{{resData}}" wx:key="parking" wx:if="{{inputVal.length === 0}}"  bindtap="navTo" data-item="{{item.id}}">
             <view class="weui-panel">
                 <view class="weui-panel__bd">
                     <view class="weui-media-box weui-media-box_text">
@@ -86,7 +86,8 @@ export default class Search extends wepy.page {
         inputShowed: false,
         inputVal: '',
         resData: [],
-        resrchData: []
+        resrchData: [],
+        page_index_it:1,
     }
     onLoad(option) {
         qqmapsdk = new QQMapWX({
@@ -114,6 +115,7 @@ export default class Search extends wepy.page {
                 console.log('ERROR!!!!!')
             }
         })
+        this.page_index_it ++
     }
     formatDistance(num) {
         if (num < 1000) {
@@ -173,6 +175,7 @@ export default class Search extends wepy.page {
             qqmapsdk.search({
                 keyword: '停车场',
                 page_size: 20,
+                page_index: this.page_index_it++,
                 success: (res) => {
                     console.log(res)
                     var resData = res.data
