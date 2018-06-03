@@ -45,7 +45,8 @@ exports.addtest = function (a, b, c, d,city) {
     }
     let aa = randomNum(a * 1000000, b * 1000000) / 1000000
     let bb = randomNum(c * 1000000, d * 1000000) / 1000000
-    request('http://apis.map.qq.com/ws/geocoder/v1/?location=' + aa + ',' + bb + '&key=H4CBZ-CPYWK-2ZOJO-ACLVD-POMLE-FBBDZ&get_poi=1', function (error, response, body) {
+    //H4CBZ-CPYWK-2ZOJO-ACLVD-POMLE-FBBDZ
+    request('http://apis.map.qq.com/ws/geocoder/v1/?location=' + aa + ',' + bb + '&key=FEMBZ-TQGLS-GUXOY-6LAX6-5OLAJ-RDBYM&get_poi=1', function (error, response, body) {
       if (error) {
         reject(error);
       }
