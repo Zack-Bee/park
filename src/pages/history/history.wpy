@@ -7,21 +7,32 @@
                         <placeIcon type="location" style="lien-height: 60rpx; font-size: 24rpx;" />
                         <view class="history-place-text text">{{item.parkLocation}}</view>
                     </view>
-                    <view class="history-start-time">
-                        <startTimeIcon type="underway" style="line-height:40rpx; color:#09bb04; font-size: 24rpx" />
-                        <view class="text">开始时间: {{item.startDate + "-" + item.startTime}}</view>
+                    <view class="history-start-time history-item">
+                        <startTimeIcon wx:if="{{(item.status !== 0) && (item.status !== 1)}}" type="underway" style="line-height:40rpx; color:#09bb04; font-size: 24rpx" />
+                        <view wx:if="{{(item.status !== 0) && (item.status !== 1)}}" class="text">开始时间: {{item.startDate + "-" + item.startTime}}</view>
                     </view>
-                    <view class="history-end-time">
-                        <endTimeIcon type="underway" style="line-height:40rpx; color:#09bbf1; font-size: 24rpx" />
-                        <view class="text">结束时间: {{item.endDate + "-" + item.endTime}}</view>
+                    <view class="history-end-time history-item">
+                        <endTimeIcon wx:if="{{item.status !== 1}}" type="underway" style="line-height:40rpx; color:#09bbf1; font-size: 24rpx" />
+                        <view wx:if="{{item.status !== 1}}" class="text">
+                            <view style="display: inline;">{{item.status === 2 ? "当前时间: " : "结束时间: "}}</view>
+                            {{item.endDate + "-" + item.endTime}}
+                        </view>
+                        <leftTimeIcon wx:if="{{item.status === 1 && item.kind === 4}}" type="underway" style="line-height:40rpx; color:#ff413a; font-size: 24rpx" />
+                        <view wx:if="{{item.status === 1 && item.kind === 4}}" class="text">
+                            还剩
+                            <view style="color:#ff413a; display: inline">
+                                {{item.leftTime}}
+                            </view>
+                            分钟可以免费取消
+                        </view>
                     </view>
-                    <view class="history-plate-number">
+                    <view class="history-plate-number history-item">
                         <view class="img-wrapper" style="position:relative; width:24rpx; height:24rpx;">
                             <image src="./plateNumberIcon.png" style="width: 100%; height: 100%;" />
                         </view>
                         <view class="text">车牌号: {{item.plateNumber}}</view>
                     </view>
-                    <view class="history-fee text">
+                    <view class="history-fee text  history-item">
                         <feeIcon type="balance-details" style="line-height:40rpx; color:#ff413a; font-size: 24rpx" />
                         <view class="text fee-detail">费用:
                             <view class="fee-detail-text">{{" " + item.fee}}</view>
@@ -29,20 +40,44 @@
                     </view>
                 </view>
                 <view class="history-right">
-                    <view wx:if="{{item.status === 0}}" class="history-status">
+                    <view wx:if="{{item.status === 0}}" class="history-status" style="color:#d81e06;">
                         已取消
                     </view>
                     <view wx:if="{{item.status === 1}}" class="history-status" style="color:rgba(9, 187, 7, 0.5)">
                         前往停车
                     </view>
-                    <view wx:if="{{!item.isDone}}" class="history-status" style="color:rgba(9, 187, 7, 0.5)">
+                    <view wx:if="{{item.status === 2}}" class="history-status" style="color:rgba(9, 187, 7, 0.5)">
                         停车中
                     </view>
-                    <view class="history-padding"></view>
-                    <view class="history-button" wx:if="{{item.status === 3}}">
-                        <Button data-record-id="{{item.recordId}}" type="primary" size="mini">
-                            支付
-                        </Button>
+                    <view wx:if="{{item.status === 3}}" class="history-status" style="color:rgba(9, 187, 7, 0.5)">
+                        未支付
+                    </view>
+                    <view wx:if="{{item.status === 4}}" class="history-status">
+                        已完成
+                    </view>
+                    <view wx:if="{{item.status === 1}}">
+                        <view class="history-padding1"></view>
+                        <view @tap="cancel" data-park-id="{{item.parkId}}" data-plate-number="{{item.plateNumber}}">
+                            <cancelButton type="danger" size="mini">
+                                取消行程
+                            </cancelButton>
+                        </view>
+                        <view class="history-padding1"></view>
+                        <view @tap="park" data-park-id="{{item.parkId}}" data-plate-number="{{item.plateNumber}}">
+                            <parkButton wx:if="{{item.kind === 4}}" type="primary" size="mini">
+                                降下停车桩
+                            </parkButton>
+                        </view>
+                    </view>
+                    <view wx:if="{{item.status === 3}}">
+                        <view class="history-padding3"></view>
+                        <view class="history-button">
+                            <view @tap="pay" data-park-id="{{item.parkId}}" data-plate-number="{{item.plateNumber}}">
+                                <payButton type="primary" size="mini">
+                                    支付
+                                </payButton>
+                            </view>
+                        </view>
                     </view>
                 </view>
             </view>
@@ -73,7 +108,7 @@
 }
 
 .history-left {
-    width: 610rpx;
+    width: 560rpx;
 }
 
 .history-left > view {
@@ -82,13 +117,19 @@
 }
 
 .history-right {
-    width: 100rpx;
+    width: 150rpx;
+    text-align: center;
 }
 
 .history-place {
     color: #353535;
     line-height: 60rpx;
     display: flex;
+}
+
+.history-item {
+    height: 40rpx;
+    line-height: 40rpx;
 }
 
 .history-place-text {
@@ -116,7 +157,11 @@
     color: #888;
 }
 
-.history-padding {
+.history-padding1 {
+    height: 40rpx;
+}
+
+.history-padding3 {
     height: 120rpx;
 }
 
@@ -147,10 +192,14 @@ export default class History extends wepy.page {
         placeIcon: Icon,
         startTimeIcon: Icon,
         endTimeIcon: Icon,
+        leftTimeIcon: Icon,
         arrowIcon: Icon,
         feeIcon: Icon,
         Button,
-        Loading
+        Loading,
+        payButton: Button,
+        cancelButton: Button,
+        parkButton: Button
     }
 
     data = {
@@ -168,7 +217,8 @@ export default class History extends wepy.page {
                 parkId: '31232', // 停车场的编号,
                 parkLatitude: 123.45,
                 parkLongitude: 678.9,
-                plateNumber: '辽A-12345'
+                plateNumber: '辽A-12345',
+                kind: 3
             },
             {
                 status: 1,
@@ -182,7 +232,24 @@ export default class History extends wepy.page {
                 parkId: '31232', // 停车场的编号,
                 parkLatitude: 123.45,
                 parkLongitude: 678.9,
-                plateNumber: '辽A-12345'
+                plateNumber: '辽A-12345',
+                kind: 3
+            },
+            {
+                status: 1,
+                parkLocation: '东北大学', // 表示停车场的大致位置
+                startTime: '12:00', // 表示开始停车的时间,
+                startDate: '08-27', // 开始停车的日期,
+                endTime: '23:00', // 停车结束的事件,
+                endDate: '08-28', // 停车结束的日期 // 如果行程未完成则是当前的日期, 当前的时间
+                fee: 19.8, // 停车的费用
+                recordId: '1929292', // 这条记录的编号,
+                parkId: '31232', // 停车场的编号,
+                parkLatitude: 123.45,
+                parkLongitude: 678.9,
+                plateNumber: '辽A-12345',
+                kind: 4,
+                leftTime: 12
             },
             {
                 status: 2,
@@ -196,7 +263,8 @@ export default class History extends wepy.page {
                 parkId: '31232', // 停车场的编号,
                 parkLatitude: 123.45,
                 parkLongitude: 678.9,
-                plateNumber: '辽A-12345'
+                plateNumber: '辽A-12345',
+                kind: 3
             },
             {
                 status: 3,
@@ -210,7 +278,8 @@ export default class History extends wepy.page {
                 parkId: '31232', // 停车场的编号,
                 parkLatitude: 123.45,
                 parkLongitude: 678.9,
-                plateNumber: '辽A-12345'
+                plateNumber: '辽A-12345',
+                kind: 3
             },
             {
                 status: 4,
@@ -224,7 +293,8 @@ export default class History extends wepy.page {
                 parkId: '31232', // 停车场的编号,
                 parkLatitude: 123.45,
                 parkLongitude: 678.9,
-                plateNumber: '辽A-12345'
+                plateNumber: '辽A-12345',
+                kind: 3
             }
         ],
         filter: 'all',
@@ -268,7 +338,45 @@ export default class History extends wepy.page {
                     console.log(err)
                 }
             )
-        }
+        },
+        park: (event) => {
+            let date = new Date(),
+                startDate = `${date.getFullYear()}-${date.getMonth() +
+                    1}-${date.getDate()}`,
+                startTime = `${date.getHours()}:${date.getMinutes()}`,
+                dataset = event.currentTarget.dataset
+
+            post(`${config.host}/user/history`, {
+                type: 'arrive',
+                startDate,
+                startTime,
+                parkId: dataset.parkId,
+                carNumber: dataset.plateNumber
+            }).then(
+                (res) => {
+                    console.log(res)
+                },
+                (err) => {
+                    console.log(err)
+                }
+            )
+        },
+        cancel: (event) => {
+            let dataset = event.currentTarget.dataset
+            post(`${config.host}/user/history`, {
+                type: 'cancel',
+                openId: this.$parent.globalData.openId,
+                carNumber: dataset.plateNumber
+            }).then(
+                (res) => {
+                    console.log(res)
+                },
+                (err) => {
+                    console.log(err)
+                }
+            )
+        },
+        pay: () => {}
     }
 
     onLoad() {
