@@ -47,13 +47,14 @@ exports.addtest = function (a, b, c, d,city) {
     let bb = randomNum(c * 1000000, d * 1000000) / 1000000
     //H4CBZ-CPYWK-2ZOJO-ACLVD-POMLE-FBBDZ
     request('http://apis.map.qq.com/ws/geocoder/v1/?location=' + aa + ',' + bb + '&key=42TBZ-EHSKS-IULOI-62K2Q-IKAA6-HDB2E&get_poi=1', function (error, response, body) {
-      if (error) {
+//console.log(body)      
+if (error) {
         reject(error);
       }
       else if (response.statusCode == 200) {
         resolve(body);
         if (JSON.parse(body).result.pois != "") {
-          fc.addparking(city+"-test", 4, city+"测试停车场", JSON.parse(body).result.formatted_addresses.recommend, aa + "," + bb, 1, "/upload/odpVJ5Lutx-arHao6e2yZXr_tUOs")
+          fc.addparking(city+"-test", 3, city+"测试停车场", JSON.parse(body).result.formatted_addresses.recommend, aa + "," + bb, 1, "/upload/odpVJ5Lutx-arHao6e2yZXr_tUOs")
         }
       }
       else {
