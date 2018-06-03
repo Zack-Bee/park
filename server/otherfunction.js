@@ -45,7 +45,8 @@ exports.addtest = function (a, b, c, d,city) {
     }
     let aa = randomNum(a * 1000000, b * 1000000) / 1000000
     let bb = randomNum(c * 1000000, d * 1000000) / 1000000
-    request('http://apis.map.qq.com/ws/geocoder/v1/?location=' + aa + ',' + bb + '&key=H4CBZ-CPYWK-2ZOJO-ACLVD-POMLE-FBBDZ&get_poi=1', function (error, response, body) {
+    //H4CBZ-CPYWK-2ZOJO-ACLVD-POMLE-FBBDZ
+    request('http://apis.map.qq.com/ws/geocoder/v1/?location=' + aa + ',' + bb + '&key=42TBZ-EHSKS-IULOI-62K2Q-IKAA6-HDB2E&get_poi=1', function (error, response, body) {
       if (error) {
         reject(error);
       }
@@ -261,8 +262,6 @@ exports.GetDateDiff=function(startTime, endTime, diffType="minute") {
   startTime = startTime.replace(/\-/g, "/");
 
   endTime = endTime.replace(/\-/g, "/");
-
-console.log(startTime,endTime) 
 
   //将计算间隔类性字符转换为小写
 

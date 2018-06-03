@@ -70,7 +70,7 @@ exports.addhistory = function (parking, time, pay, carNumber, parkLocation, open
   var gg = "'" + openId + "'"
   var hh = "'" + location + "'"
   var ii = kind
-  sql = 'insert into history (parking, time, pay, carNumber,parkLocation, openId,location) values(' + bb + ',' + cc + ',' + dd + ',' + ee + ',' + ff + ',' + gg + ',' + hh +',' + ii + ')'
+  sql = 'insert into history (parking, time, pay, carNumber,lola, openId,location,kind) values(' + bb + ',' + cc + ',' + dd + ',' + ee + ',' + ff + ',' + gg + ',' + hh +',' + ii + ')'
   conn.query(sql, function (err, result) {
     if (err) throw err;
     console.log(result);
