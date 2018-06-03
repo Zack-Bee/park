@@ -18,6 +18,31 @@ eg:
 }
 ```
 
+### /parks
+#### Method: POST
+#### Usage: 获取指定经纬度指定范围内的所有数据库中的停车场
+#### Type: get
+```
+requestDataType: json
+eg:
+{
+    longitude: 123.45,
+    latitude: 67.89,
+    range: 1 // 表示1公里, 暂时也只会用到1公里
+}
+```
+```
+responseDataTYpe: json
+{
+    kind: 3,
+    parkName: "王邦铮的停车场",
+    price: 12,
+    longitude: 123.45,
+    latitude: 67.89,
+    parkId: 123124
+}
+```
+
 ### /user/parks
 #### Method: POST
 #### Usage: 获取租赁用户的停车位信息, 3类用户查看停车场信息, 4类用户查看本周的预计收入
