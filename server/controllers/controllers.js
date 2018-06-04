@@ -12,11 +12,11 @@ exports.login = async (ctx, next) => {
   var res = await ofc.xcxlogin(code, c);
 }
 exports.parks = async (ctx, next) => {
-  console.log(1)
-  var all = []
-  lo = ctx.request.body.longitude
-  la = ctx.request.body.latitude
-  range = ctx.request.body.range
+  let all = []
+  let lo = ctx.request.body.longitude
+  let la = ctx.request.body.latitude
+  let range = ctx.request.body.range
+  let option
   function message() {
     this.parkName = "return err"
     this.kind = "return err"
@@ -31,36 +31,41 @@ exports.parks = async (ctx, next) => {
     this.allPark = "return err"
     this.rentNumber = "return err"
   }
-  await fc.selectallparking(ctx.request.body.city, async (option) => {
-    console.log(2)
-    for (let i = 0; i < option.length; i++) {
-      if (option[i].isOpen == 1) {
-        let la1 = option[i].lola.split(",")[0]
-        let lo1 = option[i].lola.split(",")[1]
-        let distance = ofc.getFlatternDistance(la, lo, la1, lo1)
-        if (distance < 1000 * range) {
-          await fc.selectparkingtime("parking", option[i].id, function (op) {
-            t = new message
-            t.parkName = option[i].name
-            t.kind = option[i].kind
-            t.price = op[0].price
-            t.latitude = la1
-            t.longitude = lo1
-            t.parkId = option[i].id
-            t.distance = distance
-            t.location = option[i].location
-            t.time = op[0].time
-            t.timekind = op[0].kind
-            t.allPark = option[i].number
-            t.rentNumber = op[0].rentNumber
-            console.log(all)
-            all.push(t)
-          })
-        }
+  await fc.selectallparking(function (opt) {
+    option = opt
+  })
+  let i=0
+  while (i < option.length) {
+    if (option[i].isOpen == 1) {
+      let la1 = option[i].lola.split(",")[0]
+      let lo1 = option[i].lola.split(",")[1]
+      var distance
+      await ofc.getFlatternDistance(la, lo, la1, lo1,function(o){
+        distance=o
+      })
+      if (distance < 1000 * range) {
+        await fc.selectparkingtime("parking", option[i].id, function (op) {
+          t = new message
+          t.parkName = option[i].name
+          t.kind = option[i].kind
+          t.price = op[0].price
+          t.latitude = la1
+          t.longitude = lo1
+          t.parkId = option[i].id
+          t.distance = distance
+          t.location = option[i].location
+          t.time = op[0].time
+          t.timekind = op[0].kind
+          t.allPark = option[i].number
+          t.rentNumber = op[0].rentNumber
+          console.log(all)
+          all.push(t)  
+        })
       }
     }
-    ctx.body = all
-  })
+    i=i+1
+  }
+  ctx.response.body = all
 }
 
 exports.userparks = async (ctx, next) => {
