@@ -11,7 +11,57 @@ exports.login = async (ctx, next) => {
   }
   var res = await ofc.xcxlogin(code, c);
 }
-
+exports.parks = async (ctx, next) => {
+  console.log(1)
+  var all = []
+  lo = ctx.request.body.longitude
+  la = ctx.request.body.latitude
+  range = ctx.request.body.range
+  function message() {
+    this.parkName = "return err"
+    this.kind = "return err"
+    this.price = "return err"
+    this.latitude = "return err"
+    this.longitude = "return err"
+    this.parkId = "return err"
+    this.distance = "return err"
+    this.location = "return err"
+    this.time = "return err"
+    this.timekind = "return err"
+    this.allPark = "return err"
+    this.rentNumber = "return err"
+  }
+  await fc.selectallparking(ctx.request.body.city, async (option) => {
+    console.log(2)
+    for (let i = 0; i < option.length; i++) {
+      if (option[i].isOpen == 1) {
+        let la1 = option[i].lola.split(",")[0]
+        let lo1 = option[i].lola.split(",")[1]
+        let distance = ofc.getFlatternDistance(la, lo, la1, lo1)
+        if (distance < 1000 * range) {
+          await fc.selectparkingtime("parking", option[i].id, function (op) {
+            t = new message
+            t.parkName = option[i].name
+            t.kind = option[i].kind
+            t.price = op[0].price
+            t.latitude = la1
+            t.longitude = lo1
+            t.parkId = option[i].id
+            t.distance = distance
+            t.location = option[i].location
+            t.time = op[0].time
+            t.timekind = op[0].kind
+            t.allPark = option[i].number
+            t.rentNumber = op[0].rentNumber
+            console.log(all)
+            all.push(t)
+          })
+        }
+      }
+    }
+    ctx.body = all
+  })
+}
 
 exports.userparks = async (ctx, next) => {
   var userparkserr
@@ -41,23 +91,7 @@ exports.userparks = async (ctx, next) => {
       this.expectedRevenue = "return err"
     }
 
-    function cc(option) {
-      using = ofc.using(option)
-      if (using == 0) {
-        all[m].isOpen = false
-        all[m].rentPark = 0
-        all[m].expectedRevenue = 0
-      }
-      else {
-        all[m].isOpen = true
-        all[m].rentPark = using.rentNumber
-        all[m].expectedRevenue = ofc.income(option[0].id)
-      }
-      m = m + 1
-      //ofc.cleanparkingtime(option)
-    }
-
-    function c(option) {
+    await fc.selectparking("openId", "'" + ctx.request.body.openId + "'", function (option) {
       parking = option
       let t
       for (i = 0; i < option.length; i++) {
@@ -86,15 +120,34 @@ exports.userparks = async (ctx, next) => {
         }
         all.push(t)
       }
-    }
-    await fc.selectparking("openId", "'" + ctx.request.body.openId + "'", c)
+    })
     if (userparkserr == 1) { return }
     var m = 0
     while (m < parking.length) {
-      await fc.selectparkingtime("parking", parking[m].id, cc)
+      await fc.selectparkingtime("parking", parking[m].id, function (option) {
+        using = ofc.using(option)
+        if (parking[m].isOpen) {
+          if (using == 0) {
+            all[m].isOpen = false
+            all[m].rentPark = 0
+            all[m].expectedRevenue = 0
+          }
+          else {
+            all[m].isOpen = true
+            all[m].rentPark = using.rentNumber
+            all[m].expectedRevenue = ofc.income(option[0].id)
+          }
+        }
+        else {
+          all[m].isOpen = false
+          all[m].rentPark = 0
+          all[m].expectedRevenue = 0
+        }
+        m = m + 1
+        //ofc.cleanparkingtime(option)
+      })
     }
     ctx.response.body = all
-    return
   }
   else if (ctx.request.body.type == "delete") {
     fc.deleteparking(ctx.request.body.parkId)
@@ -497,7 +550,7 @@ exports.gethistory = async (ctx, next) => {
       }
     })
     if (err == 0) {
-      request('http://apis.map.qq.com/ws/geocoder/v1/?location=' + ctx.request.body.longitude + "," + ctx.request.body.latitude + '&key=H4CBZ-CPYWK-2ZOJO-ACLVD-POMLE-FBBDZ&get_poi=1', function (error, response, body) {
+      request('http://apis.map.qq.com/ws/geocoder/v1/?location=' + ctx.request.body.latitude + "," + ctx.request.body.longitude + '&key=H4CBZ-CPYWK-2ZOJO-ACLVD-POMLE-FBBDZ&get_poi=1', function (error, response, body) {
         if (error) {
           ctx.body = { error }
         }

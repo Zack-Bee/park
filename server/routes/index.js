@@ -12,5 +12,6 @@ router.post('/user/parks',ct.userparks)
 router.post('/user/platenumber', ct.userplatenumber)
 router.post('/user/upload', ct.upload)
 router.post('/user/history', ct.gethistory)
+router.post('/parks', ct.parks)
 
 module.exports = router
