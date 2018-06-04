@@ -29,81 +29,32 @@
 
 <script>
 import wepy from 'wepy'
-import post from '../../common/post.js'
-import config from '../../config.js'
-const QQMapWX = require('../../libs/qqmap-wx-jssdk.js')
 
-function formatDistance(num) {
-    if (num < 1000) {
-        return num.toFixed(0) + 'm'
-    } else if (num > 1000) {
-        return (num / 1000).toFixed(1) + 'km'
-    }
-}
-
-function getInfoFromMap() {
-    return new Promise((resolve, reject) => {
-        let qqmapsdk = new QQMapWX({
-            key: 'SO6BZ-MGZW3-C563P-Y57QJ-Q3SOS-UDBF5'
-        })
-        qqmapsdk.search({
-            keyword: '停车场',
-            success: (res) => {
-                resolve(res)
-            },
-            fail: (err) => {
-                reject(err)
-                console.warn('ERROR!!!!!')
-            }
-        })
-    })
-}
 
 export default class Map extends wepy.component {
     props = {
-        filter: {
-            type: String,
-            default: '综合',
-            twoWay: true
-        },
         height: {
             type: Number,
             default: 375
         },
-        markerFLAG: {
+        selectedIndex: {
             type: Number,
-            default: 0,
+            default: -1,
             twoWay: true
         },
-        markerTitle: {
-            type: String,
-            default: '找不到附近的停车场',
-            twoWay: true
+        markers: {
+            type: Array,
+            default: []
         },
-        markerDstce: {
-            type: String,
-            default: '0.00m',
-            twoWay: true
+        parks: {
+            type: Array,
+            default: []
         },
-        markerLng: {
-            type: Number,
-            default: 123.42303,
-            twoWay: true
-        },
-        markerLat: {
-            type: Number,
-            default: 41.65213,
-            twoWay: true
-        }
+        longitude: Number,
+        latitude: Number
     }
     data = {
-        resData: [],
-        savedLatitude: '',
-        savedLongitude: '',
         scale: 18,
-        latitude: '',
-        longitude: '',
-        markers: [],
         controls: [
             {
                 id: 2, //点击回到当前位置
@@ -127,127 +78,20 @@ export default class Map extends wepy.component {
                 },
                 clickable: true
             }
-        ],
-        timer: ""
-    }
-
-    onLoad() {
-        let qqmapsdk = new QQMapWX({
-            key: 'SO6BZ-MGZW3-C563P-Y57QJ-Q3SOS-UDBF5'
-        })
-
-        wx.getLocation({
-            //获得用户当前位置
-            type: 'gcj02',
-            success: (res) => {
-                this.latitude = res.latitude
-                this.longitude = res.longitude
-                this.savedLongitude = res.longitude
-                this.savedLatitude = res.latitude
-                this.$apply()
-            }
-        })
-
-        const getMarkers = () => {
-            Promise.all([post(`${config.host}/parks`), getInfoFromMap()]).then(
-                (allRes) => {
-                    let ownPark = allRes[0].data,
-                        publicPark = allRes[1].data,
-                        markers = [],
-                        MapScreenW = wx.getStorageSync('MapScreenW')
-
-                    console.log(ownPark, publicPark)
-                    markers = publicPark.map((park) => ({
-                        title: park.title,
-                        latitude: park.location.lat,
-                        longitude: park.location.lng,
-                        iconPath: '../../components/map/parking.png',
-                        id: park.id,
-                        width: 18 * MapScreenW,
-                        height: 18 * MapScreenW,
-                        callout: {
-                            content: `${park.title}\n${formatDistance(
-                                park._distance
-                            )}`,
-                            fontSize: 14,
-                            color: '#ffffff',
-                            bgColor: '#353535',
-                            padding: 8,
-                            borderRadius: 4,
-                            boxShadow: '4px 8px 16px 0 rgba(0)',
-                            display: 'BYCLICK'
-                        }
-                    }))
-
-                    if (typeof ownPark === 'array') {
-                        this.resData = publicPark.concat(ownPark)
-                        markers = markers.concat(
-                            ownPark.map((park) => ({
-                                title: park.parkName,
-                                latitude: park.latitude,
-                                longitude: park.longitude,
-                                iconPath:
-                                    park.kind === 3
-                                        ? '../../components/map/parking3.png'
-                                        : '../../components/map/parking4.png',
-                                id: park.parkId,
-                                width: 18 * MapScreenW,
-                                height: 18 * MapScreenW,
-                                callout: {
-                                    content: `${
-                                        park.parkName
-                                    }\n${formatDistance(park.distance)}`,
-                                    fontSize: 14,
-                                    color: '#ffffff',
-                                    bgColor: '#000000',
-                                    padding: 8,
-                                    borderRadius: 4,
-                                    boxShadow: '4px 8px 16px 0 rgba(0)',
-                                    display: 'BYCLICK'
-                                }
-                            }))
-                        )
-                    }
-                    this.markers = markers
-                    this.$apply()
-                }
-            )
-        }
-        getMarkers()
-
-        setInterval(() => {
-            wx.getLocation({
-            //获得用户当前位置
-            type: 'gcj02',
-            success: (res) => {
-                if ((this.savedLatitude === res.latitude) && (this.savedLongitude === res.longitude)) {
-                    console.log("\nsame location\n")
-                    return
-                }
-                console.log(res.latitude, res.longitude)
-                this.savedLatitude = res.latitude
-                this.savedLongitude = res.longitude
-                this.$apply()
-                getMarkers()
-            }
-        })
-        }, 5000)
+        ]
     }
 
     methods = {
         changeflag() {
-            this.markerFLAG = 0
+            this.selectedIndex = -1
             this.$apply()
         },
         markertap: (e) => {
-            this.markerFLAG = 1
-            for (var i = 0; i < this.resData.length; i++) {
-                if (e.markerId === this.resData[i].id) {
-                    this.markerTitle = this.resData[i].title
-                    this.markerDstce = this.resData[i]._distance
-                    this.markerLng = this.resData[i].location.lng
-                    this.markerLat = this.resData[i].location.lat
-                    console.log(this.markerLat)
+            this.selectedIndex = -1
+            for (let i = 0, len = this.parks.length; i < len; i++) {
+                if ((e.markerId === this.parks[i].parkId)) {
+                    this.selectedIndex = i
+                    console.log(this.parks[i])
                     break
                 }
             }

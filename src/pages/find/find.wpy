@@ -3,8 +3,15 @@
 <template>
     <view>
         <FilterBar :filter.sync="filter" />
-        <Map :height.sync="mapHeight" :filter.sync="filter" :markerFLAG.sync="markerFLAG" :markerTitle.sync="markerTitle" :markerDstce.sync="markerDstce" :markerLng.sync="markerLng" :markerLat.sync="markerLat" />
-        <Closest :FLAG.sync="markerFLAG" :nowTitle.sync="markerTitle" :nowDstce.sync="markerDstce" :numberArray.sync="numberArray" :nowLng.sync="markerLng" :nowLat.sync="markerLat" />
+        <Map :height.sync="mapHeight"
+            :selectedIndex.sync="selectedIndex"
+            :parks.sync="parks"
+            :markers.sync="markers"
+            :longitude.sync="initLongitude"
+            :latitude.sync="initLatitude" />
+        <Closest :parks.sync="parks"
+            :selectedIndex.sync="selectedIndex"
+            :numberArray.sync="numberArray"/>
     </view>
 </template>
 
@@ -13,6 +20,35 @@ import wepy from 'wepy'
 import FilterBar from '../../components/filter-bar/filter-bar'
 import Map from '../../components/map/map'
 import Closest from '../../components/closest/closest'
+import post from '../../common/post.js'
+import config from '../../config.js'
+const QQMapWX = require('../../libs/qqmap-wx-jssdk.js')
+
+function getInfoFromMap() {
+    return new Promise((resolve, reject) => {
+        let qqmapsdk = new QQMapWX({
+            key: 'SO6BZ-MGZW3-C563P-Y57QJ-Q3SOS-UDBF5'
+        })
+        qqmapsdk.search({
+            keyword: '停车场',
+            success: (res) => {
+                resolve(res)
+            },
+            fail: (err) => {
+                reject(err)
+                console.warn('ERROR!!!!!')
+            }
+        })
+    })
+}
+
+function formatDistance(num) {
+    if (num < 1000) {
+        return num.toFixed(0) + 'm'
+    } else if (num > 1000) {
+        return (num / 1000).toFixed(1) + 'km'
+    }
+}
 
 export default class Index extends wepy.page {
     components = {
@@ -25,18 +61,93 @@ export default class Index extends wepy.page {
         filter: '综合',
         mapHeight: 355,
         mapWidth: 375,
-        markerFLAG: 0,
-        markerTitle: '',
-        markerDstce: '',
-        markerLat: '',
-        markerLng: '',
-        numberArray: []
+        numberArray: [],
+        parks: [],
+        markers: [],
+        selectedIndex: -1,
+        initLongitude: "",
+        initLatitude: "",
+        longitude: 0,
+        latitude: 0,
+        sameTime: 0,
+        timer: ""
+    }
+
+    watch = {
+        parks: (newValue, oldValue) => {
+            let MapScreenW = wx.getStorageSync('MapScreenW')
+            this.markers = newValue.map((park) => ({
+                title: park.parkName,
+                latitude: park.latitude,
+                longitude: park.longitude,
+                iconPath: `../../components/map/parking${park.kind}.png`,
+                id: park.parkId,
+                width: 18 * MapScreenW,
+                height: 18 * MapScreenW,
+                callout: {
+                    content: `${park.parkName}\n${formatDistance(
+                        park.distance
+                    )}`,
+                    fontSize: 14,
+                    color: '#ffffff',
+                    bgColor: '#353535',
+                    padding: 8,
+                    borderRadius: 4,
+                    boxShadow: '4px 8px 16px 0 rgba(0)',
+                    display: 'BYCLICK'
+                }
+            }))
+        }
+    }
+
+    getParks() {
+        Promise.all([post(`${config.host}/parks`), getInfoFromMap()]).then(
+            (allRes) => {
+                let ownPark = allRes[0].data,
+                    publicPark = allRes[1].data
+
+                publicPark = publicPark.map((park) => ({
+                    parkName: park.title,
+                    parkId: park.id,
+                    distance: park._distance,
+                    kind: 5,
+                    latitude: park.location.lat,
+                    longitude: park.location.lng,
+                    price: "未知"
+                }))
+
+                if (typeof ownPark === "array") {
+                    this.parks = publicPark.concat(ownPark)
+                } else {
+                    this.parks = publicPark
+                }
+
+                this.parks.sort((prevPark, nextPark) => (
+                    prevPark.distance - nextPark.distance
+                ))
+
+                console.log(this.parks)
+                this.$apply()
+            }
+        )
     }
 
     onLoad() {
         this.mapHeight = this.$parent.globalData.mapHeight
         this.mapWidth = this.$parent.globalData.mapWidth
         console.log(this.mapHeight, this.mapWidth)
+        wx.getLocation({
+            //获得用户当前位置
+            type: 'gcj02',
+            success: (res) => {
+                this.latitude = res.latitude
+                this.longitude = res.longitude
+                this.initLongitude = res.longitude
+                this.initLatitude = res.latitude
+                this.$apply()
+            }
+        })
+        this.getParks()
     }
     onShow() {
         let array = wx.getStorageSync('plateNumber')
@@ -45,11 +156,34 @@ export default class Index extends wepy.page {
             this.array = array.map(
                 (value) => `${value.slice(0, 2)}-${value.slice(2)}`
             )
-            console.log(this)
             this.numberArray = this.array
-            console.log(this.numberArray)
             this.$apply()
         }
+
+        this.timer = setInterval(() => {
+            wx.getLocation({
+            //获得用户当前位置
+            type: 'gcj02',
+            success: (res) => {
+                // 三分钟无变化则依旧刷新
+                if (this.sameTime > 3 * 60 / 5) {
+                    this.getParks()
+                    return
+                }
+                if (res.longitude !== this.longitude || this.latitude !== res.latitude) {
+                    this.getParks()
+                }
+                console.log("\nsame location\n")
+                this.sameTime++
+                this.$apply()
+            }
+        })
+        }, 5000)
+        this.$apply()
+    }
+
+    onHide() {
+        clearInterval(this.timer)
     }
 }
 </script>
