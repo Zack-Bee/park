@@ -58,7 +58,6 @@ exports.parks = async (ctx, next) => {
           t.timekind = op[0].kind
           t.allPark = option[i].number
           t.rentNumber = op[0].rentNumber
-          console.log(all)
           all.push(t)  
         })
       }
@@ -536,7 +535,6 @@ exports.gethistory = async (ctx, next) => {
     await fc.selecthistory("openid", "'" + ctx.request.body.openId + "'", function (option) {
       for (let i = option.length - 1; i >= 0; i--) {
 
-        console.log(option[i].status == 2)
         if (ctx.request.body.carNumber == option[i].carNumber) {
           if (option[i].status == 1) {
             fc.changeone("history", option[i].id, "status", 0)
@@ -546,7 +544,6 @@ exports.gethistory = async (ctx, next) => {
             err = 1
           }
           else if (option[i].status == 2) {
-            console.log(1)
             ctx.body = { message: "请结束本次停车并支付" }
             err = 1
           }
