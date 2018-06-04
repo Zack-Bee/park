@@ -1,18 +1,14 @@
 <template>
-<view class="main-map">
-    <cover-view class="img-wrap">
-        <cover-image class="img" src="../../components/map/shadow-top.png"/>
-    </cover-view>
-    <map id="map-body" longitude="{{longitude}}" latitude="{{latitude}}" scale="{{scale}}"
-        bindcontroltap="clickcontrols" controls="{{controls}}" bindtap="changeflag"
-        markers="{{markers}}" bindmarkertap="markertap"
-        show-location   bindregionchange="regionchange"
-        style="width:100%;height:{{height}}px">
-    </map>
-    <cover-view class="img-wrap">
-        <cover-image class="img" src="../../components/map/shadow-btm.png"/>
-    </cover-view>
-</view>
+    <view class="main-map">
+        <cover-view class="img-wrap">
+            <cover-image class="img" src="../../components/map/shadow-top.png" />
+        </cover-view>
+        <map id="map-body" longitude="{{longitude}}" latitude="{{latitude}}" scale="{{scale}}" bindcontroltap="clickcontrols" controls="{{controls}}" bindtap="changeflag" markers="{{markers}}" bindmarkertap="markertap" show-location style="width:100%;height:{{height}}px">
+        </map>
+        <cover-view class="img-wrap">
+            <cover-image class="img" src="../../components/map/shadow-btm.png" />
+        </cover-view>
+    </view>
 </template>
 
 <style scoped>
@@ -33,56 +29,32 @@
 
 <script>
 import wepy from 'wepy'
-import post from '../../common/post.js'
-import config from '../../config.js'
 
-var QQMapWX = require('../../libs/qqmap-wx-jssdk.js')
-var qqmapsdk
+
 export default class Map extends wepy.component {
     props = {
-        filter: {
-            type: String,
-            default: '综合',
-            twoWay: true
-        },
         height: {
             type: Number,
             default: 375
         },
-        markerFLAG: {
+        selectedIndex: {
             type: Number,
-            default: 0,
+            default: -1,
             twoWay: true
         },
-        markerTitle: {
-            type: String,
-            default: '找不到附近的停车场',
-            twoWay: true
+        markers: {
+            type: Array,
+            default: []
         },
-        markerDstce: {
-            type: String,
-            default: '0.00m',
-            twoWay: true,
+        parks: {
+            type: Array,
+            default: []
         },
-        markerLng: {
-            type:Number,
-            default:123.42303,
-            twoWay:true,
-        },
-        markerLat:{
-            type:Number,
-            default:41.65213,
-            twoWay:true,
-        }
+        longitude: Number,
+        latitude: Number
     }
     data = {
-        resData: [],
-        oldLat: '',
-        oldLng: '',
         scale: 18,
-        latitude: '',
-        longitude: '',
-        markers: [],
         controls: [
             {
                 id: 2, //点击回到当前位置
@@ -109,105 +81,18 @@ export default class Map extends wepy.component {
         ]
     }
 
-    onLoad() {
-        qqmapsdk = new QQMapWX({
-            key: 'SO6BZ-MGZW3-C563P-Y57QJ-Q3SOS-UDBF5'
-        })
-        // wx.openSetting({
-        // success: res => {
-        // res.authSetting = {
-        // 'scope.userLocation': true
-        // }
-        // }
-        // })
-        wx.getLocation({
-            //获得用户当前位置
-            type: 'gcj02',
-            success: (res) => {
-                var latitude = res.latitude
-                var longitude = res.longitude
-                this.latitude = latitude
-                this.longitude = longitude
-                this.$apply()
-                console.log(res)
-            }
-        })
-        qqmapsdk.search({
-            keyword: '停车场',
-            success: (res) => {
-                console.log(res)
-                var resData = res.data
-                var lengthErr = resData.length
-                this.markers = []
-                for (var i = 0; i < resData.length; i++) {
-                    resData[i]._distance = this.formatDistance(
-                        resData[i]._distance
-                    ) //转换一下距离的格式
-                    var parkLat = resData[i].location.lat
-                    var parkLong = resData[i].location.lng
-                    var parkTitle = resData[i].title
-                    var id = resData[i].id
-                    this.markers.push({
-                        title: parkTitle,
-                        latitude: parkLat,
-                        longitude: parkLong,
-                        iconPath: '../../components/map/parking.png',
-                        id: id,
-                        width: 18 * wx.getStorageSync('MapScreenW'),
-                        height: 18 * wx.getStorageSync('MapScreenW'),
-                        callout: {
-                            content: resData[i]._distance + '\n ￥10',
-                            fontSize: 14,
-                            color: '#ffffff',
-                            bgColor: '#000000',
-                            padding: 8,
-                            borderRadius: 4,
-                            boxShadow: '4px 8px 16px 0 rgba(0)',
-                            display: 'BYCLICK'
-                        }
-                    })
-                    this.resData = res.data
-                    this.$apply()
-                }
-            },
-            fail: (res) => {
-                console.log('ERROR!!!!!')
-            }
-        })
-        /*post(`${config.host}/user/upload`, {})
-        .then(
-            (res) => {
-                console.log(res, '\n\n\n')
-            },
-            (res) => {
-                console.log(res)
-            }
-        )*/
-        this.oldLat = this.latitude
-        this.oldLng = this.lng
-    }
-    formatDistance(num) {
-        if (num < 1000) {
-            return num.toFixed(0) + 'm'
-        } else if (num > 1000) {
-            return (num / 1000).toFixed(1) + 'km'
-        }
-    }
-
     methods = {
         changeflag() {
-            this.markerFLAG = 0
+            this.selectedIndex = -1
             this.$apply()
         },
         markertap: (e) => {
-            this.markerFLAG = 1
-            for (var i = 0; i < this.resData.length; i++) {
-                if (e.markerId === this.resData[i].id) {
-                    this.markerTitle = this.resData[i].title
-                    this.markerDstce = this.resData[i]._distance
-                    this.markerLng = this.resData[i].location.lng
-                    this.markerLat = this.resData[i].location.lat
-                    console.log(this.markerLat)
+            this.selectedIndex = -1
+            for (let i = 0, len = this.parks.length; i < len; i++) {
+                if ((e.markerId === this.parks[i].parkId)) {
+                    this.selectedIndex = i
+                    console.log(this.parks[i])
+                    break
                 }
             }
             this.$apply()
@@ -231,95 +116,6 @@ export default class Map extends wepy.component {
                     }
                 })
             }
-        },
-        regionchange(e) {
-            //得到地图中心点的位置
-            this.mapCtx = wx.createMapContext('map-body')
-            this.mapCtx.getCenterLocation({
-                success: (res) => {
-                    if (e.type == 'begin') {
-                        console.log('same')
-                    } else {
-                        var longitudePrk = res.longitude
-                        var latitudePrk = res.latitude
-                        if (
-                            Math.abs(this.oldLng - longitudePrk) > 0.003 ||
-                            Math.abs(this.oldLat - latitudePrk) > 0.003
-                        ) {
-                            console.log('change')
-                            this.oldLng = longitudePrk
-                            this.oldLat = latitudePrk
-                            qqmapsdk.search({
-                                keyword: '停车场',
-                                location: {
-                                    latitude: latitudePrk,
-                                    longitude: longitudePrk
-                                },
-                                success: (res) => {
-                                    var resData = res.data
-                                    /*for(var i =0;i <  res.data.length;i++)
-                                    {
-                                        var pushit = 1
-                                        for(var j = 0;j <  this.resData.length; j++)
-                                        {
-                                            if(res.data[i].id === this.resData[j].id)
-                                                pushit = 0
-                                        }
-                                        if(pushit)
-                                        {
-                                            this.resData.push(res.data[i])
-                                        }
-                                    }*/
-                                    for (var i = 0; i < resData.length; i++) {
-                                        resData[
-                                            i
-                                        ]._distance = this.formatDistance(
-                                            resData[i]._distance
-                                        ) //转换一下距离的格式
-                                        var parkLat = resData[i].location.lat
-                                        var parkLong = resData[i].location.lng
-                                        var parkTitle = resData[i].title
-                                        var id = resData[i].id
-                                        this.markers.push({
-                                            title: parkTitle,
-                                            latitude: parkLat,
-                                            longitude: parkLong,
-                                            iconPath:
-                                                '../../components/map/parking.png',
-                                            id: id,
-                                            width:
-                                                18 *
-                                                wx.getStorageSync('MapScreenW'),
-                                            height:
-                                                18 *
-                                                wx.getStorageSync('MapScreenW'),
-                                            callout: {
-                                                content:
-                                                    this.resData[i]._distance +
-                                                    '\n ￥10',
-                                                fontSize: 14,
-                                                color: '#ffffff',
-                                                bgColor: '#000000',
-                                                padding: 8,
-                                                borderRadius: 4,
-                                                boxShadow:
-                                                    '4px 8px 16px 0 rgba(0)',
-                                                display: 'BYCLICK'
-                                            }
-                                        })
-                                        console.log(id)
-                                        this.resData = res.data
-                                        this.$apply()
-                                    }
-                                },
-                                fail: (res) => {
-                                    console.log('ERROR!!!!!')
-                                }
-                            })
-                        }
-                    }
-                }
-            })
         }
     }
 }
