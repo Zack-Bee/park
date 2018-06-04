@@ -36,6 +36,7 @@ exports.parks = async (ctx, next) => {
   })
   let i=0
   while (i < option.length) {
+    fc.addparkingtime(option[i].id,"1.0.00-7.23.59",5,0,0)
     if (option[i].isOpen == 1) {
       let la1 = option[i].lola.split(",")[0]
       let lo1 = option[i].lola.split(",")[1]
