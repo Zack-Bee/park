@@ -433,11 +433,7 @@ exports.gethistory = async (ctx, next) => {
             if (e != undefined) {
               e = e.split(".")
             }
-          }time = time.split("-")
-          let s = time[0]
-          let e = time[1]
-          s = s.split(".")
-          e = e.split(".")
+          }
           if(e==undefined){var e=[]}
           if(s==undefined){var s=[]}
           if(e[0]==undefined){e[0]=null}
