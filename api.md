@@ -77,12 +77,12 @@ eg:
     allPark: 100,
     rentPark: 60,
     parkId: 10086,
-    isOpen: true
+    status: 0 | 1 | 2 // 0表示审核中, 1表示关闭, 2表示开放
 }, {
     parkName: "zackbee",
     kind: 4,
     parkId: 10087,
-    isOpen: true,
+    status: 2
     expectedRevenue: 100.5
 }]
 ```
@@ -158,6 +158,7 @@ eg: 十月八号到十一月十一号
     openId: "12345677",
     openType: "weekly",
     startDay: "1",
+    price: 25,
     endDay: "7",
     startTime: "8:00",
     endTime: "22:00",
@@ -170,6 +171,7 @@ eg: 十月八号到十一月十一号
     parkId: "31232131",
     openId: "12345677",
     openType: "once",
+    price: 25,
     startTime: "8:00",
     endTime: "22:00",
     kind: 4
@@ -185,6 +187,7 @@ eg: 十月八号到十一月十一号
     startDay: "10-8",
     endDay: "11-11",
     startTime: "8:00",
+    price: 25,
     endTime: "22:00",
     kind: 4
 }
