@@ -82,14 +82,14 @@ exports.userparks = async (ctx, next) => {
       this.allPark = "return err"
       this.rentPark = "return err"
       this.parkId = "return err"
-      this.isOpen = "return err"
+      this.status = "return err"
     }
 
     function KIND4() {
       this.parkName = "return err"
       this.kind = "return err"
       this.parkId = "return err"
-      this.isOpen = "return err"
+      this.status = "return err"
       this.allPark = "return err"
       this.rentPark = "return err"
       this.expectedRevenue = "return err"
@@ -106,14 +106,14 @@ exports.userparks = async (ctx, next) => {
           t.allPark = option[i].number
           t.rentPark = "waiting"
           t.parkId = option[i].id
-          t.isOpen = "waiting"
+          t.status = "waiting"
         }
         else if (option[i].kind == 4) {
           t = new KIND4
           t.parkName = option[i].name
           t.kind = option[i].kind
           t.parkId = option[i].id
-          t.isOpen = "waiting"
+          t.status = "waiting"
           t.allPark = option[i].number
           t.rentPark = "waiting"
           t.expectedRevenue = "waiting"
@@ -130,20 +130,20 @@ exports.userparks = async (ctx, next) => {
     while (m < parking.length) {
       await fc.selectparkingtime("parking", parking[m].id, function (option) {
         using = ofc.using(option)
-        if (parking[m].isOpen) {
+        if (parking[m].isOpen == 1) {
           if (using == 0) {
-            all[m].isOpen = false
+            all[m].status = 0
             all[m].rentPark = 0
             all[m].expectedRevenue = 0
           }
           else {
-            all[m].isOpen = true
+            all[m].status = 1
             all[m].rentPark = using.rentNumber
             all[m].expectedRevenue = ofc.income(option[0].id)
           }
         }
         else {
-          all[m].isOpen = false
+          all[m].status = parking[m].isOpen
           all[m].rentPark = 0
           all[m].expectedRevenue = 0
         }
@@ -233,7 +233,7 @@ exports.userparks = async (ctx, next) => {
     function KIND() {
       this.parkName = "return err"
       this.kind = "return err"
-      this.isOpen = "return err"
+      this.status = "return err"
       this.openType = "return err"
       this.startDay = "return err"
       this.endDay = "return err"
@@ -246,7 +246,7 @@ exports.userparks = async (ctx, next) => {
       t = new KIND
       t.parkName = option[0].name
       t.kind = option[0].kind
-      t.isOpen = option[0].isOpen
+      t.status = option[0].isOpen
       t.openType = "waiting"
       t.startDay = "waiting"
       t.endDay = "waiting"
@@ -404,27 +404,30 @@ exports.gethistory = async (ctx, next) => {
         if (ctx.request.body.delta != 1) {
           ctx.body = []
         }
-        all = []
-        function RESP() {
-          this.status = "return err"
-          this.kind = "return err"
-          this.parkLocation = "return err"
-          this.startTime = "return err"
-          this.startDate = "return err"
-          this.endTime = "return err"
-          this.endDate = "return err"
-          this.fee = "return err"
-          this.recordId = "return err"
-          this.parkId = "return err"
-          this.parkLatitude = "return err"
-          this.parkLongitude = "return err"
-        }
+        else if (ctx.request.body.delta == 1) {
+          all = []
+          function RESP() {
+            this.status = "return err"
+            this.kind = "return err"
+            this.parkLocation = "return err"
+            this.startTime = "return err"
+            this.startDate = "return err"
+            this.endTime = "return err"
+            this.endDate = "return err"
+            this.fee = "return err"
+            this.recordId = "return err"
+            this.parkId = "return err"
+            this.parkLatitude = "return err"
+            this.parkLongitude = "return err"
+          }
+        
         for (let i = 0; i < option.length; i++) {
           let t = new RESP
           t.status = option[i].status
           t.kind = option[i].kind
           t.parkLocation = option[i].location
           t.fee = option[i].pay
+          if (option[i].pay == null) { t.fee = 0 }
           t.recordId = option[i].id
           t.parkId = option[i].parking
           let time = option[i].time
@@ -460,6 +463,7 @@ exports.gethistory = async (ctx, next) => {
         //all = all.reverse()
         ctx.body = all
       }
+    }
       else if (ctx.request.body.filter == "month") {
         all = []
         function RESP() {
@@ -496,6 +500,7 @@ exports.gethistory = async (ctx, next) => {
               t.kind = option[i].kind
               t.parkLocation = option[i].location
               t.fee = option[i].pay
+              if (option[i].pay == null) { t.fee = 0 }
               t.recordId = option[i].id
               t.parkId = option[i].parking
               t.startTime = s[3] + ":" + s[4]
@@ -544,6 +549,7 @@ exports.gethistory = async (ctx, next) => {
           t.kind = option[i].kind
           t.parkLocation = option[i].location
           t.fee = option[i].pay
+          if (option[i].pay == null) { t.fee = 0 }
           t.recordId = option[i].id
           t.parkId = option[i].parking
           if (e == undefined) { var e = [] }
@@ -570,7 +576,6 @@ exports.gethistory = async (ctx, next) => {
         ctx.body = all.slice((ctx.request.body.delta - 1) * 10, ctx.request.body.delta * 10)
       }
     })
-
   }
   else if (ctx.request.body.type == "add") {
     let err = 0
