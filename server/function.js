@@ -245,7 +245,7 @@ exports.selecthistory = function (idORparkingORtimeORpayORcarNumberORparkingLoca
       } else {
         resolve(rows);
         for (var i = 0; i < rows.length; i++) {
-          option.push({ 'id': rows[i].id, 'parking': rows[i].parking, 'time': rows[i].time, 'pay': rows[i].pay, 'carNumber': rows[i].carNumber, 'parkingLocation': rows[i].parkLocation, 'openId': rows[i].openId, 'status': rows[i].status, 'location': rows[i].location, 'kind': rows[i].kind });
+          option.push({ 'id': rows[i].id, 'parking': rows[i].parking, 'time': rows[i].time, 'pay': rows[i].pay, 'carNumber': rows[i].carNumber, 'lola': rows[i].lola, 'openId': rows[i].openId, 'status': rows[i].status, 'location': rows[i].location, 'kind': rows[i].kind });
         }
         callback(option)
       }
