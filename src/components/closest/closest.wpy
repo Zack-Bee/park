@@ -225,9 +225,8 @@ export default class Closest extends wepy.component {
                 type: 'add',
                 openId: this.$parent.$parent.globalData.openId,
                 carNumber: this.numberArray[event.detail.value],
-                parkLocation: `${this.parks[index].longitude},${
-                    this.parks[index].latitude
-                }`,
+                longitude: this.parks[index].longitude,
+                latitude: this.parks[index].latitude,
                 parkId: this.parks[index].parkId
             }).then(
                 (res) => {

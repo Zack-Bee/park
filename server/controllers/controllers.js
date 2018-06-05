@@ -239,6 +239,7 @@ exports.userparks = async (ctx, next) => {
       this.endDay = "return err"
       this.startTime = "return err"
       this.endTime = "return err"
+      this.revenue = "return err"
     }
     await fc.selectparking("parking", ctx.request.body.parkId, function (option) {
       parking = option
@@ -252,6 +253,7 @@ exports.userparks = async (ctx, next) => {
       t.endDay = "waiting"
       t.startTime = "waiting"
       t.endTime = "waiting"
+      t.revenue = "waiting"
       all = t
     })
     await fc.selectparkingtime("parking", parking[0].id, function (option) {
@@ -268,6 +270,7 @@ exports.userparks = async (ctx, next) => {
           all.endDay = end[0]
           all.startTime = start[1] + ":" + start[2]
           all.endTime = end[1] + ":" + end[2]
+          all.revenue = ofc.income(option[0].id)
         }
         if (start.length == 5) {
           if (start[2] == end[2]) { all.openType = "once" }
@@ -276,6 +279,7 @@ exports.userparks = async (ctx, next) => {
           all.endDay = end[0] + "-" + end[1] + "-" + end[2]
           all.startTime = start[3] + ":" + start[4]
           all.endTime = end[3] + ":" + end[4]
+          all.revenue = ofc.income(option[0].id)
         }
       }
       else {
@@ -284,6 +288,7 @@ exports.userparks = async (ctx, next) => {
         all.endDay = null
         all.startTime = null
         all.endTime = null
+        all.revenue = null
       }
     })
     ctx.response.body = all

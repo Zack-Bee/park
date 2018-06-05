@@ -17,7 +17,12 @@
             <view class="park-right">
                 <view class="park-name">{{item.parkName}}</view>
                 <view class="park-detail">
-                    <view wx:if="{{item.isOpen}}" class="park-number">
+                    <view wx:if="{{item.status === 1 && item.kind === 3}}" class="park-number">
+                        车位情况:
+                        <text class="park-number-rented">{{item.rentPark}}</text>
+                        <text class="park-number-all">/{{item.allPark}}</text>
+                    </view>
+                    <view wx:if="{{item.status === 1 && item.kind === 3}}" class="park-number">
                         车位情况:
                         <text class="park-number-rented">{{item.rentPark}}</text>
                         <text class="park-number-all">/{{item.allPark}}</text>
