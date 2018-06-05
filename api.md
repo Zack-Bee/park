@@ -333,7 +333,8 @@ eg:
     type: "add",
     openId: "12345566",//车主的
     carNumber："xxxx",
-    parkLocation:"123,123",
+    latitude:xx,
+    longitude:xx,
     parkId:123
 }
 ```

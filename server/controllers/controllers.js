@@ -401,6 +401,9 @@ exports.gethistory = async (ctx, next) => {
   if (ctx.request.body.type == "get") {
     await fc.selecthistory("openId", "'" + ctx.request.body.openId + "'", function (option) {
       if (option.length <= 10) {
+        if (ctx.request.body.delta != 1) {
+          ctx.body = []
+        }
         all = []
         function RESP() {
           this.status = "return err"
@@ -425,11 +428,27 @@ exports.gethistory = async (ctx, next) => {
           t.recordId = option[i].id
           t.parkId = option[i].parking
           let time = option[i].time
-          time = time.split("-")
-          let s = time[0]
-          let e = time[1]
-          s = s.split(".")
-          e = e.split(".")
+          if (time != undefined) {
+            time = time.split("-")
+            var s = time[0]
+            var e = time[1]
+            s = s.split(".")
+            if (e != undefined) {
+              e = e.split(".")
+            }
+          }
+          if (e == undefined) { var e = [] }
+          if (s == undefined) { var s = [] }
+          if (e[0] == undefined) { e[0] = null }
+          if (e[1] == undefined) { e[1] = null }
+          if (e[2] == undefined) { e[2] = null }
+          if (e[3] == undefined) { e[3] = null }
+          if (e[4] == undefined) { e[4] = null }
+          if (s[0] == undefined) { s[0] = null }
+          if (s[1] == undefined) { s[1] = null }
+          if (s[2] == undefined) { s[2] = null }
+          if (s[3] == undefined) { s[3] = null }
+          if (s[4] == undefined) { s[4] = null }
           t.startTime = s[3] + ":" + s[4]
           t.startDate = s[0] + "-" + s[1] + "-" + s[2]
           t.endTime = e[3] + ":" + e[4]
@@ -438,7 +457,7 @@ exports.gethistory = async (ctx, next) => {
           t.parkLongitude = option[i].lola.split(",")[0]
           all.push(t)
         }
-        all = all.reverse()
+        //all = all.reverse()
         ctx.body = all
       }
       else if (ctx.request.body.filter == "month") {
@@ -475,7 +494,7 @@ exports.gethistory = async (ctx, next) => {
               let t = new RESP
               t.status = option[i].status
               t.kind = option[i].kind
-              t.parkLocation = option[i].parkLocation
+              t.parkLocation = option[i].location
               t.fee = option[i].pay
               t.recordId = option[i].id
               t.parkId = option[i].parking
@@ -486,11 +505,10 @@ exports.gethistory = async (ctx, next) => {
               t.parkLatitude = option[i].lola.split(",")[1]
               t.parkLongitude = option[i].lola.split(",")[0]
               all.push(t)
-              console.log(all)
             }
           }
         }
-        all = all.reverse()
+        //all = all.reverse()
         ctx.body = all.slice((ctx.request.body.delta - 1) * 10, ctx.request.body.delta * 10)
       }
       else if (ctx.request.body.filter == "all") {
@@ -524,22 +542,22 @@ exports.gethistory = async (ctx, next) => {
           let t = new RESP
           t.status = option[i].status
           t.kind = option[i].kind
-          t.parkLocation = option[i].parkLocation
+          t.parkLocation = option[i].location
           t.fee = option[i].pay
           t.recordId = option[i].id
           t.parkId = option[i].parking
-          if(e==undefined){var e=[]}
-          if(s==undefined){var s=[]}
-          if(e[0]==undefined){e[0]=null}
-          if(e[1]==undefined){e[1]=null}
-          if(e[2]==undefined){e[2]=null}
-          if(e[3]==undefined){e[3]=null}
-          if(e[4]==undefined){e[4]=null}
-          if(s[0]==undefined){s[0]=null}
-          if(s[1]==undefined){s[1]=null}
-          if(s[2]==undefined){s[2]=null}
-          if(s[3]==undefined){s[3]=null}
-          if(s[4]==undefined){s[4]=null}
+          if (e == undefined) { var e = [] }
+          if (s == undefined) { var s = [] }
+          if (e[0] == undefined) { e[0] = null }
+          if (e[1] == undefined) { e[1] = null }
+          if (e[2] == undefined) { e[2] = null }
+          if (e[3] == undefined) { e[3] = null }
+          if (e[4] == undefined) { e[4] = null }
+          if (s[0] == undefined) { s[0] = null }
+          if (s[1] == undefined) { s[1] = null }
+          if (s[2] == undefined) { s[2] = null }
+          if (s[3] == undefined) { s[3] = null }
+          if (s[4] == undefined) { s[4] = null }
           t.startTime = s[3] + ":" + s[4]
           t.startDate = s[0] + "-" + s[1] + "-" + s[2]
           t.endTime = e[3] + ":" + e[4]
@@ -547,11 +565,9 @@ exports.gethistory = async (ctx, next) => {
           t.parkLatitude = option[i].lola.split(",")[1]
           t.parkLongitude = option[i].lola.split(",")[0]
           all.push(t)
-          console.log(all)
         }
-        all = all.reverse()
+        //all = all.reverse()
         ctx.body = all.slice((ctx.request.body.delta - 1) * 10, ctx.request.body.delta * 10)
-        console.log(all.slice((ctx.request.body.delta - 1) * 10, ctx.request.body.delta * 10))
       }
     })
 
