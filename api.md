@@ -77,7 +77,7 @@ eg:
     allPark: 100,
     rentPark: 60,
     parkId: 10086,
-    status: 0 | 1 | 2 // 0表示审核中, 1表示关闭, 2表示开放
+    status: 0 | 1 | 2 // 0表示关闭, 1表示开放, 2表示审核中
 }, {
     parkName: "zackbee",
     kind: 4,
@@ -228,7 +228,8 @@ eg:
     startDay: "1",
     endDay: "7",
     startTime: "08:00",
-    endTime: "21:00"
+    endTime: "21:00",
+    revenue: 100
 }
 ```
 
@@ -331,7 +332,7 @@ requestDataType: json
 eg:
 {
     type: "add",
-    openId: "12345566",//车主的
+    openId: "12345566", //车主的
     carNumber："xxxx",
     latitude:xx,
     longitude:xx,
