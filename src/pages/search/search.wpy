@@ -1,64 +1,72 @@
 <template>
-<view class="search-body">
-    <view class="weui-search-bar">
-        <view class="weui-search-bar__form">
-            <view class="weui-search-bar__box">
-                <icon class="weui-icon-search_in-box" type="search" size="14"></icon>
-                <input type="text" class="weui-search-bar__input" placeholder="搜索附近停车场" value="{{inputVal}}" focus="{{inputShowed}}" bindinput="inputTyping" />
-                <view class="weui-icon-clear" wx:if="{{inputVal.length > 0}}" bindtap="clearInput">
-                    <icon type="clear" size="14"></icon>
+    <view class="search-body">
+        <view class="weui-search-bar">
+            <view class="weui-search-bar__form">
+                <view class="weui-search-bar__box">
+                    <icon class="weui-icon-search_in-box" type="search" size="14"></icon>
+                    <input type="text" class="weui-search-bar__input" placeholder="搜索附近停车场" value="{{inputVal}}" focus="{{inputShowed}}" bindinput="inputTyping" />
+                    <view class="weui-icon-clear" wx:if="{{inputVal.length > 0}}" bindtap="clearInput">
+                        <icon type="clear" size="14"></icon>
+                    </view>
+                </view>
+                <label class="weui-search-bar__label" hidden="{{inputShowed}}" bindtap="showInput">
+                    <icon class="weui-icon-search" type="search" size="14"></icon>
+                    <view class="weui-search-bar__text">搜索</view>
+                </label>
+            </view>
+            <view class="weui-search-bar__cancel-btn" hidden="{{!inputShowed}}" bindtap="hideInput">取消</view>
+        </view>
+        <!--循环出附近停车场-->
+        <scroll-view wx:key="parking" wx:if="{{inputVal.length === 0}}" style="height: 100vh;" scroll-y="{{true}}" bindscrolltolower="showmore" enable-back-to-top="{{true}}">
+            <view wx:for="{{resData}}" wx:key="parking" wx:if="{{inputVal.length === 0}}" bindtap="navTo" data-item="{{item}}">
+                <view class="weui-panel">
+                    <view class="weui-panel__bd">
+                        <view class="weui-media-box weui-media-box_text">
+                            <view class="weui-media-box__title weui-media-box__title_in-text" style="color:black;font-weight:bold">{{item.title}}</view>
+                            <view class="weui-media-box__desc" style="color:gray">{{item.address}}</view>
+                            <view class="weui-media-box__info">
+                                <view class="weui-media-box__info__meta">
+                                    <!--￥0-->
+                                </view>
+                                <view class="weui-media-box__info__meta weui-media-box__info__meta_extra">
+                                    <view class="distance_show">剩余车位：未知
+                                        <!--动态获取-->
+                                    </view>
+                                </view>
+                                <view class="weui-media-box__info__meta weui-media-box__info__meta_extra">
+                                    <view class="distance_show" style="color:#353535">距离：{{item._distance}}</view>
+                                </view>
+                            </view>
+                        </view>
+                    </view>
                 </view>
             </view>
-            <label class="weui-search-bar__label" hidden="{{inputShowed}}" bindtap="showInput">
-                <icon class="weui-icon-search" type="search" size="14"></icon>
-                <view class="weui-search-bar__text">搜索</view>
-            </label>
-        </view>
-        <view class="weui-search-bar__cancel-btn" hidden="{{!inputShowed}}" bindtap="hideInput">取消</view>
+        </scroll-view>
+        <!--搜索关键词拓展-->
+        <scroll-view wx:for="{{resrchData}}" class="weui-cells searchbar-result" wx:if="{{inputVal.length > 0}}" bindscrolltolower="showmore" upper-threshold="refresh" style="height: 200rpx;">
+            <view bindtap="navTo" data-item="{{item}}">
+                <view class="weui-panel">
+                    <view class="weui-panel__bd">
+                        <view class="weui-media-box weui-media-box_text">
+                            <view class="weui-media-box__title weui-media-box__title_in-text" style="color:black;font-weight:bold">{{item.title}}</view>
+                            <view class="weui-media-box__desc" style="color:gray">{{item.address}}</view>
+                            <view class="weui-media-box__info">
+                                <view class="weui-media-box__info__meta"></view>
+                                <view class="weui-media-box__info__meta weui-media-box__info__meta_extra">
+                                    <view class="distance_show">剩余车位：未知
+                                        <!--动态获取-->
+                                    </view>
+                                </view>
+                                <view class="weui-media-box__info__meta weui-media-box__info__meta_extra">
+                                    <view class="distance_show" style="color:#353535">距离：{{item._distance}}</view>
+                                </view>
+                            </view>
+                        </view>
+                    </view>
+                </view>
+            </view>
+        </scroll-view>
     </view>
-    <!--循环出附近停车场-->
-    <scroll-view  wx:key="parking" wx:if="{{inputVal.length === 0}}" style="height: 100vh;" scroll-y="{{true}}"
-        bindscrolltolower="showmore" enable-back-to-top="{{true}}">
-        <view wx:for="{{resData}}" wx:key="parking" wx:if="{{inputVal.length === 0}}"  bindtap="navTo" data-item="{{item.id}}">
-            <view class="weui-panel">
-                <view class="weui-panel__bd">
-                    <view class="weui-media-box weui-media-box_text">
-                        <view class="weui-media-box__title weui-media-box__title_in-text" style="color:black;font-weight:bold">{{item.title}}</view>
-                        <view class="weui-media-box__desc" style="color:gray">{{item.address}}</view>
-                        <view class="weui-media-box__info">
-                            <view class="weui-media-box__info__meta">￥0</view>
-                            <view class="weui-media-box__info__meta weui-media-box__info__meta_extra">
-                                <view class="distance_show">剩余车位：10<!--动态获取--></view></view>
-                            <view class="weui-media-box__info__meta weui-media-box__info__meta_extra">
-                                <view class="distance_show" style="color:#353535">距离：{{item._distance}}</view></view>
-                        </view>
-                    </view>
-                </view>
-            </view>
-        </view>
-    </scroll-view>
-    <!--搜索关键词拓展-->
-    <scroll-view wx:for="{{resrchData}}" class="weui-cells searchbar-result" wx:if="{{inputVal.length > 0}}" 
-        bindscrolltolower="showmore" upper-threshold="refresh" style="height: 200rpx;">
-        <view bindtap="navTo" data-item="{{item}}">
-            <view class="weui-panel">
-                <view class="weui-panel__bd">
-                    <view class="weui-media-box weui-media-box_text">
-                        <view class="weui-media-box__title weui-media-box__title_in-text" style="color:black;font-weight:bold">{{item.title}}</view>
-                        <view class="weui-media-box__desc" style="color:gray">{{item.address}}</view>
-                        <view class="weui-media-box__info">
-                            <view class="weui-media-box__info__meta">￥0</view>
-                            <view class="weui-media-box__info__meta weui-media-box__info__meta_extra">
-                                <view class="distance_show">剩余车位：10<!--动态获取--></view></view>
-                            <view class="weui-media-box__info__meta weui-media-box__info__meta_extra">
-                                <view class="distance_show" style="color:#353535" >距离：{{item._distance}}</view></view>
-                        </view>
-                    </view>
-                </view>
-            </view>
-        </view>
-    </scroll-view>
-</view>
 </template>
 
 <style scoped>
@@ -87,7 +95,7 @@ export default class Search extends wepy.page {
         inputVal: '',
         resData: [],
         resrchData: [],
-        page_index_it:1,
+        page_index_it: 1
     }
     onLoad(option) {
         qqmapsdk = new QQMapWX({
@@ -115,7 +123,7 @@ export default class Search extends wepy.page {
                 console.log('ERROR!!!!!')
             }
         })
-        this.page_index_it ++
+        this.page_index_it++
     }
     formatDistance(num) {
         if (num < 1000) {
@@ -157,10 +165,10 @@ export default class Search extends wepy.page {
             }
         })
     }
-    navTo() {
-        console.log('hhh')
+    navTo(event) {
+        let park = event.currentTarget.dataset.item
         wx.navigateTo({
-            url: '../navigation/navigation',
+            url: `../navigation/navigation?kind=5&longitude=${park.location.lng}&latitude=${park.location.lat}&parkName=${park.title}`,
             success: (res) => {
                 console.log(res)
             },

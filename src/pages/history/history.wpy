@@ -2,7 +2,7 @@
     <view class="page">
         <scroll-view scroll-y="{{true}}" style="height: 100vh;" enable-back-to-top="{{true}}" bindscrolltolower="getMore">
             <view class="history-wrapper" wx:for="{{history}}" wx:key="{{item.recordId}}">
-                <view class="history-left" @tap="navigateToDetail" data-is-paid="{{item.isPaid}}" data-is-done="{{item.isDone}}" data-longitude="{{item.parkLongitude}}" data-latitude="{{item.parkLatitude}}">
+                <view class="history-left" @tap="navigateToDetail" data-longitude="{{item.parkLongitude}}" data-latitude="{{item.parkLatitude}}" data-kind="{{item.kind}}" data-location="{{item.parkLocation}}">
                     <view class="history-place">
                         <placeIcon type="location" style="lien-height: 60rpx; font-size: 24rpx;" />
                         <view class="history-place-text text">{{item.parkLocation}}</view>
@@ -19,11 +19,15 @@
                         </view>
                         <leftTimeIcon wx:if="{{item.status === 1 && item.kind === 4}}" type="underway" style="line-height:40rpx; color:#ff413a; font-size: 24rpx" />
                         <view wx:if="{{item.status === 1 && item.kind === 4}}" class="text">
-                            还剩
+                            <view style="display: inline">
+                                {{item.leftMessage}}
+                            </view>
                             <view style="color:#ff413a; display: inline">
                                 {{item.leftTime}}
                             </view>
-                            分钟可以免费取消
+                            <view style="display: inline">
+                                {{item.rightMessage}}
+                            </view>
                         </view>
                     </view>
                     <view class="history-plate-number history-item">
@@ -215,8 +219,8 @@ export default class History extends wepy.page {
                 fee: 19.8, // 停车的费用
                 recordId: '1929292', // 这条记录的编号,
                 parkId: '31232', // 停车场的编号,
-                parkLatitude: 123.45,
-                parkLongitude: 678.9,
+                parkLatitude: 41.685102,
+                parkLongitude: 123.426872,
                 plateNumber: '辽A-12345',
                 kind: 3
             },
@@ -230,8 +234,8 @@ export default class History extends wepy.page {
                 fee: 19.8, // 停车的费用
                 recordId: '1929292', // 这条记录的编号,
                 parkId: '31232', // 停车场的编号,
-                parkLatitude: 123.45,
-                parkLongitude: 678.9,
+                parkLatitude: 41.685102,
+                parkLongitude: 123.426872,
                 plateNumber: '辽A-12345',
                 kind: 3
             },
@@ -245,11 +249,13 @@ export default class History extends wepy.page {
                 fee: 19.8, // 停车的费用
                 recordId: '1929292', // 这条记录的编号,
                 parkId: '31232', // 停车场的编号,
-                parkLatitude: 123.45,
-                parkLongitude: 678.9,
+                parkLatitude: 41.685102,
+                parkLongitude: 123.426872,
                 plateNumber: '辽A-12345',
                 kind: 4,
-                leftTime: 12
+                leftTime: 12,
+                leftMessage: "还剩",
+                rightMessage: "分钟可以免费取消"
             },
             {
                 status: 2,
@@ -261,8 +267,8 @@ export default class History extends wepy.page {
                 fee: 19.8, // 停车的费用
                 recordId: '1929292', // 这条记录的编号,
                 parkId: '31232', // 停车场的编号,
-                parkLatitude: 123.45,
-                parkLongitude: 678.9,
+                parkLatitude: 41.685102,
+                parkLongitude: 123.426872,
                 plateNumber: '辽A-12345',
                 kind: 3
             },
@@ -276,8 +282,8 @@ export default class History extends wepy.page {
                 fee: 19.8, // 停车的费用
                 recordId: '1929292', // 这条记录的编号,
                 parkId: '31232', // 停车场的编号,
-                parkLatitude: 123.45,
-                parkLongitude: 678.9,
+                parkLatitude: 41.685102,
+                parkLongitude: 123.426872,
                 plateNumber: '辽A-12345',
                 kind: 3
             },
@@ -291,8 +297,8 @@ export default class History extends wepy.page {
                 fee: 19.8, // 停车的费用
                 recordId: '1929292', // 这条记录的编号,
                 parkId: '31232', // 停车场的编号,
-                parkLatitude: 123.45,
-                parkLongitude: 678.9,
+                parkLatitude: 41.685102,
+                parkLongitude: 123.426872,
                 plateNumber: '辽A-12345',
                 kind: 3
             }
@@ -303,9 +309,13 @@ export default class History extends wepy.page {
     }
 
     methods = {
-        navigateToDetail: () => {
+        navigateToDetail: (event) => {
+            console.log(event.currentTarget.dataset)
+            let park = event.currentTarget.dataset
             wx.navigateTo({
-                url: '../find/find',
+                url: `../navigation/navigation?kind=${park.kind}&longitude=${
+                    park.longitude
+                }&latitude=${park.latitude}&parkName=${park.location}`,
                 success: (res) => {
                     console.log(res)
                 },

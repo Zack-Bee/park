@@ -3,15 +3,8 @@
 <template>
     <view>
         <FilterBar :filter.sync="filter" />
-        <Map :height.sync="mapHeight"
-            :selectedIndex.sync="selectedIndex"
-            :parks.sync="parks"
-            :markers.sync="markers"
-            :longitude.sync="initLongitude"
-            :latitude.sync="initLatitude" />
-        <Closest :parks.sync="parks"
-            :selectedIndex.sync="selectedIndex"
-            :numberArray.sync="numberArray"/>
+        <Map :height.sync="mapHeight" :selectedIndex.sync="selectedIndex" :parks.sync="showParks" :markers.sync="markers" :longitude.sync="initLongitude" :latitude.sync="initLatitude" />
+        <Closest :parks.sync="showParks" :selectedIndex.sync="selectedIndex" :numberArray.sync="numberArray" />
     </view>
 </template>
 
@@ -65,71 +58,231 @@ export default class Index extends wepy.page {
         parks: [],
         markers: [],
         selectedIndex: -1,
-        initLongitude: "",
-        initLatitude: "",
+        initLongitude: '',
+        initLatitude: '',
         longitude: 0,
         latitude: 0,
         sameTime: 0,
-        timer: ""
+        timer: '',
+        showParks: []
     }
 
     watch = {
         parks: (newValue, oldValue) => {
             let MapScreenW = wx.getStorageSync('MapScreenW')
-            this.markers = newValue.map((park) => ({
-                title: park.parkName,
-                latitude: park.latitude,
-                longitude: park.longitude,
-                iconPath: `../../components/map/parking${park.kind}.png`,
-                id: park.parkId,
-                width: 18 * MapScreenW,
-                height: 18 * MapScreenW,
-                callout: {
-                    content: `${park.parkName}\n${formatDistance(
-                        park.distance
-                    )}`,
-                    fontSize: 14,
-                    color: '#ffffff',
-                    bgColor: '#353535',
-                    padding: 8,
-                    borderRadius: 4,
-                    boxShadow: '4px 8px 16px 0 rgba(0)',
-                    display: 'BYCLICK'
+            switch (this.filter) {
+                case '综合': {
+                    this.showParks = newValue
+                    this.markers = newValue.map((park) => ({
+                        title: park.parkName,
+                        latitude: park.latitude,
+                        longitude: park.longitude,
+                        iconPath: `../../components/map/parking${
+                            park.kind
+                        }.png`,
+                        id: park.parkId,
+                        width: 18 * MapScreenW,
+                        height: 18 * MapScreenW,
+                        callout: {
+                            content: `${park.parkName}\n${park.distance}`,
+                            fontSize: 14,
+                            color: '#ffffff',
+                            bgColor: '#353535',
+                            padding: 8,
+                            borderRadius: 4,
+                            boxShadow: '4px 8px 16px 0 rgba(0)',
+                            display: 'BYCLICK'
+                        }
+                    }))
+                    this.$apply()
+                    break
                 }
-            }))
+                case '企业': {
+                    this.showParks = newValue.filter((park) => (
+                        park.kind !== 4
+                    ))
+                    this.markers = this.showParks.map((park) => ({
+                        title: park.parkName,
+                        latitude: park.latitude,
+                        longitude: park.longitude,
+                        iconPath: `../../components/map/parking${
+                            park.kind
+                        }.png`,
+                        id: park.parkId,
+                        width: 18 * MapScreenW,
+                        height: 18 * MapScreenW,
+                        callout: {
+                            content: `${park.parkName}\n${park.distance}`,
+                            fontSize: 14,
+                            color: '#ffffff',
+                            bgColor: '#353535',
+                            padding: 8,
+                            borderRadius: 4,
+                            boxShadow: '4px 8px 16px 0 rgba(0)',
+                            display: 'BYCLICK'
+                        }
+                    }))
+                    this.$apply()
+                    break
+                }
+                case '个人': {
+                    this.showParks = newValue.filter((park) => (
+                        park.kind === 4
+                    ))
+                    this.markers = this.showParks.map((park) => ({
+                        title: park.parkName,
+                        latitude: park.latitude,
+                        longitude: park.longitude,
+                        iconPath: `../../components/map/parking${
+                            park.kind
+                        }.png`,
+                        id: park.parkId,
+                        width: 18 * MapScreenW,
+                        height: 18 * MapScreenW,
+                        callout: {
+                            content: `${park.parkName}\n${park.distance}`,
+                            fontSize: 14,
+                            color: '#ffffff',
+                            bgColor: '#353535',
+                            padding: 8,
+                            borderRadius: 4,
+                            boxShadow: '4px 8px 16px 0 rgba(0)',
+                            display: 'BYCLICK'
+                        }
+                    }))
+                    this.$apply()
+                    break
+                }
+            }
+        },
+        filter: (newValue, oldValue) => {
+            console.log(newValue)
+            let MapScreenW = wx.getStorageSync('MapScreenW')
+            switch (newValue) {
+                case '综合': {
+                    this.showParks = this.parks
+                    this.markers = this.parks.map((park) => ({
+                        title: park.parkName,
+                        latitude: park.latitude,
+                        longitude: park.longitude,
+                        iconPath: `../../components/map/parking${
+                            park.kind
+                        }.png`,
+                        id: park.parkId,
+                        width: 18 * MapScreenW,
+                        height: 18 * MapScreenW,
+                        callout: {
+                            content: `${park.parkName}\n${park.distance}`,
+                            fontSize: 14,
+                            color: '#ffffff',
+                            bgColor: '#353535',
+                            padding: 8,
+                            borderRadius: 4,
+                            boxShadow: '4px 8px 16px 0 rgba(0)',
+                            display: 'BYCLICK'
+                        }
+                    }))
+                    this.$apply()
+                    break
+                }
+                case '企业': {
+                    this.showParks = this.parks.filter((park) => (
+                        park.kind !== 4
+                    ))
+                    this.markers = this.showParks.map((park) => ({
+                        title: park.parkName,
+                        latitude: park.latitude,
+                        longitude: park.longitude,
+                        iconPath: `../../components/map/parking${
+                            park.kind
+                        }.png`,
+                        id: park.parkId,
+                        width: 18 * MapScreenW,
+                        height: 18 * MapScreenW,
+                        callout: {
+                            content: `${park.parkName}\n${park.distance}`,
+                            fontSize: 14,
+                            color: '#ffffff',
+                            bgColor: '#353535',
+                            padding: 8,
+                            borderRadius: 4,
+                            boxShadow: '4px 8px 16px 0 rgba(0)',
+                            display: 'BYCLICK'
+                        }
+                    }))
+                    this.$apply()
+                    break
+                }
+                case '个人': {
+                    this.showParks = this.parks.filter((park) => (
+                        park.kind === 4
+                    ))
+                    this.markers = this.showParks.map((park) => ({
+                        title: park.parkName,
+                        latitude: park.latitude,
+                        longitude: park.longitude,
+                        iconPath: `../../components/map/parking${
+                            park.kind
+                        }.png`,
+                        id: park.parkId,
+                        width: 18 * MapScreenW,
+                        height: 18 * MapScreenW,
+                        callout: {
+                            content: `${park.parkName}\n${park.distance}`,
+                            fontSize: 14,
+                            color: '#ffffff',
+                            bgColor: '#353535',
+                            padding: 8,
+                            borderRadius: 4,
+                            boxShadow: '4px 8px 16px 0 rgba(0)',
+                            display: 'BYCLICK'
+                        }
+                    }))
+                    this.$apply()
+                    break
+                }
+            }
         }
     }
 
     getParks() {
-        Promise.all([post(`${config.host}/parks`), getInfoFromMap()]).then(
-            (allRes) => {
-                let ownPark = allRes[0].data,
-                    publicPark = allRes[1].data
+        Promise.all([
+            post(`${config.host}/parks`, {
+                longitude: this.longitude,
+                latitude: this.latitude,
+                range: 4
+            }),
+            getInfoFromMap()
+        ]).then((allRes) => {
+            let ownPark = allRes[0].data,
+                publicPark = allRes[1].data
 
-                publicPark = publicPark.map((park) => ({
-                    parkName: park.title,
-                    parkId: park.id,
-                    distance: park._distance,
-                    kind: 5,
-                    latitude: park.location.lat,
-                    longitude: park.location.lng,
-                    price: "未知"
-                }))
+            publicPark = publicPark.map((park) => ({
+                parkName: park.title,
+                parkId: park.id,
+                distance: formatDistance(park._distance),
+                kind: 5,
+                latitude: park.location.lat,
+                longitude: park.location.lng,
+                price: '未知'
+            }))
 
-                if (typeof ownPark === "array") {
-                    this.parks = publicPark.concat(ownPark)
-                } else {
-                    this.parks = publicPark
+            if (typeof ownPark === 'object') {
+                for (let i = 0, len = ownPark.length; i < len; i++) {
+                    ownPark[i].distance = formatDistance(ownPark[i].distance)
                 }
-
-                this.parks.sort((prevPark, nextPark) => (
-                    prevPark.distance - nextPark.distance
-                ))
-
-                console.log(this.parks)
-                this.$apply()
+                this.parks = publicPark.concat(ownPark)
+            } else {
+                this.parks = publicPark
             }
-        )
+
+            this.parks.sort(
+                (prevPark, nextPark) => prevPark.distance - nextPark.distance
+            )
+
+            console.log(this.parks)
+            this.$apply()
+        })
     }
 
     onLoad() {
@@ -145,9 +298,9 @@ export default class Index extends wepy.page {
                 this.initLongitude = res.longitude
                 this.initLatitude = res.latitude
                 this.$apply()
+                this.getParks()
             }
         })
-        this.getParks()
     }
     onShow() {
         let array = wx.getStorageSync('plateNumber')
@@ -162,22 +315,27 @@ export default class Index extends wepy.page {
 
         this.timer = setInterval(() => {
             wx.getLocation({
-            //获得用户当前位置
-            type: 'gcj02',
-            success: (res) => {
-                // 三分钟无变化则依旧刷新
-                if (this.sameTime > 3 * 60 / 5) {
-                    this.getParks()
-                    return
+                //获得用户当前位置
+                type: 'gcj02',
+                success: (res) => {
+                    // 三分钟无变化则依旧刷新
+                    if (this.sameTime > 3 * 60 / 5) {
+                        this.getParks()
+                        this.sameTime = 0
+                        this.$apply()
+                        return
+                    }
+                    if (
+                        res.longitude !== this.longitude ||
+                        this.latitude !== res.latitude
+                    ) {
+                        this.getParks()
+                    }
+                    console.log('\nsame location\n')
+                    this.sameTime++
+                    this.$apply()
                 }
-                if (res.longitude !== this.longitude || this.latitude !== res.latitude) {
-                    this.getParks()
-                }
-                console.log("\nsame location\n")
-                this.sameTime++
-                this.$apply()
-            }
-        })
+            })
         }, 5000)
         this.$apply()
     }

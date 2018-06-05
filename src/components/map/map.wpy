@@ -1,27 +1,36 @@
 <template>
     <view class="main-map">
-        <cover-view class="img-wrap">
+        <cover-view class="img-wrap top-shadow">
             <cover-image class="img" src="../../components/map/shadow-top.png" />
         </cover-view>
         <map id="map-body" longitude="{{longitude}}" latitude="{{latitude}}" scale="{{scale}}" bindcontroltap="clickcontrols" controls="{{controls}}" bindtap="changeflag" markers="{{markers}}" bindmarkertap="markertap" show-location style="width:100%;height:{{height}}px">
         </map>
-        <cover-view class="img-wrap">
+        <cover-view class="img-wrap bottom-shadow">
             <cover-image class="img" src="../../components/map/shadow-btm.png" />
         </cover-view>
     </view>
 </template>
 
 <style scoped>
-.img-wrap {
+.main-map {
     position: relative;
+}
+
+.img-wrap {
+    position: absolute;
     width: 100%;
     height: 4rpx;
 }
 
-.img {
-    position: absolute;
+.top-shadow {
     top: 0;
-    left: 0;
+}
+
+.bottom-shadow {
+    bottom: 0;
+}
+
+.img {
     width: 100%;
     height: 100%;
 }
@@ -54,7 +63,7 @@ export default class Map extends wepy.component {
         latitude: Number
     }
     data = {
-        scale: 18,
+        scale: 16,
         controls: [
             {
                 id: 2, //点击回到当前位置
@@ -102,7 +111,7 @@ export default class Map extends wepy.component {
                 //点击定位按钮回到当前位置
                 this.mapCtx = wx.createMapContext('map-body')
                 this.mapCtx.moveToLocation()
-                this.scale = 16
+                this.scale = 18
             }
             if (e.controlId === 3) {
                 //点击搜索按钮进入搜索界面
