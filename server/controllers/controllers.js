@@ -505,7 +505,6 @@ exports.gethistory = async (ctx, next) => {
               t.parkLatitude = option[i].lola.split(",")[1]
               t.parkLongitude = option[i].lola.split(",")[0]
               all.push(t)
-              console.log(all)
             }
           }
         }
@@ -566,11 +565,9 @@ exports.gethistory = async (ctx, next) => {
           t.parkLatitude = option[i].lola.split(",")[1]
           t.parkLongitude = option[i].lola.split(",")[0]
           all.push(t)
-          console.log(all)
         }
         //all = all.reverse()
         ctx.body = all.slice((ctx.request.body.delta - 1) * 10, ctx.request.body.delta * 10)
-        console.log(all.slice((ctx.request.body.delta - 1) * 10, ctx.request.body.delta * 10))
       }
     })
 
