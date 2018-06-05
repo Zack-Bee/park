@@ -139,7 +139,7 @@ exports.userparks = async (ctx, next) => {
           else {
             all[m].status = 1
             all[m].rentPark = using.rentNumber
-            all[m].expectedRevenue = ofc.income(option[0].id)
+            all[m].expectedRevenue = option[0].income
           }
         }
         else {
@@ -224,6 +224,7 @@ exports.userparks = async (ctx, next) => {
           + "-" + ctx.request.body.endDay.replace(/-/g, ".") + "."
           + ctx.request.body.endTime.replace(/:/g, "."), null, null, 1)
       }
+      ofc.income(ctx.request.body.parkId)
     }
     fc.changeone("parking", ctx.request.body.parkId, "name", ctx.request.body.parkName)
   }
@@ -241,7 +242,7 @@ exports.userparks = async (ctx, next) => {
       this.endTime = "return err"
       this.revenue = "return err"
     }
-    await fc.selectparking("parking", ctx.request.body.parkId, function (option) {
+    await fc.selectparking("id", ctx.request.body.parkId, function (option) {
       parking = option
       let t
       t = new KIND
@@ -253,16 +254,16 @@ exports.userparks = async (ctx, next) => {
       t.endDay = "waiting"
       t.startTime = "waiting"
       t.endTime = "waiting"
-      t.revenue = "waiting"
+      t.revenue = option[0].income
       all = t
     })
     await fc.selectparkingtime("parking", parking[0].id, function (option) {
       if (option) {
         let time = option[0].time
         time = time.split("-")
-        let start = t[0]
+        let start = time[0]
         start = start.split(".")
-        let end = t[1]
+        let end = time[1]
         end = end.split(".")
         if (start.length == 3) {
           all.openType = "weekly"
@@ -270,7 +271,6 @@ exports.userparks = async (ctx, next) => {
           all.endDay = end[0]
           all.startTime = start[1] + ":" + start[2]
           all.endTime = end[1] + ":" + end[2]
-          all.revenue = ofc.income(option[0].id)
         }
         if (start.length == 5) {
           if (start[2] == end[2]) { all.openType = "once" }
@@ -279,7 +279,6 @@ exports.userparks = async (ctx, next) => {
           all.endDay = end[0] + "-" + end[1] + "-" + end[2]
           all.startTime = start[3] + ":" + start[4]
           all.endTime = end[3] + ":" + end[4]
-          all.revenue = ofc.income(option[0].id)
         }
       }
       else {

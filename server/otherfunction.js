@@ -2,46 +2,46 @@ const fc = require('./function')
 const mysql = require('mysql');
 const async = require('async');
 const request = require('request');
-exports.getFlatternDistance=function(lat1,lng1,lat2,lng2,callback){
-  lat1=parseFloat(lat1)
-  lat2=parseFloat(lat2)
-  lng1=parseFloat(lng1)
-  lng2=parseFloat(lng2)
+exports.getFlatternDistance = function (lat1, lng1, lat2, lng2, callback) {
+  lat1 = parseFloat(lat1)
+  lat2 = parseFloat(lat2)
+  lng1 = parseFloat(lng1)
+  lng2 = parseFloat(lng2)
   return new Promise(function (resolve, reject) {
-  var EARTH_RADIUS = 6378137.0;    //单位M
+    var EARTH_RADIUS = 6378137.0;    //单位M
     const PI = Math.PI;
-    
-    function getRad(d){
-        return d*PI/180.0;
+
+    function getRad(d) {
+      return d * PI / 180.0;
     }
-    let f = getRad((lat1 + lat2)/2);
-    let g = getRad((lat1 - lat2)/2);
-    let l = getRad((lng1 - lng2)/2);
-   
+    let f = getRad((lat1 + lat2) / 2);
+    let g = getRad((lat1 - lat2) / 2);
+    let l = getRad((lng1 - lng2) / 2);
+
     let sg = Math.sin(g);
     let sl = Math.sin(l);
     let sf = Math.sin(f);
-    
-    let s,c,w,r,d,h1,h2;
+
+    let s, c, w, r, d, h1, h2;
     let a = EARTH_RADIUS;
-    let fl = 1/298.257;
-    
-    sg = sg*sg;
-    sl = sl*sl;
-    sf = sf*sf;
-    
-    s = sg*(1-sl) + (1-sf)*sl;
-    c = (1-sg)*(1-sl) + sf*sl;
-    
-    w = Math.atan(Math.sqrt(s/c));
-    r = Math.sqrt(s*c)/w;
-    d = 2*w*a;
-    h1 = (3*r -1)/2/c;
-    h2 = (3*r +1)/2/s;
+    let fl = 1 / 298.257;
+
+    sg = sg * sg;
+    sl = sl * sl;
+    sf = sf * sf;
+
+    s = sg * (1 - sl) + (1 - sf) * sl;
+    c = (1 - sg) * (1 - sl) + sf * sl;
+
+    w = Math.atan(Math.sqrt(s / c));
+    r = Math.sqrt(s * c) / w;
+    d = 2 * w * a;
+    h1 = (3 * r - 1) / 2 / c;
+    h2 = (3 * r + 1) / 2 / s;
     resolve(1);
-    
-    callback(d*(1 + fl*(h1*sf*(1-sg) - h2*(1-sf)*sg)));
-})
+
+    callback(d * (1 + fl * (h1 * sf * (1 - sg) - h2 * (1 - sf) * sg)));
+  })
 }
 
 exports.xcxlogin = function (code, callback) {
@@ -61,7 +61,7 @@ exports.xcxlogin = function (code, callback) {
   });
 }
 
-exports.addtest = function (a, b, c, d,city) {
+exports.addtest = function (a, b, c, d, city) {
   return new Promise(function (resolve, reject) {
     function randomNum(minNum, maxNum) {
       switch (arguments.length) {
@@ -89,14 +89,14 @@ exports.addtest = function (a, b, c, d,city) {
     let bb = randomNum(c * 1000000, d * 1000000) / 1000000
     //H4CBZ-CPYWK-2ZOJO-ACLVD-POMLE-FBBDZ
     request('http://apis.map.qq.com/ws/geocoder/v1/?location=' + aa + ',' + bb + '&key=42TBZ-EHSKS-IULOI-62K2Q-IKAA6-HDB2E&get_poi=1', function (error, response, body) {
-//console.log(body)      
-if (error) {
+      //console.log(body)      
+      if (error) {
         reject(error);
       }
       else if (response.statusCode == 200) {
         resolve(body);
         if (JSON.parse(body).result.pois != "") {
-          fc.addparking(city+"-test", 3, city+"测试停车场", JSON.parse(body).result.formatted_addresses.recommend, aa + "," + bb, 1, "/upload/odpVJ5Lutx-arHao6e2yZXr_tUOs")
+          fc.addparking(city + "-test", 3, city + "测试停车场", JSON.parse(body).result.formatted_addresses.recommend, aa + "," + bb, 1, "/upload/odpVJ5Lutx-arHao6e2yZXr_tUOs")
         }
       }
       else {
@@ -298,7 +298,7 @@ exports.cleanparkingtime = function (option) {
   }
 }
 
-exports.GetDateDiff=function(startTime, endTime, diffType="minute") {
+exports.GetDateDiff = function (startTime, endTime, diffType = "minute") {
 
   //将xxxx-xx-xx的时间格式，转换为 xxxx/xx/xx的格式
 
@@ -320,45 +320,45 @@ exports.GetDateDiff=function(startTime, endTime, diffType="minute") {
 
   switch (diffType) {
 
-      case "second":
+    case "second":
 
-          divNum = 1000;
+      divNum = 1000;
 
-          break;
+      break;
 
-      case "minute":
+    case "minute":
 
-          divNum = 1000 * 60;
+      divNum = 1000 * 60;
 
-          break;
+      break;
 
-      case "hour":
+    case "hour":
 
-          divNum = 1000 * 3600;
+      divNum = 1000 * 3600;
 
-          break;
+      break;
 
-      case "day":
+    case "day":
 
-          divNum = 1000 * 3600 * 24;
+      divNum = 1000 * 3600 * 24;
 
-          break;
+      break;
 
-      default:
+    default:
 
-          break;
+      break;
 
   }
 
   return parseInt((eTime.getTime() - sTime.getTime()) / parseInt(divNum));
 
 }
-exports.income = async (parkingtimeId) => {
+exports.income = async (parkingId) => {
   let parkingtime
   function c(option) {
     parkingtime = option[0]
   }
-  await fc.selectparkingtime("id", parkingtimeId, c)
+  await fc.selectparkingtime("parking", parkingId, c)
   if (parkingtime.kind == 0) {
     let t = parkingtime.time.split("-")
     t = t[0].split(".").concat(t[1].split("."))
@@ -377,4 +377,5 @@ exports.income = async (parkingtimeId) => {
     income = income.toFixed(1)
     fc.changeone("parking", parkingtime.parking, "income", income)
   }
+
 }
