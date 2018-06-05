@@ -397,7 +397,7 @@ exports.upload = async (ctx, next) => {
 }
 
 exports.gethistory = async (ctx, next) => {
-  //ctx.response.status = 200;
+  ctx.response.status = 200;
   if (ctx.request.body.type == "get") {
     await fc.selecthistory("openId", "'" + ctx.request.body.openId + "'", function (option) {
       if (option.length <= 10) {
