@@ -2,6 +2,48 @@ const fc = require('./function')
 const mysql = require('mysql');
 const async = require('async');
 const request = require('request');
+exports.getFlatternDistance=function(lat1,lng1,lat2,lng2,callback){
+  lat1=parseFloat(lat1)
+  lat2=parseFloat(lat2)
+  lng1=parseFloat(lng1)
+  lng2=parseFloat(lng2)
+  return new Promise(function (resolve, reject) {
+  var EARTH_RADIUS = 6378137.0;    //单位M
+    const PI = Math.PI;
+    
+    function getRad(d){
+        return d*PI/180.0;
+    }
+    let f = getRad((lat1 + lat2)/2);
+    let g = getRad((lat1 - lat2)/2);
+    let l = getRad((lng1 - lng2)/2);
+   
+    let sg = Math.sin(g);
+    let sl = Math.sin(l);
+    let sf = Math.sin(f);
+    
+    let s,c,w,r,d,h1,h2;
+    let a = EARTH_RADIUS;
+    let fl = 1/298.257;
+    
+    sg = sg*sg;
+    sl = sl*sl;
+    sf = sf*sf;
+    
+    s = sg*(1-sl) + (1-sf)*sl;
+    c = (1-sg)*(1-sl) + sf*sl;
+    
+    w = Math.atan(Math.sqrt(s/c));
+    r = Math.sqrt(s*c)/w;
+    d = 2*w*a;
+    h1 = (3*r -1)/2/c;
+    h2 = (3*r +1)/2/s;
+    resolve(1);
+    
+    callback(d*(1 + fl*(h1*sf*(1-sg) - h2*(1-sf)*sg)));
+})
+}
+
 exports.xcxlogin = function (code, callback) {
   return new Promise(function (resolve, reject) {
     request('https://api.weixin.qq.com/sns/jscode2session?appid=wx5fbbb4d25168eb48&secret=106619eb311c77a93dbfd697ff06f709&js_code=' + code + '&grant_type=authorization_code', function (error, response, body) {

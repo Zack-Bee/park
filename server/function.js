@@ -181,7 +181,24 @@ exports.selectowner = function (idORopenId, content, callback) {
     });
   })
 }
+exports.selectallparking = function (callback) {
+  return new Promise(function (resolve, reject) {
+    var option = new Array();
+    var sql = 'select * from parking'
+    query(sql, [1], function (err, rows, fields) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(rows);
+        for (var i = 0; i < rows.length; i++) {
+          option.push({ 'id': rows[i].id, 'openId': rows[i].openId, 'kind': rows[i].kind, 'name': rows[i].name, 'location': rows[i].location, "lola": rows[i].lola, 'number': rows[i].number, 'lease': rows[i].lease, 'income': rows[i].income, 'isOpen': rows[i].isOpen });
+        }
+        callback(option)
+      }
+    })
 
+  })
+}
 exports.selectparking = function (idORopenIdORkindORnameORlocationORlolaORnumberORleaseORincome, content, callback) {
   return new Promise(function (resolve, reject) {
     var option = new Array();
@@ -192,12 +209,11 @@ exports.selectparking = function (idORopenIdORkindORnameORlocationORlolaORnumber
       } else {
         resolve(rows);
         for (var i = 0; i < rows.length; i++) {
-          option.push({ 'id': rows[i].id, 'openId': rows[i].openId, 'kind': rows[i].kind, 'name': rows[i].name, 'location': rows[i].location, "lola": rows[i].lola, 'number': rows[i].number, 'lease': rows[i].lease, 'income': rows[i].income });
+          option.push({ 'id': rows[i].id, 'openId': rows[i].openId, 'kind': rows[i].kind, 'name': rows[i].name, 'location': rows[i].location, "lola": rows[i].lola, 'number': rows[i].number, 'lease': rows[i].lease, 'income': rows[i].income, 'isOpen': rows[i].isOpen });
         }
         callback(option)
       }
     })
-
   })
 }
 
@@ -229,7 +245,7 @@ exports.selecthistory = function (idORparkingORtimeORpayORcarNumberORparkingLoca
       } else {
         resolve(rows);
         for (var i = 0; i < rows.length; i++) {
-          option.push({ 'id': rows[i].id, 'parking': rows[i].parking, 'time': rows[i].time, 'pay': rows[i].pay, 'carNumber': rows[i].carNumber, 'parkingLocation': rows[i].parkLocation, 'openId': rows[i].openId, 'status': rows[i].status, 'location': rows[i].location, 'kind': rows[i].kind });
+          option.push({ 'id': rows[i].id, 'parking': rows[i].parking, 'time': rows[i].time, 'pay': rows[i].pay, 'carNumber': rows[i].carNumber, 'lola': rows[i].lola, 'openId': rows[i].openId, 'status': rows[i].status, 'location': rows[i].location, 'kind': rows[i].kind });
         }
         callback(option)
       }

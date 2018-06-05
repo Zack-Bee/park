@@ -11,7 +11,61 @@ exports.login = async (ctx, next) => {
   }
   var res = await ofc.xcxlogin(code, c);
 }
-
+exports.parks = async (ctx, next) => {
+  let all = []
+  let lo = ctx.request.body.longitude
+  let la = ctx.request.body.latitude
+  let range = ctx.request.body.range
+  let option
+  function message() {
+    this.parkName = "return err"
+    this.kind = "return err"
+    this.price = "return err"
+    this.latitude = "return err"
+    this.longitude = "return err"
+    this.parkId = "return err"
+    this.distance = "return err"
+    this.location = "return err"
+    this.time = "return err"
+    this.timekind = "return err"
+    this.allPark = "return err"
+    this.rentNumber = "return err"
+  }
+  await fc.selectallparking(function (opt) {
+    option = opt
+  })
+  let i = 0
+  while (i < option.length) {
+    if (option[i].isOpen == 1) {
+      let la1 = option[i].lola.split(",")[0]
+      let lo1 = option[i].lola.split(",")[1]
+      var distance
+      await ofc.getFlatternDistance(la, lo, la1, lo1, function (o) {
+        distance = o
+      })
+      if (distance < 1000 * range) {
+        await fc.selectparkingtime("parking", option[i].id, function (op) {
+          t = new message
+          t.parkName = option[i].name
+          t.kind = option[i].kind
+          t.price = op[0].price
+          t.latitude = la1
+          t.longitude = lo1
+          t.parkId = option[i].id
+          t.distance = distance
+          t.location = option[i].location
+          t.time = op[0].time
+          t.timekind = op[0].kind
+          t.allPark = option[i].number
+          t.rentNumber = op[0].rentNumber
+          all.push(t)
+        })
+      }
+    }
+    i = i + 1
+  }
+  ctx.response.body = all
+}
 
 exports.userparks = async (ctx, next) => {
   var userparkserr
@@ -41,23 +95,7 @@ exports.userparks = async (ctx, next) => {
       this.expectedRevenue = "return err"
     }
 
-    function cc(option) {
-      using = ofc.using(option)
-      if (using == 0) {
-        all[m].isOpen = false
-        all[m].rentPark = 0
-        all[m].expectedRevenue = 0
-      }
-      else {
-        all[m].isOpen = true
-        all[m].rentPark = using.rentNumber
-        all[m].expectedRevenue = ofc.income(option[0].id)
-      }
-      m = m + 1
-      //ofc.cleanparkingtime(option)
-    }
-
-    function c(option) {
+    await fc.selectparking("openId", "'" + ctx.request.body.openId + "'", function (option) {
       parking = option
       let t
       for (i = 0; i < option.length; i++) {
@@ -86,15 +124,34 @@ exports.userparks = async (ctx, next) => {
         }
         all.push(t)
       }
-    }
-    await fc.selectparking("openId", "'" + ctx.request.body.openId + "'", c)
+    })
     if (userparkserr == 1) { return }
     var m = 0
     while (m < parking.length) {
-      await fc.selectparkingtime("parking", parking[m].id, cc)
+      await fc.selectparkingtime("parking", parking[m].id, function (option) {
+        using = ofc.using(option)
+        if (parking[m].isOpen) {
+          if (using == 0) {
+            all[m].isOpen = false
+            all[m].rentPark = 0
+            all[m].expectedRevenue = 0
+          }
+          else {
+            all[m].isOpen = true
+            all[m].rentPark = using.rentNumber
+            all[m].expectedRevenue = ofc.income(option[0].id)
+          }
+        }
+        else {
+          all[m].isOpen = false
+          all[m].rentPark = 0
+          all[m].expectedRevenue = 0
+        }
+        m = m + 1
+        //ofc.cleanparkingtime(option)
+      })
     }
     ctx.response.body = all
-    return
   }
   else if (ctx.request.body.type == "delete") {
     fc.deleteparking(ctx.request.body.parkId)
@@ -340,6 +397,7 @@ exports.upload = async (ctx, next) => {
 }
 
 exports.gethistory = async (ctx, next) => {
+  ctx.response.status = 200;
   if (ctx.request.body.type == "get") {
     await fc.selecthistory("openId", "'" + ctx.request.body.openId + "'", function (option) {
       if (option.length <= 10) {
@@ -401,28 +459,35 @@ exports.gethistory = async (ctx, next) => {
         }
         for (let i = 0; i < option.length; i++) {
           let time = option[i].time
-          time = time.split("-")
-          let s = time[0]
-          let e = time[1]
-          s = s.split(".")
-          e = e.split(".")
+          if (time != undefined) {
+            time = time.split("-")
+            var s = time[0]
+            var e = time[1]
+            s = s.split(".")
+            if (e != undefined) {
+              e = e.split(".")
+            }
+          }
           var now = new Date()
           var month = now.getMonth() + 1
-          if (s[1] == month) {
-            let t = new RESP
-            t.status = option[i].status
-            t.kind = option[i].kind
-            t.parkLocation = option[i].parkLocation
-            t.fee = option[i].pay
-            t.recordId = option[i].id
-            t.parkId = option[i].parking
-            t.startTime = s[3] + ":" + s[4]
-            t.startDate = s[0] + "-" + s[1] + "-" + s[2]
-            t.endTime = e[3] + ":" + e[4]
-            t.endDate = e[0] + "-" + e[1] + "-" + e[2]
-            t.parkLatitude = option[i].lola.split(",")[1]
-            t.parkLongitude = option[i].lola.split(",")[0]
-            all.push(t)
+          if (s != undefined) {
+            if (s[1] == month) {
+              let t = new RESP
+              t.status = option[i].status
+              t.kind = option[i].kind
+              t.parkLocation = option[i].parkLocation
+              t.fee = option[i].pay
+              t.recordId = option[i].id
+              t.parkId = option[i].parking
+              t.startTime = s[3] + ":" + s[4]
+              t.startDate = s[0] + "-" + s[1] + "-" + s[2]
+              t.endTime = e[3] + ":" + e[4]
+              t.endDate = e[0] + "-" + e[1] + "-" + e[2]
+              t.parkLatitude = option[i].lola.split(",")[1]
+              t.parkLongitude = option[i].lola.split(",")[0]
+              all.push(t)
+              console.log(all)
+            }
           }
         }
         all = all.reverse()
@@ -446,11 +511,15 @@ exports.gethistory = async (ctx, next) => {
         }
         for (let i = 0; i < option.length; i++) {
           let time = option[i].time
-          time = time.split("-")
-          let s = time[0]
-          let e = time[1]
-          s = s.split(".")
-          e = e.split(".")
+          if (time != undefined) {
+            time = time.split("-")
+            var s = time[0]
+            var e = time[1]
+            s = s.split(".")
+            if (e != undefined) {
+              e = e.split(".")
+            }
+          }
 
           let t = new RESP
           t.status = option[i].status
@@ -459,6 +528,18 @@ exports.gethistory = async (ctx, next) => {
           t.fee = option[i].pay
           t.recordId = option[i].id
           t.parkId = option[i].parking
+          if(e==undefined){var e=[]}
+          if(s==undefined){var s=[]}
+          if(e[0]==undefined){e[0]=null}
+          if(e[1]==undefined){e[1]=null}
+          if(e[2]==undefined){e[2]=null}
+          if(e[3]==undefined){e[3]=null}
+          if(e[4]==undefined){e[4]=null}
+          if(s[0]==undefined){s[0]=null}
+          if(s[1]==undefined){s[1]=null}
+          if(s[2]==undefined){s[2]=null}
+          if(s[3]==undefined){s[3]=null}
+          if(s[4]==undefined){s[4]=null}
           t.startTime = s[3] + ":" + s[4]
           t.startDate = s[0] + "-" + s[1] + "-" + s[2]
           t.endTime = e[3] + ":" + e[4]
@@ -466,19 +547,20 @@ exports.gethistory = async (ctx, next) => {
           t.parkLatitude = option[i].lola.split(",")[1]
           t.parkLongitude = option[i].lola.split(",")[0]
           all.push(t)
-
+          console.log(all)
         }
         all = all.reverse()
         ctx.body = all.slice((ctx.request.body.delta - 1) * 10, ctx.request.body.delta * 10)
+        console.log(all.slice((ctx.request.body.delta - 1) * 10, ctx.request.body.delta * 10))
       }
     })
+
   }
   else if (ctx.request.body.type == "add") {
     let err = 0
     await fc.selecthistory("openid", "'" + ctx.request.body.openId + "'", function (option) {
       for (let i = option.length - 1; i >= 0; i--) {
 
-        console.log(option[i].status == 2)
         if (ctx.request.body.carNumber == option[i].carNumber) {
           if (option[i].status == 1) {
             fc.changeone("history", option[i].id, "status", 0)
@@ -488,7 +570,6 @@ exports.gethistory = async (ctx, next) => {
             err = 1
           }
           else if (option[i].status == 2) {
-            console.log(1)
             ctx.body = { message: "请结束本次停车并支付" }
             err = 1
           }
@@ -497,7 +578,7 @@ exports.gethistory = async (ctx, next) => {
       }
     })
     if (err == 0) {
-      request('http://apis.map.qq.com/ws/geocoder/v1/?location=' + ctx.request.body.longitude + "," + ctx.request.body.latitude + '&key=H4CBZ-CPYWK-2ZOJO-ACLVD-POMLE-FBBDZ&get_poi=1', function (error, response, body) {
+      request('http://apis.map.qq.com/ws/geocoder/v1/?location=' + ctx.request.body.latitude + "," + ctx.request.body.longitude + '&key=H4CBZ-CPYWK-2ZOJO-ACLVD-POMLE-FBBDZ&get_poi=1', function (error, response, body) {
         if (error) {
           ctx.body = { error }
         }
