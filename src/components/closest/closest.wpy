@@ -19,7 +19,7 @@
                 <view class="closest-middle">
                     <view class="park-name">{{selectedIndex === -1 ? parks[0].parkName : parks[selectedIndex].parkName}}</view>
                     <view class="park-price">价格为￥{{selectedIndex === -1 ? parks[0].price : parks[selectedIndex].price}}</view>
-                    <view class="park-distence">距离您 {{selectedIndex === -1 ? parks[0].distance : parks[selectedIndex].distance}} m远</view>
+                    <view class="park-distence">距离您 {{selectedIndex === -1 ? parks[0].distance : parks[selectedIndex].distance}}远</view>
                 </view>
                 <view class="closest-right">
                     <view class="navigate-btn">
@@ -60,7 +60,8 @@
 
 .closest-body {
     display: flex;
-    border-top: 1rpx #e0e0e0 solid;
+    /* border-top: 1rpx #e0e0e0 solid; */
+    box-shadow: 0 -1px 1 1 #e0e0e0;
 }
 
 .closest-left {
@@ -144,14 +145,8 @@
 import wepy from 'wepy'
 import Button from '../button/button'
 import Icon from '../icon/icon'
-
-const formatDistance = (num) => {
-    if (num < 1000) {
-        return num.toFixed(0) + 'm'
-    } else if (num > 1000) {
-        return (num / 1000).toFixed(1) + 'km'
-    }
-}
+import post from '../../common/post.js'
+import config from '../../config.js'
 
 var QQMapWX = require('../../libs/qqmap-wx-jssdk.js')
 var qqmapsdk
@@ -159,7 +154,7 @@ export default class Closest extends wepy.component {
     components = {
         navigateBtn: Button,
         parkBtn: Button,
-        placeIcon: Icon,
+        placeIcon: Icon
     }
 
     props = {
@@ -185,7 +180,7 @@ export default class Closest extends wepy.component {
         parkPrice: '100',
         parkDistence: '3000m',
         navigatenow: () => {
-            console.log("navigate")
+            console.log('navigate')
             console.log(this.parks.selectedIndex)
             let index = 0
             if (this.selectedIndex !== undefined && this.selectedIndex !== -1) {
@@ -222,17 +217,34 @@ export default class Closest extends wepy.component {
                 }
             })
         },
-        bindPickerChange() {
-            //点击进入停车选择
-            wx.navigateTo({
-                url: '../history/history',
-                success: (res) => {
+        bindPickerChange(event) {
+            console.log(this.$parent)
+            console.log(this.$parent.$parent)
+            let index = this.selectedIndex === -1 ? 0 : this.selectedIndex
+            post(`${config.host}/user/history`, {
+                type: 'add',
+                openId: this.$parent.$parent.globalData.openId,
+                carNumber: this.numberArray[event.detail.value],
+                parkLocation: `${this.parks[index].longitude},${
+                    this.parks[index].latitude
+                }`,
+                parkId: this.parks[index].parkId
+            }).then(
+                (res) => {
                     console.log(res)
+                    //点击进入停车选择
+                    // wx.navigateTo({
+                        // url: '../history/history',
+                        // success: (res) => {
+                            // console.log(res)
+                        // },
+                        // fail: (err) => {
+                            // console.log(err)
+                        // }
+                    // })
                 },
-                fail: (err) => {
-                    console.log(err)
-                }
-            })
+                (err) => {}
+            )
         },
         justOneNumber() {
             wx.navigateTo({

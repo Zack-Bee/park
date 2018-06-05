@@ -14,7 +14,6 @@ export default class extends wepy.app {
             "pages/add-park/add-park",
             "pages/plate-number/plate-number",
             "pages/park-detail/park-detail",
-            "pages/park-now/park-now",
             "pages/history/history",
             "pages/navigation/navigation"
         ],
@@ -48,7 +47,9 @@ export default class extends wepy.app {
         userInfo: {},
         openId: '',
         mapHeight: 555,
-        mapWidth: 375
+        mapWidth: 375,
+        windowHeight: 555,
+        windowWidth: 375
     }
 
     onLaunch() {
@@ -59,7 +60,8 @@ export default class extends wepy.app {
                 this.globalData.mapHeight =
                     data.windowHeight - data.windowWidth * 0.48
                 this.globalData.mapWidth = data.windowWidth
-                console.log(this.globalData)
+                this.globalData.windowHeight = data.windowHeight
+                this.globalData.windowWidth = data.windowWidth
                 var mScreenW = data.windowWidth / 375
                 var mScreenH = data.windowHeight / 603
                 wx.setStorageSync('MapScreenW', mScreenW)
