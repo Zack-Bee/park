@@ -650,7 +650,7 @@ exports.gethistory = async (ctx, next) => {
           if (JSON.parse(body).result != null) {
             if (JSON.parse(body).result.pois != "") {
               fc.selectparking("id", ctx.request.body.parkId, function (o) {
-                if (option != '') {
+                if (o != '') {
                   fc.addhistory(ctx.request.body.parkId, year + "." + month + "." + day + "." + hour + "." + minute, null, ctx.request.body.carNumber, ctx.request.body.longitude + "," + ctx.request.body.latitude, ctx.request.body.openId, JSON.parse(body).result.formatted_addresses.recommend, o[0].kind)
                   ctx.body = { result: "ok" }
                 }
