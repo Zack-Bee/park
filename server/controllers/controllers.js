@@ -246,8 +246,8 @@ exports.userparks = async (ctx, next) => {
       this.kind = "return err"
       this.status = "return err"
       this.openType = "return err"
-      this.startDay = "return err"
-      this.endDay = "return err"
+      this.startDate = "return err"
+      this.endDate = "return err"
       this.startTime = "return err"
       this.endTime = "return err"
       this.revenue = "return err"
@@ -261,8 +261,8 @@ exports.userparks = async (ctx, next) => {
         t.kind = option[0].kind
         t.status = option[0].isOpen
         t.openType = "waiting"
-        t.startDay = "waiting"
-        t.endDay = "waiting"
+        t.startDate = "waiting"
+        t.endDate = "waiting"
         t.startTime = "waiting"
         t.endTime = "waiting"
         t.revenue = option[0].income
@@ -279,24 +279,24 @@ exports.userparks = async (ctx, next) => {
         end = end.split(".")
         if (start.length == 3) {
           all.openType = "weekly"
-          all.startDay = start[0]
-          all.endDay = end[0]
+          all.startDate = start[0]
+          all.endDate = end[0]
           all.startTime = start[1] + ":" + start[2]
           all.endTime = end[1] + ":" + end[2]
         }
         if (start.length == 5) {
           if (start[2] == end[2]) { all.openType = "once" }
           else { all.openType = "date" }
-          all.startDay = start[0] + "-" + start[1] + "-" + start[2]
-          all.endDay = end[0] + "-" + end[1] + "-" + end[2]
+          all.startDate = start[0] + "-" + start[1] + "-" + start[2]
+          all.endDate= end[0] + "-" + end[1] + "-" + end[2]
           all.startTime = start[3] + ":" + start[4]
           all.endTime = end[3] + ":" + end[4]
         }
       }
       else {
         all.openType = null
-        all.startDay = null
-        all.endDay = null
+        all.startDate = null
+        all.endDate = null
         all.startTime = null
         all.endTime = null
         all.revenue = null
