@@ -113,14 +113,14 @@ exports.userparks = async (ctx, next) => {
             t.allPark = option[i].number
             t.rentPark = "waiting"
             t.parkId = option[i].id
-            t.status = "waiting"
+            t.status = option[i].isOpen
           }
           else if (option[i].kind == 4) {
             t = new KIND4
             t.parkName = option[i].name
             t.kind = option[i].kind
             t.parkId = option[i].id
-            t.status = "waiting"
+            t.status = option[i].isOpen
             t.allPark = option[i].number
             t.rentPark = "waiting"
             t.expectedRevenue = "waiting"
@@ -139,23 +139,19 @@ exports.userparks = async (ctx, next) => {
       await fc.selectparkingtime("parking", parking[m].id, function (option) {
         if (option != '') {
           using = ofc.using(option)
-          if (parking[m].isOpen == 1) {
-            if (using == 0) {
-              all[m].status = 0
-              all[m].rentPark = 0
-              all[m].expectedRevenue = 0
-            }
-            else {
-              all[m].status = 1
-              all[m].rentPark = using.rentNumber
-              all[m].expectedRevenue = option[0].income
-            }
-          }
-          else {
-            all[m].status = parking[m].isOpen
+          if (using == 0) {
+            fc.changeone("parking", all[m].parkId, "status", 0)
+            all[m].status = 0
             all[m].rentPark = 0
             all[m].expectedRevenue = 0
           }
+          else {
+            all[m].status = 1
+            all[m].rentPark = using.rentNumber
+            all[m].expectedRevenue = option[0].income
+          }
+
+
           m = m + 1
           //ofc.cleanparkingtime(option)
         }
@@ -457,8 +453,21 @@ exports.gethistory = async (ctx, next) => {
               t.status = option[i].status
               t.kind = option[i].kind
               t.parkLocation = option[i].location
-              t.fee = option[i].pay
-              if (option[i].pay == null) { t.fee = 0 }
+
+              if (option[i].status == 2) {
+                ft = option[i].time
+                let st = ft.split(".")
+                st = st[0] + "-" + st[1] + "-" + st[2] + " " + st[3] + ":" + st[4] + ":00"
+                let et = year + "-" + month + "-" + day + " " + hour + ":" + minute + ":00"
+                let mi = ofc.GetDateDiff(st, et)
+                await fc.selectparkingtime("parking", option[i].parking, function (op) {
+                  if (op != "") {
+                    t.fee = op[0].price * mi / 60
+                  }
+                  else { t.fee = 0 }
+                })
+              }
+              else { t.fee = option[i].pay }
               t.recordId = option[i].id
               t.parkId = option[i].parking
               t.plateNumber = option[i].carNumber
