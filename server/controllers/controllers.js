@@ -499,7 +499,7 @@ exports.gethistory = async (ctx, next) => {
               t.parkLongitude = option[i].lola.split(",")[0]
               all.push(t)
             }
-            //all = all.reverse()
+            all = all.reverse()
             ctx.body = all
           }
         }
@@ -531,8 +531,6 @@ exports.gethistory = async (ctx, next) => {
                 e = e.split(".")
               }
             }
-            var now = new Date()
-            var month = now.getMonth() + 1
             if (s != undefined) {
               if (s[1] == month) {
                 let t = new RESP
@@ -564,7 +562,7 @@ exports.gethistory = async (ctx, next) => {
               }
             }
           }
-          //all = all.reverse()
+          all = all.reverse()
           ctx.body = all.slice((ctx.request.body.delta - 1) * 10, ctx.request.body.delta * 10)
         }
         else if (ctx.request.body.filter == "all") {
@@ -635,7 +633,7 @@ exports.gethistory = async (ctx, next) => {
             t.plateNumber = option[i].carNumber
             all.push(t)
           }
-          //all = all.reverse()
+          all = all.reverse()
           ctx.body = all.slice((ctx.request.body.delta - 1) * 10, ctx.request.body.delta * 10)
         }
       }
@@ -703,7 +701,7 @@ exports.gethistory = async (ctx, next) => {
           if (ctx.request.body.parkId == option[i].parking) {
             let time = ctx.request.body.startDate.split("-").concat(ctx.request.body.startTime.split(":"))
             nt = year + "." + month + "." + day + "." + hour + "." + minute
-            fc.changeone("history", option[i].id, "time", option[i].time + "-" + nt)
+            fc.changeone("history", option[i].id, "time", nt)
             fc.changeone("history", option[i].id, "status", 2)
             break
           }

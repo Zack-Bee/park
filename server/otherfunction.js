@@ -311,7 +311,6 @@ exports.cleanparkingtime = function (option) {
 exports.GetDateDiff = function (startTime, endTime, diffType = "minute") {
 
   //将xxxx-xx-xx的时间格式，转换为 xxxx/xx/xx的格式
-
   startTime = startTime.replace(/\-/g, "/");
 
   endTime = endTime.replace(/\-/g, "/");
@@ -359,7 +358,6 @@ exports.GetDateDiff = function (startTime, endTime, diffType = "minute") {
       break;
 
   }
-
   return parseInt((eTime.getTime() - sTime.getTime()) / parseInt(divNum));
 
 }
