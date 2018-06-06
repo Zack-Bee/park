@@ -17,16 +17,10 @@
                             <view style="display: inline;">{{item.status === 2 ? "当前时间: " : "结束时间: "}}</view>
                             {{item.endDate + "-" + item.endTime}}
                         </view>
-                        <leftTimeIcon wx:if="{{item.status === 1 && item.kind === 4}}" type="underway" style="line-height:40rpx; color:#ff413a; font-size: 24rpx" />
-                        <view wx:if="{{item.status === 1 && item.kind === 4}}" class="text">
+                        <leftTimeIcon wx:if="{{item.status === 1}}" type="underway" style="line-height:40rpx; color:#ffd835; font-size: 24rpx" />
+                        <view wx:if="{{item.status === 1}}" class="text">
                             <view style="display: inline">
-                                {{item.leftMessage}}
-                            </view>
-                            <view style="color:#ff413a; display: inline">
-                                {{item.leftTime}}
-                            </view>
-                            <view style="display: inline">
-                                {{item.rightMessage}}
+                                添加时间: {{item.startDate + "-" + item.startTime}}
                             </view>
                         </view>
                     </view>
@@ -39,7 +33,7 @@
                     <view class="history-fee text  history-item">
                         <feeIcon type="balance-details" style="line-height:40rpx; color:#ff413a; font-size: 24rpx" />
                         <view class="text fee-detail">费用:
-                            <view class="fee-detail-text">{{" " + item.fee}}</view>
+                            <view class="fee-detail-text">{{" " + (item.fee === "null" ? "0" : item.fee)}}</view>
                         </view>
                     </view>
                 </view>
@@ -252,10 +246,7 @@ export default class History extends wepy.page {
                 parkLatitude: 41.685102,
                 parkLongitude: 123.426872,
                 plateNumber: '辽A-12345',
-                kind: 4,
-                leftTime: 12,
-                leftMessage: "还剩",
-                rightMessage: "分钟可以免费取消"
+                kind: 4
             },
             {
                 status: 2,
@@ -373,6 +364,7 @@ export default class History extends wepy.page {
         },
         cancel: (event) => {
             let dataset = event.currentTarget.dataset
+            console.log(dataset)
             post(`${config.host}/user/history`, {
                 type: 'cancel',
                 openId: this.$parent.globalData.openId,

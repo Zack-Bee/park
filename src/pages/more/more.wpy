@@ -69,8 +69,8 @@
 import wepy from 'wepy'
 import User from '../../components/user/user'
 import Parks from '../../components/parks/parks'
-import config from "../../config.js"
-import post from "../../common/post.js"
+import config from '../../config.js'
+import post from '../../common/post.js'
 
 export default class Index extends wepy.page {
     components = {
@@ -88,38 +88,6 @@ export default class Index extends wepy.page {
                 allPark: 100,
                 rentPark: 60,
                 parkId: 10086,
-                status: 0
-            },
-            {
-                parkName: 'zackbee',
-                kind: 4,
-                parkId: 10087,
-                rentPark: 0,
-                allPark: 1,
-                status: 0
-            },
-            {
-                parkName: '王邦铮的停车场',
-                kind: 3,
-                allPark: 100,
-                rentPark: 60,
-                parkId: 10086,
-                status: 1
-            },
-            {
-                parkName: 'zackbee',
-                kind: 4,
-                parkId: 10087,
-                rentPark: 0,
-                allPark: 1,
-                status: 1
-            },
-            {
-                parkName: '王邦铮的停车场',
-                kind: 3,
-                allPark: 100,
-                rentPark: 60,
-                parkId: 10086,
                 status: 2
             },
             {
@@ -128,23 +96,67 @@ export default class Index extends wepy.page {
                 parkId: 10087,
                 rentPark: 0,
                 allPark: 1,
-                status: 2,
+                status: 2
+            },
+            {
+                parkName: '王邦铮的停车场',
+                kind: 3,
+                allPark: 100,
+                rentPark: 60,
+                parkId: 10086,
+                status: 0
+            },
+            {
+                parkName: 'zackbee',
+                kind: 4,
+                parkId: 10087,
+                rentPark: 1,
+                allPark: 1,
+                status: 0
+            },
+            {
+                parkName: '王邦铮的停车场',
+                kind: 3,
+                allPark: 100,
+                rentPark: 60,
+                parkId: 10086,
+                status: 1
+            },
+            {
+                parkName: 'zackbee',
+                kind: 4,
+                parkId: 10087,
+                rentPark: 1,
+                allPark: 1,
+                status: 1,
                 expectedRevenue: 105
             }
         ]
     }
 
     onLoad() {
+        wx.showNavigationBarLoading()
         post(`${config.host}/user/parks`, {
-            type: "get",
+            type: 'get',
             openId: this.$parent.globalData.openId
-        }).then((res) => {
-            console.log(res)
-            // this.parks = res.data
-            // this.$apply()
-        }, (err) => {
-            console.log(err)
-        })
+        }).then(
+            (res) => {
+                wx.hideNavigationBarLoading()
+                console.log(res)
+                // this.parks = res.data
+                // this.$apply()
+            },
+            (err) => {
+                console.log(err)
+                wx.showModal({
+                    title: '抱歉',
+                    content: '服务器出现异常, 管理员正在抢修',
+                    success: function(res) {
+                    },
+                    showCancel: false
+                })
+            }
+        )
     }
 
     config = {
@@ -152,16 +164,28 @@ export default class Index extends wepy.page {
     }
 
     onShow() {
+        wx.showNavigationBarLoading()
         post(`${config.host}/user/parks`, {
-            type: "get",
+            type: 'get',
             openId: this.$parent.globalData.openId
-        }).then((res) => {
-            console.log(res)
-            // this.parks = res.data
-            // this.$apply()
-        }, (err) => {
-            console.log(err)
-        })
+        }).then(
+            (res) => {
+                wx.hideNavigationBarLoading()
+                console.log(res)
+                // this.parks = res.data
+                // this.$apply()
+            },
+            (err) => {
+                console.log(err)
+                wx.showModal({
+                    title: '抱歉',
+                    content: '服务器出现异常, 管理员正在抢修',
+                    success: function(res) {
+                    },
+                    showCancel: false
+                })
+            }
+        )
     }
 
     methods = {

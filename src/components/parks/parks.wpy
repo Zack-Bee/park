@@ -22,17 +22,21 @@
                         <text class="park-number-rented">{{item.rentPark}}</text>
                         <text class="park-number-all">/{{item.allPark}}</text>
                     </view>
-                    <view wx:if="{{item.status === 1 && item.kind === 3}}" class="park-number">
-                        车位情况:
-                        <text class="park-number-rented">{{item.rentPark}}</text>
-                        <text class="park-number-all">/{{item.allPark}}</text>
+                    <view wx:if="{{item.status === 2}}" class="park-number">
+                        <text class="park-number-rented">审核中</text>
                     </view>
-                    <view></view>
+                    <view wx:if="{{item.status === 0}}" class="park-number">
+                        点击右侧按钮开放停车{{item.kind === 3 ? "场" : "位"}}
+                    </view>
+                    <view wx:if="{{item.status === 1 && item.kind === 4}}" class="park-number">
+                        预计收入:
+                        <text class="park-number-rented">{{item.expectedRevenue}}</text>
+                    </view>
                 </view>
             </view>
             <view class="vertical-wrapper">
-                <view class="switcher-wrapper">
-                    <view data-park-id="{{item.parkId}}" data-kind="{{item.kind}}" data-is-open="{{item.isOpen}}" class="zan-switch zan-switch--{{ item.isOpen ? 'on' : 'off' }} {{ disabled ? 'zan-swtich--disabled' : '' }}" checked="{{ checked }}" loading="{{ loading }}" disabled="{{ disabled }}" catchtap="onSwitchChange">
+                <view wx:if="{{item.status !== 2}}" class="switcher-wrapper">
+                    <view data-park-id="{{item.parkId}}" data-rent-park="{{item.rentPark}}" data-kind="{{item.kind}}" data-status="{{item.status}}" class="zan-switch zan-switch--{{ item.status === 1 ? 'on' : 'off' }} {{ disabled ? 'zan-swtich--disabled' : '' }}" checked="{{ checked }}" loading="{{ loading }}" disabled="{{ disabled }}" catchtap="onSwitchChange">
                         <view class="zan-switch__circle">
                             <view hidden="{{ true }}" class="zan-switch__loading"></view>
                         </view>
@@ -42,6 +46,7 @@
             </view>
         </view>
         <Dialog :show.sync="isDialogShow" :handleButtonClick="onDialogButtonClick" :handleMaskClick="hideDialog" :message.sync="dialogMessage" :buttons.sync="buttons" />
+        <Toptips :isShow.sync="isToptipsShow" :content="toptipsContent"/>
     </view>
 </template>
 
@@ -178,11 +183,13 @@ import Dialog from '../dialog/dialog'
 import post from '../../common/post.js'
 import config from '../../config.js'
 import Button from '../button/button'
+import Toptips from "../toptips/toptips"
 
 export default class Parks extends wepy.component {
     components = {
         Dialog,
-        Button
+        Button,
+        Toptips
     }
 
     props = {
@@ -201,14 +208,28 @@ export default class Parks extends wepy.component {
             } else {
                 console.log('will send request')
                 // 保存当前的parkId
-                let currentParkID = this.currentParkID
-                // post(config.host + "/user/parks")
-                this.parks.forEach((park) => {
-                    if (this.currentParkId === park.parkId) {
-                        park.isOpen = false
-                    }
-                })
+                let currentParkId = this.currentParkId
+
                 this.hideDialog()
+                this.$apply()
+                post(`${config.host}/user/parks`, {
+                    type: 'close',
+                    openId: this.$parent.$parent.globalData.openId,
+                    parkId: currentParkId
+                }).then(
+                    (res) => {
+                        console.log('has close')
+                        console.log(res)
+                        this.parks.forEach((park) => {
+                            if (currentParkId === park.parkId) {
+                                park.status = 0
+                            }
+                        })
+                    },
+                    (err) => {
+                        console.log(err)
+                    }
+                )
             }
         },
         hideDialog: (event) => {
@@ -243,7 +264,9 @@ export default class Parks extends wepy.component {
                     console.log(err)
                 }
             })
-        }
+        },
+        isToptipsShow: false,
+        toptipsContent: "该停车位正在被使用"
     }
 
     watch = {
@@ -256,8 +279,18 @@ export default class Parks extends wepy.component {
         onSwitchChange: (event) => {
             let data = event.currentTarget.dataset
             this.currentParkId = data.parkId
-            if (data.isOpen) {
+            if (data.status === 1) {
                 let parkName
+                if (data.rentPark > 0) {
+                    console.log("有车正在使用")
+                    this.isToptipsShow = true
+                    this.$apply()
+                    setTimeout(() => {
+                        this.isToptipsShow = false
+                        this.$apply()
+                    }, 1500)
+                    return
+                }
                 this.parks.forEach((park) => {
                     if (park.parkId === data.parkId) {
                         parkName = park.parkName
@@ -296,33 +329,5 @@ export default class Parks extends wepy.component {
         }
     }
 
-    onLoad() {
-        let openId = this.$parent.$parent.globalData.openId
-        console.log(openId)
-        let freshParkData = () => {
-            setTimeout(() => {
-                post(config.host + '/user/paks', {
-                    openId: openId,
-                    type: 'get'
-                }).then(
-                    (res) => {
-                        console.log(res)
-                        this.parks = res.data
-                        this.$apply()
-                    },
-                    (err) => {
-                        console.log(err)
-                    }
-                )
-
-                freshParkData()
-            }, 5 * 60 * 1000)
-        }
-        // freshParkData()
-    }
-
-    onShow() {
-        console.log('show')
-    }
 }
 </script>

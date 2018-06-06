@@ -188,8 +188,8 @@ export default class Closest extends wepy.component {
             }
             wx.openLocation({
                 name: this.parks[index].parkName,
-                latitude: this.parks[index].latitude,
-                longitude: this.parks[index].longitude,
+                latitude: Number(this.parks[index].latitude),
+                longitude: Number(this.parks[index].longitude),
                 scale: 18
             })
         }

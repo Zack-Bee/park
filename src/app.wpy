@@ -11,11 +11,11 @@ export default class extends wepy.app {
             'pages/more/more',
             'pages/publish-park/publish-park',
             'pages/search/search',
-            "pages/add-park/add-park",
-            "pages/plate-number/plate-number",
-            "pages/park-detail/park-detail",
-            "pages/history/history",
-            "pages/navigation/navigation"
+            'pages/add-park/add-park',
+            'pages/plate-number/plate-number',
+            'pages/park-detail/park-detail',
+            'pages/history/history',
+            'pages/navigation/navigation'
         ],
         window: {
             backgroundTextStyle: 'light',
@@ -72,19 +72,25 @@ export default class extends wepy.app {
             }
         })
 
-        wx.login({
-            success: (res) => {
-                post(config.loginUrl, { code: res.code }).then(
-                    (res) => {
-                        console.log(res)
-                        this.globalData.openId = res.data.openId
-                    },
-                    (err) => {
-                        console.log(err)
-                    }
-                )
-            }
-        })
+        let openId = wx.getStorageSync('openId')
+        if (!openId) {
+            wx.login({
+                success: (res) => {
+                    post(config.loginUrl, { code: res.code }).then(
+                        (res) => {
+                            console.log(res)
+                            this.globalData.openId = res.data.openId
+                            wx.setStorageSync('openId', this.globalData.openId)
+                        },
+                        (err) => {
+                            console.log(err)
+                        }
+                    )
+                }
+            })
+        } else {
+            this.globalData.openId = openId
+        }
     }
 }
 </script>
