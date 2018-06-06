@@ -32,7 +32,7 @@ exports.parks = async (ctx, next) => {
     this.allPark = "return err"
     this.rentNumber = "return err"
   }
-  await fc.selectallparking(function (opt) {
+  await fc.selectoneparking(ofc.part(ctx.request.body.latitude+","+ctx.request.body.longitude),function (opt) {
     if (opt != '') {
       option = opt
     }

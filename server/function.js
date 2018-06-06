@@ -1,11 +1,6 @@
-// const a = require('../server/models/owner');
-// const b = require('../server/models/parking');
-// const c = require('../server/models/parkingtime');
-// const d = require('../server/models/history');
-// const e = require('../server/models/user');
-let mysql = require('mysql');
-var async = require('async');
-
+const mysql = require('mysql');
+const async = require('async');
+const ofc = require('./otherfunction')
 var conn = mysql.createConnection({
   host: 'localhost',    //服务器端口
   user: 'root',           //数据库用户名
@@ -42,7 +37,8 @@ exports.addparking = function (openId, kind, name, location, lola, number, lease
   var ff = "'" + lola + "'"
   var gg = number
   var ii = "'" + lease + "'"
-  sql = 'insert into parking (openId, kind, name, location, lola, number, lease) values(' + bb + ',' + cc + ',' + dd + ',' + ee + ',' + ff + ',' + gg + ',' + ii + ')'
+  part=ofc.part(lola)
+  sql = 'insert into '+part+' (openId, kind, name, location, lola, number, lease) values(' + bb + ',' + cc + ',' + dd + ',' + ee + ',' + ff + ',' + gg + ',' + ii + ')'
   conn.query(sql, function (err, result) {
     if (err) throw err;
     console.log(result);
@@ -182,10 +178,10 @@ exports.selectowner = function (idORopenId, content, callback) {
     });
   })
 }
-exports.selectallparking = function (callback) {
+exports.selectoneparking = function (which,callback) {
   return new Promise(function (resolve, reject) {
     var option = new Array();
-    var sql = 'select * from parking'
+    var sql = 'select * from '+which
     query(sql, [1], function (err, rows, fields) {
       if (err) {
         reject(err);
@@ -195,15 +191,17 @@ exports.selectallparking = function (callback) {
           option.push({ 'id': rows[i].id, 'openId': rows[i].openId, 'kind': rows[i].kind, 'name': rows[i].name, 'location': rows[i].location, "lola": rows[i].lola, 'number': rows[i].number, 'lease': rows[i].lease, 'income': rows[i].income, 'isOpen': rows[i].isOpen });
         }
         callback(option)
+        //console.log(option)
       }
     })
-
   })
 }
+
 exports.selectparking = function (idORopenIdORkindORnameORlocationORlolaORnumberORleaseORincome, content, callback) {
   return new Promise(function (resolve, reject) {
     var option = new Array();
-    var sql = 'select * from parking where ' + String(idORopenIdORkindORnameORlocationORlolaORnumberORleaseORincome) + '=' + String(content)
+    part=ofc.part(lola)
+    var sql = 'select * from '+part+' where ' + String(idORopenIdORkindORnameORlocationORlolaORnumberORleaseORincome) + '=' + String(content)
     query(sql, [1], function (err, rows, fields) {
       if (err) {
         reject(err);

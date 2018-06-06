@@ -1,7 +1,83 @@
 const fc = require('./function')
+const ofc = require('./otherfunction')
 const mysql = require('mysql');
 const async = require('async');
 const request = require('request');
+exports.part = function (lola) {
+  la = parseFloat(lola.split(",")[0])
+  lo = parseFloat(lola.split(",")[1])
+  if (41.5 < la && la< 42.4) {
+    if (123.1 < lo && lo< 123.7) {
+      if (41.5 < la && la< 41.8 && 123.1 < lo && lo< 123.4) { return "shenyang1" }
+      else if (41.5 < la && la< 41.8 && 123.4 < lo && lo< 123.7) { return "shenyang2" }
+      else if (41.8 < la && la< 42.1 && 123.1 < lo && lo< 123.4) { return "shenyang3" }
+      else if (41.8 < la && la< 42.1 && 123.4 < lo && lo< 123.7) { return "shenyang4" }
+      else if (42.1 < la && la< 42.4 && 123.1 < lo && lo< 123.4) { return "shenyang5" }
+      else if (42.1 < la && la< 42.4 && 123.4 < lo && lo< 123.7) { return "shenyang6" }
+    }
+  }
+  else if (39.4 < la && la< 40.3) {
+    if (115.9 < lo && lo< 116.8) {
+      if (39.4 < la && la< 39.7 && 115.9 < lo && lo< 116.2) { return "beijing1" }
+      else if (39.4 < la && la< 39.7 && 116.2 < lo && lo< 116.5) { return "beijing2" }
+      else if (39.4 < la && la< 39.7 && 116.5 < lo && lo< 116.8) { return "beijing3" }
+      else if (39.7 < la && la< 40.0 && 115.9 < lo && lo< 116.2) { return "beijing4" }
+      else if (39.7 < la && la< 40.0 && 116.2 < lo && lo< 116.5) { return "beijing5" }
+      else if (39.7 < la && la< 40.0 && 116.5 < lo && lo< 116.8) { return "beijing6" }
+      else if (40.0 < la && la< 40.3 && 115.9 < lo && lo< 116.2) { return "beijing7" }
+      else if (40.0 < la && la< 40.3 && 116.2 < lo && lo< 116.5) { return "beijing8" }
+      else if (40.0 < la && la< 40.3 && 116.5 < lo && lo< 116.8) { return "beijing9" }
+    }
+  }
+  else if (45.6 < la && la< 45.9) {
+    if (126.5 < lo && lo< 126.8) {
+      return "haerbin"
+    }
+  }
+  else if (43.7 < la && la< 44.0) {
+    if (125.15 < lo && lo< 125.45) {
+      return "changchun"
+    }
+  }
+  else if (22.5 < la && la< 23.4) {
+    if (112.6 < lo && lo< 114.4) {
+      if (22.5 < la && la< 22.8 && 112.6 < lo && lo< 112.9) { return "guangshen1" }
+      else if (22.5 < la && la< 22.8 && 112.9 < lo && lo< 113.2) { return "guangshen2" }
+      else if (22.5 < la && la< 22.8 && 113.2 < lo && lo< 113.5) { return "guangshen3" }
+      else if (22.5 < la && la< 22.8 && 113.5 < lo && lo< 113.8) { return "guangshen4" }
+      else if (22.5 < la && la< 22.8 && 113.8 < lo && lo< 114.1) { return "guangshen5" }
+      else if (22.5 < la && la< 22.8 && 114.1 < lo && lo< 114.4) { return "guangshen6" }
+      else if (22.8 < la && la< 23.1 && 112.6 < lo && lo< 112.9) { return "guangshen7" }
+      else if (22.8 < la && la< 23.1 && 112.9 < lo && lo< 113.2) { return "guangshen8" }
+      else if (22.8 < la && la< 23.1 && 113.2 < lo && lo< 113.5) { return "guangshen9" }
+      else if (22.8 < la && la< 23.1 && 113.5 < lo && lo< 113.8) { return "guangshen10" }
+      else if (22.8 < la && la< 23.1 && 113.8 < lo && lo< 114.1) { return "guangshen11" }
+      else if (22.8 < la && la< 23.1 && 114.1 < lo && lo< 114.4) { return "guangshen12" }
+      else if (23.1 < la && la< 23.4 && 112.6 < lo && lo< 112.9) { return "guangshen13" }
+      else if (23.1 < la && la< 23.4 && 112.9 < lo && lo< 113.2) { return "guangshen14" }
+      else if (23.1 < la && la< 23.4 && 113.2 < lo && lo< 113.5) { return "guangshen15" }
+      else if (23.1 < la && la< 23.4 && 113.5 < lo && lo< 113.8) { return "guangshen16" }
+      else if (23.1 < la && la< 23.4 && 113.8 < lo && lo< 114.1) { return "guangshen17" }
+      else if (23.1 < la && la< 23.4 && 114.1 < lo && lo< 114.4) { return "guangshen18" }
+    }
+  }
+  else if (38.8 < la && la< 39.0) {
+    if (121.5 < lo && lo< 121.7) {
+      return "dalian"
+    }
+  }
+  else if (30.8 < la && la< 31.4) {
+    if (121.0 < lo && lo< 121.9) {
+      if (30.8 < la && la< 31.1 && 121.0 < lo && lo< 121.3) { return "shanghai1" }
+      else if (30.8 < la && la< 31.1 && 121.3 < lo && lo< 121.6) { return "shanghai2" }
+      else if (30.8 < la && la< 31.1 && 121.6 < lo && lo< 121.9) { return "shanghai3" }
+      else if (31.1 < la && la< 31.4 && 121.0 < lo && lo< 121.3) { return "shanghai4" }
+      else if (31.1 < la && la< 31.4 && 121.3 < lo && lo< 121.6) { return "shanghai5" }
+      else if (31.1 < la && la< 31.4 && 121.6 < lo && lo< 121.9) { return "shanghai6" }
+    }
+  }
+  else { return "parking" }
+}
 exports.getFlatternDistance = function (lat1, lng1, lat2, lng2, callback) {
   lat1 = parseFloat(lat1)
   lat2 = parseFloat(lat2)
@@ -60,18 +136,160 @@ exports.xcxlogin = function (code, callback) {
     })
   });
 }
+exports.selectallparking = async (callback) => {
+  let option=[]
+  await fc.selectoneparking("shenyang1",function(op){
+    option=option.concat(op)
+  })
+  await fc.selectoneparking("shenyang2",function(op){
+    option=option.concat(op)
+  })
+  await fc.selectoneparking("shenyang3",function(op){
+    option=option.concat(op)
+  })
+  await fc.selectoneparking("shenyang4",function(op){
+    option=option.concat(op)
+  })
+  await fc.selectoneparking("shenyang5",function(op){
+    console.log(op)
+    option=option.concat(op)
+  })
+  await fc.selectoneparking("shenyang6",function(op){
+    option=option.concat(op)
+  })
+  await fc.selectoneparking("shanghai1",function(op){
+    option=option.concat(op)
+  })
+  await fc.selectoneparking("shanghai2",function(op){
+    option=option.concat(op)
+  })
+  await fc.selectoneparking("shanghai3",function(op){
+    option=option.concat(op)
+  })
+  await fc.selectoneparking("shanghai4",function(op){
+    option=option.concat(op)
+  })
+  await fc.selectoneparking("shanghai5",function(op){
+    option=option.concat(op)
+  })
+  await fc.selectoneparking("shanghai6",function(op){
+    option=option.concat(op)
+  })
+  await fc.selectoneparking("beijing1",function(op){
+    option=option.concat(op)
+  })
+  await fc.selectoneparking("beijing2",function(op){
+    option=option.concat(op)
+  })
+  await fc.selectoneparking("beijing3",function(op){
+    option=option.concat(op)
+  })
+  await fc.selectoneparking("beijing4",function(op){
+    option=option.concat(op)
+  })
+  await fc.selectoneparking("beijing5",function(op){
+    option=option.concat(op)
+  })
+  await fc.selectoneparking("beijing6",function(op){
+    option=option.concat(op)
+  })
+
+  await fc.selectoneparking("beijing7",function(op){
+    option=option.concat(op)
+  })
+  await fc.selectoneparking("beijing8",function(op){
+    option=option.concat(op)
+  })
+  await fc.selectoneparking("beijing9",function(op){
+    option=option.concat(op)
+  })
+  await fc.selectoneparking("guangshen1",function(op){
+    option=option.concat(op)
+  })
+  await fc.selectoneparking("guangshen2",function(op){
+    option=option.concat(op)
+  })
+  await fc.selectoneparking("guangshen3",function(op){
+    option=option.concat(op)
+  })
+  await fc.selectoneparking("guangshen4",function(op){
+    option=option.concat(op)
+  })
+  await fc.selectoneparking("guangshen5",function(op){
+    option=option.concat(op)
+  })
+  await fc.selectoneparking("guangshen6",function(op){
+    option=option.concat(op)
+  })
+
+  await fc.selectoneparking("guangshen7",function(op){
+    option=option.concat(op)
+  })
+  await fc.selectoneparking("guangshen8",function(op){
+    option=option.concat(op)
+  })
+  await fc.selectoneparking("guangshen9",function(op){
+    option=option.concat(op)
+  })
+
+  await fc.selectoneparking("guangshen10",function(op){
+    option=option.concat(op)
+  })
+  await fc.selectoneparking("guangshen12",function(op){
+    option=option.concat(op)
+  })
+  await fc.selectoneparking("guangshen13",function(op){
+    option=option.concat(op)
+  })
+  await fc.selectoneparking("guangshen14",function(op){
+    option=option.concat(op)
+  })
+  await fc.selectoneparking("guangshen15",function(op){
+    option=option.concat(op)
+  })
+  await fc.selectoneparking("guangshen16",function(op){
+    option=option.concat(op)
+  })
+
+  await fc.selectoneparking("guangshen17",function(op){
+    option=option.concat(op)
+  })
+  await fc.selectoneparking("guangshen18",function(op){
+    option=option.concat(op)
+  })
+  await fc.selectoneparking("guangshen11",function(op){
+    option=option.concat(op)
+  })
+  await fc.selectoneparking("haerbin",function(op){
+    option=option.concat(op)
+  })
+  await fc.selectoneparking("changchun",function(op){
+    option=option.concat(op)
+  })
+  await fc.selectoneparking("dalian",function(op){
+    option=option.concat(op)
+  })
+  await fc.selectoneparking("parking",function(op){
+    option=option.concat(op)
+    callback(option)
+  })
+}
+
+  
+
+
 exports.addpt = function () {
-  fc.selectallparking(function(option){
-    for(let i=0;i<option.length;i++){
-      fc.selectparkingtime("parking",option[i].id,function(opt){
-        if(opt==''){
-          fc.addparkingtime(option[i].id, "2018.1.1.8.00-2020.1.7.22.00",4,0,4)
+  ofc.selectallparking(function (option) {
+    for (let i = 0; i < option.length; i++) {
+      fc.selectparkingtime("parking", option[i].id, function (opt) {
+        if (opt == '') {
+          fc.addparkingtime(option[i].id, "2018.1.1.8.00-2020.1.7.22.00", 4, 0, 4)
         }
       })
     }
   })
 }
-exports.addtest = function (a, b, c, d, city) {
+exports.addtest = function (a, b, c, d, city,num) {
   return new Promise(function (resolve, reject) {
     function randomNum(minNum, maxNum) {
       switch (arguments.length) {
@@ -98,7 +316,8 @@ exports.addtest = function (a, b, c, d, city) {
     let aa = randomNum(a * 1000000, b * 1000000) / 1000000
     let bb = randomNum(c * 1000000, d * 1000000) / 1000000
     //H4CBZ-CPYWK-2ZOJO-ACLVD-POMLE-FBBDZ
-    request('http://apis.map.qq.com/ws/geocoder/v1/?location=' + aa + ',' + bb + '&key=42TBZ-EHSKS-IULOI-62K2Q-IKAA6-HDB2E&get_poi=1', function (error, response, body) {
+    key=["IISBZ-ZGSCK-HHCJO-ASLUG-KEFLF-44BK6","MD4BZ-Y53KG-DBAQX-IFQCN-34SB3-ZEBMX","CBCBZ-KDNCV-KAKPQ-UXCIY-XJO52-MYFVE","42TBZ-EHSKS-IULOI-62K2Q-IKAA6-HDB2E","H4CBZ-CPYWK-2ZOJO-ACLVD-POMLE-FBBDZ,"]
+    request('http://apis.map.qq.com/ws/geocoder/v1/?location=' + aa + ',' + bb + '&key='+key[num], function (error, response, body) {
       //console.log(body)      
       if (error) {
         reject(error);
