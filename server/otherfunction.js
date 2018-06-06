@@ -151,7 +151,6 @@ exports.selectallparking = async (callback) => {
     option=option.concat(op)
   })
   await fc.selectoneparking("shenyang5",function(op){
-    console.log(op)
     option=option.concat(op)
   })
   await fc.selectoneparking("shenyang6",function(op){
