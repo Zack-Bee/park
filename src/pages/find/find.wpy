@@ -98,9 +98,7 @@ export default class Index extends wepy.page {
                     break
                 }
                 case '企业': {
-                    this.showParks = newValue.filter((park) => (
-                        park.kind !== 4
-                    ))
+                    this.showParks = newValue.filter((park) => park.kind !== 4)
                     this.markers = this.showParks.map((park) => ({
                         title: park.parkName,
                         latitude: park.latitude,
@@ -126,9 +124,7 @@ export default class Index extends wepy.page {
                     break
                 }
                 case '个人': {
-                    this.showParks = newValue.filter((park) => (
-                        park.kind === 4
-                    ))
+                    this.showParks = newValue.filter((park) => park.kind === 4)
                     this.markers = this.showParks.map((park) => ({
                         title: park.parkName,
                         latitude: park.latitude,
@@ -186,9 +182,9 @@ export default class Index extends wepy.page {
                     break
                 }
                 case '企业': {
-                    this.showParks = this.parks.filter((park) => (
-                        park.kind !== 4
-                    ))
+                    this.showParks = this.parks.filter(
+                        (park) => park.kind !== 4
+                    )
                     this.markers = this.showParks.map((park) => ({
                         title: park.parkName,
                         latitude: park.latitude,
@@ -214,9 +210,9 @@ export default class Index extends wepy.page {
                     break
                 }
                 case '个人': {
-                    this.showParks = this.parks.filter((park) => (
-                        park.kind === 4
-                    ))
+                    this.showParks = this.parks.filter(
+                        (park) => park.kind === 4
+                    )
                     this.markers = this.showParks.map((park) => ({
                         title: park.parkName,
                         latitude: park.latitude,
@@ -246,7 +242,7 @@ export default class Index extends wepy.page {
     }
 
     getParks() {
-        Promise.all([
+        return Promise.all([
             post(`${config.host}/parks`, {
                 longitude: this.longitude,
                 latitude: this.latitude,
@@ -289,6 +285,11 @@ export default class Index extends wepy.page {
         this.mapHeight = this.$parent.globalData.mapHeight
         this.mapWidth = this.$parent.globalData.mapWidth
         console.log(this.mapHeight, this.mapWidth)
+        wx.showLoading({
+            title: '加载停车位信息中',
+            mask: true
+        })
+        wx.showNavigationBarLoading()
         wx.getLocation({
             //获得用户当前位置
             type: 'gcj02',
@@ -298,7 +299,20 @@ export default class Index extends wepy.page {
                 this.initLongitude = res.longitude
                 this.initLatitude = res.latitude
                 this.$apply()
-                this.getParks()
+                this.getParks().then(
+                    () => {
+                        wx.hideLoading()
+                        wx.hideNavigationBarLoading()
+                    },
+                    () => {
+                        wx.showModal({
+                            title: '抱歉',
+                            content: '服务器出现异常, 管理员正在抢修',
+                            success: function(res) {},
+                            showCancel: false
+                        })
+                    }
+                )
             }
         })
     }
@@ -329,7 +343,17 @@ export default class Index extends wepy.page {
                         res.longitude !== this.longitude ||
                         this.latitude !== res.latitude
                     ) {
-                        this.getParks()
+                        this.getParks(
+                            () => {},
+                            () => {
+                                wx.showModal({
+                                    title: '抱歉',
+                                    content: '服务器出现异常, 管理员正在抢修',
+                                    success: function(res) {},
+                                    showCancel: false
+                                })
+                            }
+                        )
                     }
                     console.log('\nsame location\n')
                     this.sameTime++
