@@ -48,8 +48,8 @@ exports.parks = async (ctx, next) => {
       })
       if (distance < 1000 * range) {
         await fc.selectparkingtime("parking", option[i].id, function (op) {
-          t = new message
           if(op!=''){
+          t = new message
           t.parkName = option[i].name
           t.kind = option[i].kind
           t.price = op[0].price
@@ -102,8 +102,8 @@ exports.userparks = async (ctx, next) => {
     }
 
     await fc.selectparking("openId", "'" + ctx.request.body.openId + "'", function (option) {
-      if(option!=''){
       parking = option
+      if(option!=''){
       let t
       for (i = 0; i < option.length; i++) {
         if (option[i].kind == 3) {
@@ -256,8 +256,8 @@ exports.userparks = async (ctx, next) => {
       this.revenue = "return err"
     }
     await fc.selectparking("id", ctx.request.body.parkId, function (option) {
-      if(option!=''){
       parking = option
+      if(option!=''){
       let t
       t = new KIND
       t.parkName = option[0].name
@@ -273,8 +273,7 @@ exports.userparks = async (ctx, next) => {
       }
     })
     await fc.selectparkingtime("parking", parking[0].id, function (option) {
-      if(option!=''){
-      if (option) {
+      if (option!='') {
         let time = option[0].time
         time = time.split("-")
         let start = time[0]
@@ -305,14 +304,13 @@ exports.userparks = async (ctx, next) => {
         all.endTime = null
         all.revenue = null
       }
-    }
+    
     })
     ctx.response.body = all
   }
 
   else if (ctx.request.body.type == "close") {
     fc.changeone("parking", ctx.request.body.parkId, "isOpen", 0)
-    
     fc.selectparkingtime("parking", ctx.request.body.parkId,function(option) {
       if(option!=''){
       for (let i = 0; i < option.length; i++) {
@@ -607,6 +605,7 @@ exports.gethistory = async (ctx, next) => {
         ctx.body = all.slice((ctx.request.body.delta - 1) * 10, ctx.request.body.delta * 10)
       }
     }
+    else{ctx.body=[]}
     })
   }
   else if (ctx.request.body.type == "add") {
