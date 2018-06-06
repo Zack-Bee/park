@@ -420,6 +420,12 @@ exports.upload = async (ctx, next) => {
 }
 
 exports.gethistory = async (ctx, next) => {
+  let now = new Date()
+  let year = now.getFullYear()
+  let month = now.getMonth() + 1
+  let day = now.getDate()
+  let hour = now.getHours()
+  let minute = now.getMinutes()
   ctx.response.status = 200;
   if (ctx.request.body.type == "get") {
     await fc.selecthistory("openId", "'" + ctx.request.body.openId + "'", function (option) {
@@ -610,12 +616,7 @@ exports.gethistory = async (ctx, next) => {
     })
   }
   else if (ctx.request.body.type == "add") {
-    let now = new Date()
-    let year = now.getFullYear()
-    let month = now.getMonth() + 1
-    let day = now.getDate()
-    let hour = now.getHours()
-    let minute = now.getMinutes()
+
     let err = 0
     await fc.selecthistory("openid", "'" + ctx.request.body.openId + "'", function (option) {
       if (option != '') {
@@ -684,12 +685,6 @@ exports.gethistory = async (ctx, next) => {
     })
   }
   else if (ctx.request.body.type == "cancel") {
-    let now = new Date()
-    let year = now.getFullYear()
-    let month = now.getMonth() + 1
-    let day = now.getDate()
-    let hour = now.getHours()
-    let minute = now.getMinutes()
     await fc.selecthistory("openid", "'" + ctx.request.body.openId + "'", function (option) {
       if (option != '') {
         for (let i = option.length - 1; i >= 0; i--) {
@@ -697,7 +692,7 @@ exports.gethistory = async (ctx, next) => {
             if (option[i].status == 1) {
               fc.changeone("history", option[i].id, "status", 0)
               nt = year + "." + month + "." + day + "." + hour + "." + minute
-              fc.changeone("history", option[i].id, "time",  option[i].time + "-" + nt)
+              fc.changeone("history", option[i].id, "time", option[i].time + "-" + nt)
               ctx.body = { 1: "ok" }
             }
             else if (option[i].status == 0) {
