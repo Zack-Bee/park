@@ -696,8 +696,8 @@ exports.gethistory = async (ctx, next) => {
           if (ctx.request.body.carNumber == option[i].carNumber) {
             if (option[i].status == 1) {
               fc.changeone("history", option[i].id, "status", 0)
-              nt = time[0] + "." + time[1] + "." + time[2] + "." + time[3] + "." + time[4]
-              fc.changeone("history", option[i].id, "time", nt)
+              nt = year + "." + month + "." + day + "." + hour + "." + minute
+              fc.changeone("history", option[i].id, "time",  option[i].time + "-" + nt)
               ctx.body = { 1: "ok" }
             }
             else if (option[i].status == 0) {
