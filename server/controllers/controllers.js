@@ -648,8 +648,8 @@ exports.gethistory = async (ctx, next) => {
       for (let i = option.length - 1; i >= 0; i--) {
         if (ctx.request.body.parkId == option[i].parking) {
           let time = ctx.request.body.startDate.split("-").concat(ctx.request.body.startTime.split(":"))
-          nt = time[0] + "." + time[1] + "." + time[2] + "." + time[3] + "." + time[4]
-          fc.changeone("history", option[i].id, "time", nt)
+          nt = year + "." + month + "." + day + "." + hour + "." + minute
+          fc.changeone("history", option[i].id, "time",option[i].time+"-"+nt)
           fc.changeone("history", option[i].id, "status", 2)
           break
         }
@@ -657,11 +657,19 @@ exports.gethistory = async (ctx, next) => {
     })
   }
   else if (ctx.request.body.type == "cancel") {
+    let now = new Date()
+    let year = now.getFullYear()
+    let month = now.getMonth() + 1
+    let day = now.getDate()
+    let hour = now.getHours()
+    let minute = now.getMinutes()
     await fc.selecthistory("openid", "'" + ctx.request.body.openId + "'", function (option) {
       for (let i = option.length - 1; i >= 0; i--) {
         if (ctx.request.body.carNumber == option[i].carNumber) {
           if (option[i].status == 1) {
             fc.changeone("history", option[i].id, "status", 0)
+            nt = time[0] + "." + time[1] + "." + time[2] + "." + time[3] + "." + time[4]
+            fc.changeone("history", option[i].id, "time", nt)
             ctx.body = { 1: "ok" }
           }
           else if (option[i].status == 0) {
