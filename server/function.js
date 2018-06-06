@@ -61,7 +61,7 @@ exports.addparkingtime = function (parking, time, price, rentNumber, kind) {
     console.log(result);
   })
 }
-exports.addhistory = function (parking, time, pay, carNumber, parkLocation, openId, location,kind) {
+exports.addhistory = function (parking, time, pay, carNumber, parkLocation, openId, location, kind, unitPrice) {
   var bb = parking
   var cc = "'" + time + "'"
   var dd = "'" + pay + "'"
@@ -70,7 +70,8 @@ exports.addhistory = function (parking, time, pay, carNumber, parkLocation, open
   var gg = "'" + openId + "'"
   var hh = "'" + location + "'"
   var ii = kind
-  sql = 'insert into history (parking, time, pay, carNumber,lola, openId,location,kind) values(' + bb + ',' + cc + ',' + dd + ',' + ee + ',' + ff + ',' + gg + ',' + hh +',' + ii + ')'
+  var jj = unitPrice
+  sql = 'insert into history (parking, time, pay, carNumber,lola, openId,location,kind,unitPrice) values(' + bb + ',' + cc + ',' + dd + ',' + ee + ',' + ff + ',' + gg + ',' + hh + ',' + ii + jj + ')'
   conn.query(sql, function (err, result) {
     if (err) throw err;
     console.log(result);
@@ -245,7 +246,7 @@ exports.selecthistory = function (idORparkingORtimeORpayORcarNumberORparkingLoca
       } else {
         resolve(rows);
         for (var i = 0; i < rows.length; i++) {
-          option.push({ 'id': rows[i].id, 'parking': rows[i].parking, 'time': rows[i].time, 'pay': rows[i].pay, 'carNumber': rows[i].carNumber, 'lola': rows[i].lola, 'openId': rows[i].openId, 'status': rows[i].status, 'location': rows[i].location, 'kind': rows[i].kind });
+          option.push({ 'id': rows[i].id, 'parking': rows[i].parking, 'time': rows[i].time, 'pay': rows[i].pay, 'carNumber': rows[i].carNumber, 'lola': rows[i].lola, 'openId': rows[i].openId, 'status': rows[i].status, 'location': rows[i].location, 'kind': rows[i].kind, 'unitPrice': rows[i].unitPrice });
         }
         callback(option)
       }

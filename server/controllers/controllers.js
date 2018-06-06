@@ -460,14 +460,12 @@ exports.gethistory = async (ctx, next) => {
                 st = st[0] + "-" + st[1] + "-" + st[2] + " " + st[3] + ":" + st[4] + ":00"
                 let et = year + "-" + month + "-" + day + " " + hour + ":" + minute + ":00"
                 let mi = ofc.GetDateDiff(st, et)
-                await fc.selectparkingtime("parking", option[i].parking, function (op) {
-                  if (op != "") {
-                    t.fee = op[0].price * mi / 60
-                  }
-                  else { t.fee = 0 }
-                })
+                if (mi < 30) { mi = 30 }
+                t.fee = option[i].unitPrice * mi / 60
               }
-              else { t.fee = option[i].pay }
+              else {
+                t.fee = option[i].pay
+              }
               t.recordId = option[i].id
               t.parkId = option[i].parking
               t.plateNumber = option[i].carNumber
@@ -541,8 +539,18 @@ exports.gethistory = async (ctx, next) => {
                 t.status = option[i].status
                 t.kind = option[i].kind
                 t.parkLocation = option[i].location
-                t.fee = option[i].pay
-                if (option[i].pay == null) { t.fee = 0 }
+                if (option[i].status == 2) {
+                  ft = option[i].time
+                  let st = ft.split(".")
+                  st = st[0] + "-" + st[1] + "-" + st[2] + " " + st[3] + ":" + st[4] + ":00"
+                  let et = year + "-" + month + "-" + day + " " + hour + ":" + minute + ":00"
+                  let mi = ofc.GetDateDiff(st, et)
+                  if (mi < 30) { mi = 30 }
+                  t.fee = option[i].unitPrice * mi / 60
+                }
+                else {
+                  t.fee = option[i].pay
+                }
                 t.recordId = option[i].id
                 t.parkId = option[i].parking
                 t.startTime = s[3] + ":" + s[4]
@@ -592,8 +600,18 @@ exports.gethistory = async (ctx, next) => {
             t.status = option[i].status
             t.kind = option[i].kind
             t.parkLocation = option[i].location
-            t.fee = option[i].pay
-            if (option[i].pay == null) { t.fee = 0 }
+            if (option[i].status == 2) {
+              ft = option[i].time
+              let st = ft.split(".")
+              st = st[0] + "-" + st[1] + "-" + st[2] + " " + st[3] + ":" + st[4] + ":00"
+              let et = year + "-" + month + "-" + day + " " + hour + ":" + minute + ":00"
+              let mi = ofc.GetDateDiff(st, et)
+              if (mi < 30) { mi = 30 }
+              t.fee = option[i].unitPrice * mi / 60
+            }
+            else {
+              t.fee = option[i].pay
+            }
             t.recordId = option[i].id
             t.parkId = option[i].parking
             if (e == undefined) { var e = [] }
@@ -661,7 +679,7 @@ exports.gethistory = async (ctx, next) => {
             if (JSON.parse(body).result.pois != "") {
               fc.selectparking("id", ctx.request.body.parkId, function (o) {
                 if (o != '') {
-                  fc.addhistory(ctx.request.body.parkId, year + "." + month + "." + day + "." + hour + "." + minute, null, ctx.request.body.carNumber, ctx.request.body.longitude + "," + ctx.request.body.latitude, ctx.request.body.openId, JSON.parse(body).result.formatted_addresses.recommend, o[0].kind)
+                  fc.addhistory(ctx.request.body.parkId, year + "." + month + "." + day + "." + hour + "." + minute, null, ctx.request.body.carNumber, ctx.request.body.longitude + "," + ctx.request.body.latitude, ctx.request.body.openId, JSON.parse(body).result.formatted_addresses.recommend, o[0].kind, ctx.request.body.price)
                   ctx.body = { result: "ok" }
                 }
               })
@@ -727,13 +745,9 @@ exports.gethistory = async (ctx, next) => {
             st = st[0] + "-" + st[1] + "-" + st[2] + " " + st[3] + ":" + st[4] + ":00"
             let et = ctx.request.body.endDate + " " + ctx.request.body.endTime + ":00"
             let mi = ofc.GetDateDiff(st, et)
-            fc.selectparkingtime("parking", ctx.request.body.parkId, function (op) {
-              if (op != "") {
-                let pay = op[0].price * mi / 60
-                fc.changeone("history", option[i].id, "pay", pay)
-              }
+            let pay = option[i].unitPrice * mi / 60
+            fc.changeone("history", option[i].id, "pay", pay)
 
-            })
             let time = ctx.request.body.endDate.split("-").concat(ctx.request.body.endTime.split(":"))
             nt = ft + "-" + time[0] + "." + time[1] + "." + time[2] + "." + time[3] + "." + time[4]
             fc.changeone("history", option[i].id, "time", nt)
