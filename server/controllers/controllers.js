@@ -426,7 +426,7 @@ exports.gethistory = async (ctx, next) => {
             this.parkId = "return err"
             this.parkLatitude = "return err"
             this.parkLongitude = "return err"
-            this.carNumber =  "return err"
+            this.plateNumber =  "return err"
           }
 
           for (let i = 0; i < option.length; i++) {
@@ -438,7 +438,7 @@ exports.gethistory = async (ctx, next) => {
             if (option[i].pay == null) { t.fee = 0 }
             t.recordId = option[i].id
             t.parkId = option[i].parking
-            t.carNumber = option[i].carNumber
+            t.plateNumber = option[i].carNumber
             let time = option[i].time
             if (time != undefined) {
               time = time.split("-")
@@ -488,7 +488,7 @@ exports.gethistory = async (ctx, next) => {
           this.parkId = "return err"
           this.parkLatitude = "return err"
           this.parkLongitude = "return err"
-          this.carNumber =  "return err"
+          this.plateNumber =  "return err"
         }
         for (let i = 0; i < option.length; i++) {
           let time = option[i].time
@@ -519,7 +519,7 @@ exports.gethistory = async (ctx, next) => {
               t.endDate = e[0] + "-" + e[1] + "-" + e[2]
               t.parkLatitude = option[i].lola.split(",")[1]
               t.parkLongitude = option[i].lola.split(",")[0]
-              t.carNumber = option[i].carNumber
+              t.plateNumber = option[i].carNumber
               all.push(t)
             }
           }
@@ -542,7 +542,7 @@ exports.gethistory = async (ctx, next) => {
           this.parkId = "return err"
           this.parkLatitude = "return err"
           this.parkLongitude = "return err"
-          this.carNumber =  "return err"
+          this.plateNumber =  "return err"
         }
         for (let i = 0; i < option.length; i++) {
           let time = option[i].time
@@ -582,7 +582,7 @@ exports.gethistory = async (ctx, next) => {
           t.endDate = e[0] + "-" + e[1] + "-" + e[2]
           t.parkLatitude = option[i].lola.split(",")[1]
           t.parkLongitude = option[i].lola.split(",")[0]
-          t.carNumber = option[i].carNumber
+          t.plateNumber = option[i].carNumber
           all.push(t)
         }
         //all = all.reverse()
