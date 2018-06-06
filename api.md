@@ -82,7 +82,7 @@ eg:
     parkName: "zackbee",
     kind: 4,
     parkId: 10087,
-    status: 2
+    status: 2,
     expectedRevenue: 100.5
 }]
 ```
@@ -223,7 +223,7 @@ eg:
 {
     kind: 3,
     parkName: "王邦铮的停车场",
-    isOpen: true,
+    status: true,
     openType: "weekly",
     startDay: "1",
     endDay: "7",

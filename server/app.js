@@ -50,5 +50,11 @@ await a(41.682577,42.183758,123.184917,123.680410,"沈阳",20)
 // await a(30.9422800642,31.3653637325,121.1572265625,121.7697143555,"上海",500)
 }
 //b()
+fc.selectallparking(function(option){
+  for(i=0;i<option.length;i++){
+  ofc.income(option[i].id)
+}
+})
+
 app.use(router.routes());
 app.use(main);
