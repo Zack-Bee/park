@@ -12,6 +12,7 @@ exports.login = async (ctx, next) => {
   var res = await ofc.xcxlogin(code, c);
 }
 exports.parks = async (ctx, next) => {
+  ctx.response.status = 200;
   let all = []
   let lo = ctx.request.body.longitude
   let la = ctx.request.body.latitude
@@ -68,6 +69,7 @@ exports.parks = async (ctx, next) => {
 }
 
 exports.userparks = async (ctx, next) => {
+  ctx.response.status = 200;
   var userparkserr
   if (ctx.request.body.type == "get") {
     var all = []
@@ -305,6 +307,7 @@ exports.userparks = async (ctx, next) => {
 }
 
 exports.userplatenumber = async (ctx, next) => {
+  ctx.response.status = 200;
   if (ctx.request.body.type == "get") {
     let openId = ctx.request.body.openId
     let carNumber
@@ -423,51 +426,53 @@ exports.gethistory = async (ctx, next) => {
             this.parkId = "return err"
             this.parkLatitude = "return err"
             this.parkLongitude = "return err"
+            this.carNumber =  "return err"
           }
-        
-        for (let i = 0; i < option.length; i++) {
-          let t = new RESP
-          t.status = option[i].status
-          t.kind = option[i].kind
-          t.parkLocation = option[i].location
-          t.fee = option[i].pay
-          if (option[i].pay == null) { t.fee = 0 }
-          t.recordId = option[i].id
-          t.parkId = option[i].parking
-          let time = option[i].time
-          if (time != undefined) {
-            time = time.split("-")
-            var s = time[0]
-            var e = time[1]
-            s = s.split(".")
-            if (e != undefined) {
-              e = e.split(".")
+
+          for (let i = 0; i < option.length; i++) {
+            let t = new RESP
+            t.status = option[i].status
+            t.kind = option[i].kind
+            t.parkLocation = option[i].location
+            t.fee = option[i].pay
+            if (option[i].pay == null) { t.fee = 0 }
+            t.recordId = option[i].id
+            t.parkId = option[i].parking
+            t.carNumber = option[i].carNumber
+            let time = option[i].time
+            if (time != undefined) {
+              time = time.split("-")
+              var s = time[0]
+              var e = time[1]
+              s = s.split(".")
+              if (e != undefined) {
+                e = e.split(".")
+              }
             }
+            if (e == undefined) { var e = [] }
+            if (s == undefined) { var s = [] }
+            if (e[0] == undefined) { e[0] = null }
+            if (e[1] == undefined) { e[1] = null }
+            if (e[2] == undefined) { e[2] = null }
+            if (e[3] == undefined) { e[3] = null }
+            if (e[4] == undefined) { e[4] = null }
+            if (s[0] == undefined) { s[0] = null }
+            if (s[1] == undefined) { s[1] = null }
+            if (s[2] == undefined) { s[2] = null }
+            if (s[3] == undefined) { s[3] = null }
+            if (s[4] == undefined) { s[4] = null }
+            t.startTime = s[3] + ":" + s[4]
+            t.startDate = s[0] + "-" + s[1] + "-" + s[2]
+            t.endTime = e[3] + ":" + e[4]
+            t.endDate = e[0] + "-" + e[1] + "-" + e[2]
+            t.parkLatitude = option[i].lola.split(",")[1]
+            t.parkLongitude = option[i].lola.split(",")[0]
+            all.push(t)
           }
-          if (e == undefined) { var e = [] }
-          if (s == undefined) { var s = [] }
-          if (e[0] == undefined) { e[0] = null }
-          if (e[1] == undefined) { e[1] = null }
-          if (e[2] == undefined) { e[2] = null }
-          if (e[3] == undefined) { e[3] = null }
-          if (e[4] == undefined) { e[4] = null }
-          if (s[0] == undefined) { s[0] = null }
-          if (s[1] == undefined) { s[1] = null }
-          if (s[2] == undefined) { s[2] = null }
-          if (s[3] == undefined) { s[3] = null }
-          if (s[4] == undefined) { s[4] = null }
-          t.startTime = s[3] + ":" + s[4]
-          t.startDate = s[0] + "-" + s[1] + "-" + s[2]
-          t.endTime = e[3] + ":" + e[4]
-          t.endDate = e[0] + "-" + e[1] + "-" + e[2]
-          t.parkLatitude = option[i].lola.split(",")[1]
-          t.parkLongitude = option[i].lola.split(",")[0]
-          all.push(t)
+          //all = all.reverse()
+          ctx.body = all
         }
-        //all = all.reverse()
-        ctx.body = all
       }
-    }
       else if (ctx.request.body.filter == "month") {
         all = []
         function RESP() {
@@ -483,6 +488,7 @@ exports.gethistory = async (ctx, next) => {
           this.parkId = "return err"
           this.parkLatitude = "return err"
           this.parkLongitude = "return err"
+          this.carNumber =  "return err"
         }
         for (let i = 0; i < option.length; i++) {
           let time = option[i].time
@@ -513,6 +519,7 @@ exports.gethistory = async (ctx, next) => {
               t.endDate = e[0] + "-" + e[1] + "-" + e[2]
               t.parkLatitude = option[i].lola.split(",")[1]
               t.parkLongitude = option[i].lola.split(",")[0]
+              t.carNumber = option[i].carNumber
               all.push(t)
             }
           }
@@ -535,6 +542,7 @@ exports.gethistory = async (ctx, next) => {
           this.parkId = "return err"
           this.parkLatitude = "return err"
           this.parkLongitude = "return err"
+          this.carNumber =  "return err"
         }
         for (let i = 0; i < option.length; i++) {
           let time = option[i].time
@@ -574,6 +582,7 @@ exports.gethistory = async (ctx, next) => {
           t.endDate = e[0] + "-" + e[1] + "-" + e[2]
           t.parkLatitude = option[i].lola.split(",")[1]
           t.parkLongitude = option[i].lola.split(",")[0]
+          t.carNumber = option[i].carNumber
           all.push(t)
         }
         //all = all.reverse()
@@ -582,6 +591,12 @@ exports.gethistory = async (ctx, next) => {
     })
   }
   else if (ctx.request.body.type == "add") {
+    let now = new Date()
+    let year = now.getFullYear()
+    let month = now.getMonth() + 1
+    let day = now.getDate()
+    let hour = now.getHours()
+    let minute = now.getMinutes()
     let err = 0
     await fc.selecthistory("openid", "'" + ctx.request.body.openId + "'", function (option) {
       for (let i = option.length - 1; i >= 0; i--) {
@@ -589,6 +604,7 @@ exports.gethistory = async (ctx, next) => {
         if (ctx.request.body.carNumber == option[i].carNumber) {
           if (option[i].status == 1) {
             fc.changeone("history", option[i].id, "status", 0)
+            fc.changeone("history", option[i].id, "pay", 0)
           }
           else if (option[i].status == 3) {
             ctx.body = { message: "上一单未支付" }
@@ -611,7 +627,7 @@ exports.gethistory = async (ctx, next) => {
           if (JSON.parse(body).result != null) {
             if (JSON.parse(body).result.pois != "") {
               fc.selectparking("id", ctx.request.body.parkId, function (o) {
-                fc.addhistory(ctx.request.body.parkId, null, null, ctx.request.body.carNumber, ctx.request.body.longitude + "," + ctx.request.body.latitude, ctx.request.body.openId, JSON.parse(body).result.formatted_addresses.recommend, o[0].kind)
+                fc.addhistory(ctx.request.body.parkId, year + "." + month + "." + day + "." + hour + "." + minute, null, ctx.request.body.carNumber, ctx.request.body.longitude + "," + ctx.request.body.latitude, ctx.request.body.openId, JSON.parse(body).result.formatted_addresses.recommend, o[0].kind)
                 ctx.body = { result: "ok" }
               })
 
