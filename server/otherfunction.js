@@ -60,7 +60,17 @@ exports.xcxlogin = function (code, callback) {
     })
   });
 }
-
+exports.addpt = function () {
+  fc.selectallparking(function(option){
+    for(let i=0;i<option.length;i++){
+      fc.selectparkingtime("parking",option[i].id,function(opt){
+        if(opt==''){
+          fc.addparkingtime(option[i].id, "2018.1.1.8.00-2020.1.7.22.00",4,0,4)
+        }
+      })
+    }
+  })
+}
 exports.addtest = function (a, b, c, d, city) {
   return new Promise(function (resolve, reject) {
     function randomNum(minNum, maxNum) {
@@ -96,7 +106,7 @@ exports.addtest = function (a, b, c, d, city) {
       else if (response.statusCode == 200) {
         resolve(body);
         if (JSON.parse(body).result.pois != "") {
-          fc.addparking(city + "-test", 3, city + "测试停车场", JSON.parse(body).result.formatted_addresses.recommend, aa + "," + bb, 1, "/upload/odpVJ5Lutx-arHao6e2yZXr_tUOs")
+          fc.addparking(city + "-test", 4, city + "测试停车场", JSON.parse(body).result.formatted_addresses.recommend, aa + "," + bb, 1, "/upload/odpVJ5Lutx-arHao6e2yZXr_tUOs")
         }
       }
       else {
