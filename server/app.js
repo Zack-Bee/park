@@ -54,7 +54,7 @@ b = async () => {
     num++
   }
 }
-b()
+//b()
 ofc.addpt()
 app.use(router.routes());
 app.use(main);
