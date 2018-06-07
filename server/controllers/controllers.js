@@ -410,7 +410,9 @@ exports.upload = async (ctx, next) => {
       }
     })
     if (ctx.request.body.fields.imageNumber == ctx.request.body.fields.index) {
+      console.log(ctx.request.body.openId)
       await fc.selectparking(ctx.request.body.latitude + "," + ctx.request.body.longitude,"openId",ctx.request.body.openId, function (option) {
+        console.log(option)
         if (option != "") {
           ctx.body = { parkId: option[option.length-1].id }
           fs.rename(`upload/` + ctx.request.body.fields.openId, `upload/` + ctx.request.body.fields.openId + "-" + option[option.length-1].id, function (err) {
