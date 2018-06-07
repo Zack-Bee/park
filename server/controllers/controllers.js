@@ -47,6 +47,8 @@ exports.parks = async (ctx, next) => {
       await ofc.getFlatternDistance(la, lo, la1, lo1, function (o) {
         distance = o
       })
+      console.log(distance)
+      console.log(range)
       if (distance < 1000 * range) {
         await fc.selectparkingtime("parking", option[i].id, function (op) {
           if (op != '') {
