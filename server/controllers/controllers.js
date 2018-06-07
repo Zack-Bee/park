@@ -12,7 +12,7 @@ exports.login = async (ctx, next) => {
   var res = await ofc.xcxlogin(code, c);
 }
 exports.parks = async (ctx, next) => {
- ctx.response.status = 200;
+  ctx.response.status = 200;
   let all = []
   let lo = ctx.request.body.longitude
   let la = ctx.request.body.latitude
@@ -138,7 +138,6 @@ exports.userparks = async (ctx, next) => {
             userparkserr = 1
           }
           all.push(t)
-          console.log(all)
         }
       }
     })
@@ -149,26 +148,31 @@ exports.userparks = async (ctx, next) => {
     var m = 0
     while (m < parking.length) {
       await fc.selectparkingtime("parking", parking[m].id, function (option) {
+        console.log(1,all[m].rentPark)
         if (option != '') {
           using = ofc.using(option)
           if (using == 0) {
-            //fc.changeparking("parking", all[m].parkId, "isOpen", 0)
+            fc.changeparking("parking", all[m].parkId, "isOpen", 0)
             //all[m].status = 0
             all[m].rentPark = 0
             all[m].expectedRevenue = 0
+            console.log(2,all[m].rentPark)
           }
           else {
             //all[m].status = 1
             all[m].rentPark = using.rentNumber
             all[m].expectedRevenue = option[0].income
+            console.log(3,all[m].rentPark)
           }
         }
         else {
-         // fc.changeparking("parking", all[m].parkId, "isOpen", 0)
+          // fc.changeparking("parking", all[m].parkId, "isOpen", 0)
           //all[m].status = 0
           all[m].rentPark = 0
           all[m].expectedRevenue = 0
+          console.log(4,all[m].rentPark)
         }
+        console.log(5,all[m].rentPark)
         m = m + 1
       })
     }
@@ -269,7 +273,6 @@ exports.userparks = async (ctx, next) => {
       this.revenue = "return err"
     }
     let lola = ctx.request.body.latitude + "," + ctx.request.body.longitude
-    console.log(ctx.request.body.parkId,lola)
     await fc.selectparking(lola, "id", ctx.request.body.parkId, function (option) {
       parking = option
       if (option != '') {
