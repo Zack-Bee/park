@@ -1449,6 +1449,27 @@ UNLOCK TABLES;
 
 
 --
+-- Table structure for table `allparking`
+--
+
+DROP TABLE IF EXISTS `allparking`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `allparking` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `allparking`
+--
+
+LOCK TABLES `allparking` WRITE;
+/*!40000 ALTER TABLE `allparking` DISABLE KEYS */;
+/*!40000 ALTER TABLE `allparking` ENABLE KEYS */;
+UNLOCK TABLES;
+--
 -- Table structure for table `parkingtime`
 --
 

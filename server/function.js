@@ -29,20 +29,50 @@ exports.addowner = function (openId) {
     console.log(result);
   })
 }
-exports.addparking = function (openId, kind, name, location, lola, number, lease) {
-  var bb = "'" + openId + "'"
-  var cc = kind
-  var dd = "'" + name + "'"
-  var ee = "'" + location + "'"
-  var ff = "'" + lola + "'"
-  var gg = number
-  var ii = "'" + lease + "'"
-  part=ofc.part(lola)
-  sql = 'insert into '+part+' (openId, kind, name, location, lola, number, lease) values(' + bb + ',' + cc + ',' + dd + ',' + ee + ',' + ff + ',' + gg + ',' + ii + ')'
-  conn.query(sql, function (err, result) {
-    if (err) throw err;
-    console.log(result);
+function getid(callback) {
+  var option = new Array();
+  return new Promise(function (resolve, reject) {
+    var option = new Array();
+    sql1 = 'insert into allparking() values();'
+    sql2 = 'select last_insert_id()'
+    conn.query(sql1, function (err, result) {
+      if (err) {
+        throw err;
+        reject(err);
+      }
+      console.log(result);
+      conn.query(sql2, function (err, data) {
+        if (err) {
+          console.log('查询数据失败');
+          reject(err);
+        } else {
+          callback(data[0]['last_insert_id()'])
+          resolve(data);
+        }
+      })
+    })
   })
+}
+
+exports.addparking = function (openId, kind, name, location, lola, number, lease) {
+  var aa
+  getid(function (data) {
+    aa = data
+    var bb = "'" + openId + "'"
+    var cc = kind
+    var dd = "'" + name + "'"
+    var ee = "'" + location + "'"
+    var ff = "'" + lola + "'"
+    var gg = number
+    var ii = "'" + lease + "'"
+    part = ofc.part(lola)
+    sql = 'insert into ' + part + ' (id,openId, kind, name, location, lola, number, lease) values(' + aa + ',' + bb + ',' + cc + ',' + dd + ',' + ee + ',' + ff + ',' + gg + ',' + ii + ')'
+    conn.query(sql, function (err, result) {
+      if (err) throw err;
+      console.log(result);
+    })
+  })
+
 }
 
 exports.addparkingtime = function (parking, time, price, rentNumber, kind) {
@@ -178,10 +208,10 @@ exports.selectowner = function (idORopenId, content, callback) {
     });
   })
 }
-exports.selectoneparking = function (which,callback) {
+exports.selectoneparking = function (which, callback) {
   return new Promise(function (resolve, reject) {
     var option = new Array();
-    var sql = 'select * from '+which
+    var sql = 'select * from ' + which
     query(sql, [1], function (err, rows, fields) {
       if (err) {
         reject(err);
@@ -200,8 +230,8 @@ exports.selectoneparking = function (which,callback) {
 exports.selectparking = function (idORopenIdORkindORnameORlocationORlolaORnumberORleaseORincome, content, callback) {
   return new Promise(function (resolve, reject) {
     var option = new Array();
-    part=ofc.part(lola)
-    var sql = 'select * from '+part+' where ' + String(idORopenIdORkindORnameORlocationORlolaORnumberORleaseORincome) + '=' + String(content)
+    part = ofc.part(lola)
+    var sql = 'select * from ' + part + ' where ' + String(idORopenIdORkindORnameORlocationORlolaORnumberORleaseORincome) + '=' + String(content)
     query(sql, [1], function (err, rows, fields) {
       if (err) {
         reject(err);
