@@ -64,6 +64,7 @@ exports.parks = async (ctx, next) => {
             t.allPark = option[i].number
             t.rentNumber = op[0].rentNumber
             all.push(t)
+            console.log(all)
           }
         })
       }
