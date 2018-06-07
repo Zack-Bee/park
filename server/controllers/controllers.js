@@ -148,7 +148,6 @@ exports.userparks = async (ctx, next) => {
     var m = 0
     while (m < parking.length) {
       await fc.selectparkingtime("parking", parking[m].id, function (option) {
-        console.log(1,all[m].rentPark)
         if (option != '') {
           using = ofc.using(option)
           if (using == 0) {
@@ -156,13 +155,11 @@ exports.userparks = async (ctx, next) => {
             //all[m].status = 0
             all[m].rentPark = 0
             all[m].expectedRevenue = 0
-            console.log(2,all[m].rentPark)
           }
           else {
             //all[m].status = 1
             all[m].rentPark = using.rentNumber
             all[m].expectedRevenue = option[0].income
-            console.log(3,all[m].rentPark)
           }
         }
         else {
@@ -170,9 +167,7 @@ exports.userparks = async (ctx, next) => {
           //all[m].status = 0
           all[m].rentPark = 0
           all[m].expectedRevenue = 0
-          console.log(4,all[m].rentPark)
         }
-        console.log(5,all[m].rentPark)
         m = m + 1
       })
     }
@@ -188,7 +183,6 @@ exports.userparks = async (ctx, next) => {
     })
   }
   else if (ctx.request.body.type == "open") {
-    console.log(ctx.request.body.price)
     fc.changeparking("parking", ctx.request.body.parkId, "isOpen", 1)
     await fc.selectparkingtime("parking", ctx.request.body.parkId, function (option) {
       if (option != '') {
