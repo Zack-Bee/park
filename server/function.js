@@ -51,6 +51,7 @@ function getid(lola,openId,callback) {
           reject(err);
         } else {
           callback(data[0]['last_insert_id()'])
+          console.log(data[0]['last_insert_id()'])
           resolve(data);
         }
       })
@@ -69,7 +70,10 @@ exports.addparking = function (openId, kind, name, location, lola, number, lease
     var ff = "'" + lola + "'"
     var gg = number
     var ii = "'" + lease + "'"
+    console.log(data)
+    
     part = ofc.part(lola)
+    console.log(part)
     sql = 'insert into ' + part + ' (id,openId, kind, name, location, lola, number, lease) values(' + aa + ',' + bb + ',' + cc + ',' + dd + ',' + ee + ',' + ff + ',' + gg + ',' + ii + ')'
     conn.query(sql, function (err, result) {
       if (err) throw err;
