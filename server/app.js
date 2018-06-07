@@ -55,6 +55,6 @@ b = async () => {
   }
 }
 //b()
-//ofc.addpt()
+ofc.addpt()
 app.use(router.routes());
 app.use(main);

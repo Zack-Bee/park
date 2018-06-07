@@ -12,7 +12,8 @@ exports.login = async (ctx, next) => {
   var res = await ofc.xcxlogin(code, c);
 }
 exports.parks = async (ctx, next) => {
-  ctx.response.status = 200;
+  console.log("?????") 
+ ctx.response.status = 200;
   let all = []
   let lo = ctx.request.body.longitude
   let la = ctx.request.body.latitude
