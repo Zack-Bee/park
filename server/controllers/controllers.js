@@ -105,7 +105,7 @@ exports.userparks = async (ctx, next) => {
       this.longitude= "return err"
     }
 
-    await fc.selectparking("openId", "'" + ctx.request.body.openId + "'", function (option) {
+    await fc.selectParkingByopenId(ctx.request.body.openId, function (option) {
       parking = option
       if (option != '') {
         let t
@@ -148,7 +148,7 @@ exports.userparks = async (ctx, next) => {
         if (option != '') {
           using = ofc.using(option)
           if (using == 0) {
-            fc.changeone("parking", all[m].parkId, "status", 0)
+            fc.changeparking("parking", all[m].parkId, "status", 0)
             all[m].status = 0
             all[m].rentPark = 0
             all[m].expectedRevenue = 0
@@ -168,7 +168,8 @@ exports.userparks = async (ctx, next) => {
     ctx.response.body = all
   }
   else if (ctx.request.body.type == "delete") {
-    fc.deleteparking(ctx.request.body.parkId)
+    let lola=ctx.request.body.latitude+","+ctx.request.body.longitude
+    fc.deleteparking(lola,ctx.request.body.parkId)
     await fc.selectparkingtime("parking", ctx.request.body.parkId, function (option) {
       if (option != '') {
         fc.deleteparkingtime(option[0].id)
@@ -176,7 +177,7 @@ exports.userparks = async (ctx, next) => {
     })
   }
   else if (ctx.request.body.type == "open") {
-    fc.changeone("parking", ctx.request.body.parkId, "isOpen", 1)
+    fc.changeparking("parking", ctx.request.body.parkId, "isOpen", 1)
     await fc.selectparkingtime("parking", ctx.request.body.parkId, function (option) {
       if (option != '') {
         for (let i = 0; i < option.length; i++) {
@@ -244,7 +245,7 @@ exports.userparks = async (ctx, next) => {
       }
       ofc.income(ctx.request.body.parkId)
     }
-    fc.changeone("parking", ctx.request.body.parkId, "name", ctx.request.body.parkName)
+    fc.changeparking("parking", ctx.request.body.parkId, "name", ctx.request.body.parkName)
   }
   else if (ctx.request.body.type == "detail") {
     var all
@@ -316,7 +317,7 @@ exports.userparks = async (ctx, next) => {
   }
 
   else if (ctx.request.body.type == "close") {
-    fc.changeone("parking", ctx.request.body.parkId, "isOpen", 0)
+    fc.changeparking("parking", ctx.request.body.parkId, "isOpen", 0)
     fc.selectparkingtime("parking", ctx.request.body.parkId, function (option) {
       if (option != '') {
         for (let i = 0; i < option.length; i++) {
@@ -409,7 +410,7 @@ exports.upload = async (ctx, next) => {
       }
     })
     if (ctx.request.body.fields.imageNumber == ctx.request.body.fields.index) {
-      await fc.selectparking("openId", '"' + ctx.request.body.fields.openId + '"', function (option) {
+      await fc.selectParkingByopenId(ctx.request.body.openId, function (option) {
         if (option != "") {
           ctx.body = { parkId: option[option.length - 1].id }
         }

@@ -1,6 +1,7 @@
 const mysql = require('mysql');
 const async = require('async');
 const ofc = require('./otherfunction')
+const fc = require('./function')
 var conn = mysql.createConnection({
   host: 'localhost',    //服务器端口
   user: 'root',           //数据库用户名
@@ -140,7 +141,7 @@ exports.idGetTableName= function (partId,callback) {
   })
 }
 exports.changeparking = function (pph, id, what, value) {
-  fc.idGetTableName(40,function(option){
+  fc.idGetTableName(id,function(option){
     tableName=option[0].tableName
     var modSql = 'UPDATE '+tableName+' SET ' + what + ' = ?' + ' WHERE id = ?';
   var modSqlParams = [value, id];
@@ -150,8 +151,8 @@ exports.changeparking = function (pph, id, what, value) {
     }
   })
   })
-  
 }
+
 exports.changeou = function (ou, openId, what, value) {
   var modSql = 'UPDATE ' + ou + ' SET ' + what + ' = ?' + ' WHERE openId = ?';
   var modSqlParams = [value, openId];
@@ -171,9 +172,16 @@ exports.deleteowner = function (openId) {
   })
 }
 
-exports.deleteparking = function deleteparking(id) {
-  var delSql = 'DELETE FROM parking where id=' + String(id);
+exports.deleteparking = function deleteparking(lola,id) {
+  part = ofc.part(lola)
+  var delSql = 'DELETE FROM '+part+' where id=' + String(id);
   conn.query(delSql, function (err, result) {
+    if (err) {
+      console.log('[DELETE ERROR] - ', err.message);
+    }
+  })
+  var delSql2 = 'DELETE FROM allparking where id=' + String(id);
+  conn.query(delSql2, function (err, result) {
     if (err) {
       console.log('[DELETE ERROR] - ', err.message);
     }
@@ -255,53 +263,75 @@ exports.selectoneparking = function (which, callback) {
   })
 }
 
-function selectInUnit(part,openId,callback) {
-  return new Promise(function (resolve, reject) {
-    var op = new Array();
-    sql1='select * from '+part+' where openId='+'"'+ String(openId)+'"'
-    query(sql1, [1], function (err, rows, fields) {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(rows);
-        for (let i = 0; i < rows.length; i++) {
-          op.push({ 'id': rows[i].id, 'openId': rows[i].openId, 'kind': rows[i].kind, 'name': rows[i].name, 'location': rows[i].location, "lola": rows[i].lola, 'number': rows[i].number, 'lease': rows[i].lease, 'income': rows[i].income, 'isOpen': rows[i].isOpen });
-        }
-        callback(op)
-      }
-    })
-  })
-}
-exports.selectParkingByopenId = async (callback) => {
-  await selectParkingByopenId1("沈阳-test",function(option){
-    callback(option)
-  })
-}
-selectParkingByopenId1= function (openId,callback) {
-  return new Promise(function (resolve, reject) {
-    var parts = new Array();
-    var option = new Array();
-    var sql = 'select * from allparking where openId='+'"'+ String(openId)+'"'
-    query(sql, [1], function (err, rowss, fields) {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(rowss);
-        for (var i = 0; i < rowss.length; i++) {
-          parts.push(rowss[i].tableName)
-        }
-        parts=ofc.unique(parts)
-        for(let x=0;x<parts.length;x++){
-        selectInUnit(parts[x],openId,function(op){
-            option=option.concat(op)
-            callback(option)
-        })
-      }
-      }
-    })
+function selectInUnit(part, openId) {
+  return new Promise(function(resolve, reject) {
+      var op = new Array()
+      sql1 =
+          'select * from ' +
+          part +
+          ' where openId=' +
+          '"' +
+          String(openId) +
+          '"'
+      query(sql1, [1], function(err, rows, fields) {
+          if (err) {
+              reject(err)
+          } else {
+              let parks = rows.map((park) => ({
+                  id: park.id,
+                  openId: park.openId,
+                  kind: park.kind,
+                  name: park.name,
+                  location: park.location,
+                  lola: park.lola,
+                  number: park.number,
+                  lease: park.lease,
+                  income: park.income,
+                  isOpen: park.isOpen
+              }))
+              resolve(parks)
+          }
+      })
   })
 }
 
+exports.selectParkingByopenId= async (openId,callback) => {
+  let a=await fc.selectParkingByopenId2(openId)
+  a = [].concat(...a)
+  callback(a)
+  }
+exports.selectParkingByopenId2 = async (openId) => {
+  return await fc.selectParkingByopenId1(openId)
+}
+
+exports.selectParkingByopenId1 = function(openId) {
+  return new Promise(function(resolve, reject) {
+      let parts = [],
+          option = [],
+          sql =
+          'select * from allparking where openId=' +
+          '"' +
+          String(openId) +
+          '"'
+      query(sql, [1], function(err, rowss, fields) {
+          if (err) {
+              reject(err)
+          } else {
+              for (let i = 0, len = rowss.length; i < len; i++) {
+                  parts.push(rowss[i].tableName)
+              }
+              parts = ofc.unique(parts) //对这个openid的停车场分别在哪个表里进行查重，就是得到哪几个分表里有这个openid的停车场的数组
+
+              let partsPromise = parts.map((part) => (
+                  selectInUnit(part, openId)
+              ))
+              Promise.all(partsPromise).then((options) => {
+                  resolve(options)
+              })
+          }
+      })
+  })
+}
 exports.selectparking = function (lola,idORopenIdORkindORnameORlocationORlolaORnumberORleaseORincome, content, callback) {
   return new Promise(function (resolve, reject) {
     var option = new Array();

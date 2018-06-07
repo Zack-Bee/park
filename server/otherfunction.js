@@ -591,7 +591,7 @@ exports.income = async (parkingId) => {
     let minute = parseInt(t[5]) - parseInt(t[2])
     let income = (hour * parkingtime.price + minute / 60 * parkingtime.price) * 7
     income = income.toFixed(1)
-    fc.changeone("parking", parkingtime.parking, "income", income)
+    fc.changeparking("parking", parkingtime.parking, "income", income)
   }
   else if (parkingtime.kind == 1) {
     let t = parkingtime.time.split("-")
@@ -600,7 +600,7 @@ exports.income = async (parkingId) => {
     let minute = parseInt(t[9]) - parseInt(t[4])
     let income = (hour * parkingtime.price + minute / 60 * parkingtime.price) * 7
     income = income.toFixed(1)
-    fc.changeone("parking", parkingtime.parking, "income", income)
+    fc.changeparking("parking", parkingtime.parking, "income", income)
   }
 
 }
