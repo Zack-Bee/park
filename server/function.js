@@ -29,11 +29,14 @@ exports.addowner = function (openId) {
     console.log(result);
   })
 }
-function getid(callback) {
+
+function getid(lola,openId,callback) {
+  var aa = "'" + ofc.part(lola) + "'"
+  var bb = "'" + openId + "'"
   var option = new Array();
   return new Promise(function (resolve, reject) {
     var option = new Array();
-    sql1 = 'insert into allparking() values();'
+    sql1 = 'insert into allparking(tableName,openId) values(' + aa + ',' + bb + ')'
     sql2 = 'select last_insert_id()'
     conn.query(sql1, function (err, result) {
       if (err) {
@@ -56,7 +59,7 @@ function getid(callback) {
 
 exports.addparking = function (openId, kind, name, location, lola, number, lease) {
   var aa
-  getid(function (data) {
+  getid(lola,openId,function (data) {
     aa = data
     var bb = "'" + openId + "'"
     var cc = kind
@@ -72,7 +75,6 @@ exports.addparking = function (openId, kind, name, location, lola, number, lease
       console.log(result);
     })
   })
-
 }
 
 exports.addparkingtime = function (parking, time, price, rentNumber, kind) {
@@ -221,13 +223,59 @@ exports.selectoneparking = function (which, callback) {
           option.push({ 'id': rows[i].id, 'openId': rows[i].openId, 'kind': rows[i].kind, 'name': rows[i].name, 'location': rows[i].location, "lola": rows[i].lola, 'number': rows[i].number, 'lease': rows[i].lease, 'income': rows[i].income, 'isOpen': rows[i].isOpen });
         }
         callback(option)
-        //console.log(option)
       }
     })
   })
 }
 
-exports.selectparking = function (idORopenIdORkindORnameORlocationORlolaORnumberORleaseORincome, content, callback) {
+function selectInUnit(part,openId,callback) {
+  return new Promise(function (resolve, reject) {
+    var op = new Array();
+    sql1='select * from '+part+' where openId='+'"'+ String(openId)+'"'
+    query(sql1, [1], function (err, rows, fields) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(rows);
+        for (let i = 0; i < rows.length; i++) {
+          op.push({ 'id': rows[i].id, 'openId': rows[i].openId, 'kind': rows[i].kind, 'name': rows[i].name, 'location': rows[i].location, "lola": rows[i].lola, 'number': rows[i].number, 'lease': rows[i].lease, 'income': rows[i].income, 'isOpen': rows[i].isOpen });
+        }
+        callback(op)
+      }
+    })
+  })
+}
+exports.selectParkingByopenId = async (callback) => {
+  await selectParkingByopenId1("沈阳-test",function(option){
+    callback(option)
+  })
+}
+selectParkingByopenId1= function (openId,callback) {
+  return new Promise(function (resolve, reject) {
+    var parts = new Array();
+    var option = new Array();
+    var sql = 'select * from allparking where openId='+'"'+ String(openId)+'"'
+    query(sql, [1], function (err, rowss, fields) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(rowss);
+        for (var i = 0; i < rowss.length; i++) {
+          parts.push(rowss[i].tableName)
+        }
+        parts=ofc.unique(parts)
+        for(let x=0;x<parts.length;x++){
+        selectInUnit(parts[x],openId,function(op){
+            option=option.concat(op)
+            callback(option)
+        })
+      }
+      }
+    })
+  })
+}
+
+exports.selectparking = function (lola,idORopenIdORkindORnameORlocationORlolaORnumberORleaseORincome, content, callback) {
   return new Promise(function (resolve, reject) {
     var option = new Array();
     part = ofc.part(lola)

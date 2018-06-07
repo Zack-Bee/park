@@ -101,7 +101,7 @@ exports.userparks = async (ctx, next) => {
       this.expectedRevenue = "return err"
     }
 
-    await fc.selectparking("openId", "'" + ctx.request.body.openId + "'", function (option) {
+    await fc.selectparking(ctx.request.body.lola,"openId", "'" + ctx.request.body.openId + "'", function (option) {
       parking = option
       if (option != '') {
         let t
