@@ -32,7 +32,7 @@ exports.parks = async (ctx, next) => {
     this.allPark = "return err"
     this.rentNumber = "return err"
   }
-  await fc.selectoneparking(ofc.part(ctx.request.body.latitude+","+ctx.request.body.longitude),function (opt) {
+  await fc.selectoneparking(ofc.part(ctx.request.body.latitude + "," + ctx.request.body.longitude), function (opt) {
     if (opt != '') {
       option = opt
     }
@@ -90,8 +90,8 @@ exports.userparks = async (ctx, next) => {
       this.rentPark = "return err"
       this.parkId = "return err"
       this.status = "return err"
-      this.latitude= "return err"
-      this.longitude= "return err"
+      this.latitude = "return err"
+      this.longitude = "return err"
     }
 
     function KIND4() {
@@ -102,8 +102,8 @@ exports.userparks = async (ctx, next) => {
       this.allPark = "return err"
       this.rentPark = "return err"
       this.expectedRevenue = "return err"
-      this.latitude= "return err"
-      this.longitude= "return err"
+      this.latitude = "return err"
+      this.longitude = "return err"
     }
 
     await fc.selectParkingByopenId(ctx.request.body.openId, function (option) {
@@ -120,8 +120,8 @@ exports.userparks = async (ctx, next) => {
             t.rentPark = "waiting"
             t.parkId = option[i].id
             t.status = option[i].isOpen
-            t.latitude= option[i].lola.split(",")[0]
-            t.longitude= option[i].lola.split(",")[1]
+            t.latitude = option[i].lola.split(",")[0]
+            t.longitude = option[i].lola.split(",")[1]
           }
           else if (option[i].kind == 4) {
             t = new KIND4
@@ -132,8 +132,8 @@ exports.userparks = async (ctx, next) => {
             t.allPark = option[i].number
             t.rentPark = "waiting"
             t.expectedRevenue = "waiting"
-            t.latitude= option[i].lola.split(",")[0]
-            t.longitude= option[i].lola.split(",")[1]
+            t.latitude = option[i].lola.split(",")[0]
+            t.longitude = option[i].lola.split(",")[1]
           }
           else {
             ctx.body = { err: "kind不是3也不是4" }
@@ -143,10 +143,10 @@ exports.userparks = async (ctx, next) => {
         }
       }
     })
-    if (userparkserr == 1) { 
+    if (userparkserr == 1) {
       return
       console.log("err")
-     }
+    }
     var m = 0
     while (m < parking.length) {
       await fc.selectparkingtime("parking", parking[m].id, function (option) {
@@ -164,23 +164,21 @@ exports.userparks = async (ctx, next) => {
             all[m].rentPark = using.rentNumber
             all[m].expectedRevenue = option[0].income
           }
-
-
-          m = m + 1
-          //ofc.cleanparkingtime(option)
         }
-        else{
-          console.log(m)
-          all.splice(m,1)
-          m=m
+        else {
+          fc.changeparking("parking", all[m].parkId, "isOpen", 0)
+          all[m].status = 0
+          all[m].rentPark = 0
+          all[m].expectedRevenue = 0
         }
+        m = m + 1
       })
     }
     ctx.response.body = all
   }
   else if (ctx.request.body.type == "delete") {
-    let lola=ctx.request.body.latitude+","+ctx.request.body.longitude
-    fc.deleteparking(lola,ctx.request.body.parkId)
+    let lola = ctx.request.body.latitude + "," + ctx.request.body.longitude
+    fc.deleteparking(lola, ctx.request.body.parkId)
     await fc.selectparkingtime("parking", ctx.request.body.parkId, function (option) {
       if (option != '') {
         fc.deleteparkingtime(option[0].id)
@@ -272,8 +270,8 @@ exports.userparks = async (ctx, next) => {
       this.endTime = "return err"
       this.revenue = "return err"
     }
-    let lola=ctx.request.body.latitude+","+ctx.request.body.longitude
-    await fc.selectparking(lola,"id", ctx.request.body.parkId, function (option) {
+    let lola = ctx.request.body.latitude + "," + ctx.request.body.longitude
+    await fc.selectparking(lola, "id", ctx.request.body.parkId, function (option) {
       parking = option
       if (option != '') {
         let t
@@ -309,7 +307,7 @@ exports.userparks = async (ctx, next) => {
           if (start[2] == end[2]) { all.openType = "once" }
           else { all.openType = "date" }
           all.startDate = start[0] + "-" + start[1] + "-" + start[2]
-          all.endDate= end[0] + "-" + end[1] + "-" + end[2]
+          all.endDate = end[0] + "-" + end[1] + "-" + end[2]
           all.startTime = start[3] + ":" + start[4]
           all.endTime = end[3] + ":" + end[4]
         }
@@ -379,7 +377,7 @@ exports.upload = async (ctx, next) => {
   if (ctx.request.body.kind) {
     fc.addparking(ctx.request.body.openId,
       ctx.request.body.kind, null, null,
-      ctx.request.body.latitude + "," +  ctx.request.body.longitude, null, null)
+      ctx.request.body.latitude + "," + ctx.request.body.longitude, null, null)
     fc.selectowner("openId", '"' + ctx.request.body.openId + '"', function (option) {
       if (option == "") {
         fc.addowner('"' + ctx.request.body.openId + '"')
@@ -422,11 +420,11 @@ exports.upload = async (ctx, next) => {
     })
     if (ctx.request.body.fields.imageNumber == ctx.request.body.fields.index) {
       console.log(ctx.request.body.fields)
-      await fc.selectparking(ctx.request.body.fields.latitude + "," + ctx.request.body.fields.longitude,"openId","'"+ctx.request.body.fields.openId+"'", function (option) {
+      await fc.selectparking(ctx.request.body.fields.latitude + "," + ctx.request.body.fields.longitude, "openId", "'" + ctx.request.body.fields.openId + "'", function (option) {
         console.log(option)
         if (option != "") {
-          ctx.body = { parkId: option[option.length-1].id }
-          fs.rename(`upload/` + ctx.request.body.fields.openId, `upload/` + ctx.request.body.fields.openId + "-" + option[option.length-1].id, function (err) {
+          ctx.body = { parkId: option[option.length - 1].id }
+          fs.rename(`upload/` + ctx.request.body.fields.openId, `upload/` + ctx.request.body.fields.openId + "-" + option[option.length - 1].id, function (err) {
             if (err) {
               console.log("将文件名修改为openid+parkid失败");
             }
@@ -698,7 +696,7 @@ exports.gethistory = async (ctx, next) => {
         else if (response.statusCode == 200) {
           if (JSON.parse(body).result != null) {
             if (JSON.parse(body).result.pois != "") {
-              fc.selectparking(ctx.request.body.latitude + "," + ctx.request.body.longitude,"id", ctx.request.body.parkId, function (o) {
+              fc.selectparking(ctx.request.body.latitude + "," + ctx.request.body.longitude, "id", ctx.request.body.parkId, function (o) {
                 if (o != '') {
                   fc.addhistory(ctx.request.body.parkId, year + "." + month + "." + day + "." + hour + "." + minute, null, ctx.request.body.carNumber, ctx.request.body.longitude + "," + ctx.request.body.latitude, ctx.request.body.openId, JSON.parse(body).result.formatted_addresses.recommend, o[0].kind, ctx.request.body.price)
                   ctx.body = { result: "ok" }
