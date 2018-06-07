@@ -150,6 +150,7 @@ exports.userparks = async (ctx, next) => {
     var m = 0
     while (m < parking.length) {
       await fc.selectparkingtime("parking", parking[m].id, function (option) {
+        console.log(option)
         if (option != '') {
           using = ofc.using(option)
           if (using == 0) {
@@ -167,6 +168,11 @@ exports.userparks = async (ctx, next) => {
 
           m = m + 1
           //ofc.cleanparkingtime(option)
+        }
+        else{
+          console.log(m)
+          all.splice(m,1)
+          m=m
         }
       })
     }
