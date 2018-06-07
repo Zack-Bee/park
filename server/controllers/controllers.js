@@ -268,6 +268,7 @@ exports.userparks = async (ctx, next) => {
       this.revenue = "return err"
     }
     let lola = ctx.request.body.latitude + "," + ctx.request.body.longitude
+    console.log(ctx.request.body.parkId,lola)
     await fc.selectparking(lola, "id", ctx.request.body.parkId, function (option) {
       parking = option
       if (option != '') {
