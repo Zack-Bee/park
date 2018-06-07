@@ -35,7 +35,7 @@ function sleep(numberMillis) {
       return;
   }
 }
-var num = 2
+var num = 0
 a = async (a, b, c, d, e, max) => {
   for (let i = 0; i < max; i++) {
     await ofc.addtest(a, b, c, d, e, num)
@@ -43,7 +43,7 @@ a = async (a, b, c, d, e, max) => {
   }
 }
 b = async () => {
-  for(let z=0;z<9000;z=z+84){
+  for(let z=0;z<70000;z=z+84){
   while (num <= 10) {
     await a(41.5, 42.4, 123.1, 123.7, "沈阳", 12)
     await a(39.4, 40.3, 115.9, 116.8, "北京", 18)
@@ -53,11 +53,11 @@ b = async () => {
     await a(38.8, 39, 121.5, 121.7, "大连", 2)
     await a(30.8, 31.4, 121.0, 121.9, "上海", 12)
     num++
-    if(num=10){num=2}
+    if(num=10){num=0}
   }
   }
 }
-//b()
+b()
 ofc.addpt()
 app.use(router.routes());
 app.use(main);
