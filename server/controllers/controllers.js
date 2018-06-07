@@ -237,7 +237,6 @@ exports.userparks = async (ctx, next) => {
           + ctx.request.body.endTime.replace(/:/g, "."), null, null, 1)
       }
       else if (ctx.request.body.openType == "date") {
-        console.log(ctx.request.body.startDay,ctx.request.body.startTime,ctx.request.body.endDay,ctx.request.body.endTime)
         await fc.addparkingtime(ctx.request.body.parkId,
           ctx.request.body.startDay.replace(/-/g, ".") + "."
           + ctx.request.body.startTime.replace(/:/g, ".")
@@ -412,16 +411,17 @@ exports.upload = async (ctx, next) => {
     })
     if (ctx.request.body.fields.imageNumber == ctx.request.body.fields.index) {
       await fc.selectparking(ctx.request.body.latitude + "," + ctx.request.body.longitude,"lola","'"+ctx.request.body.latitude + "," + ctx.request.body.longitude+"'", function (option) {
+        console.log(option)
+        cnsole.log(option != "")
         if (option != "") {
           ctx.body = { parkId: option[0].id }
+          fs.rename(`upload/` + ctx.request.body.fields.openId, `upload/` + ctx.request.body.fields.openId + "-" + option[0].id, function (err) {
+            if (err) {
+              console.log("将文件名修改为openid+parkid失败");
+            }
+          })
         }
         else { ctx.body = { err: "该用户停车场上传失败" } }
-        console.log(option)
-        fs.rename(`upload/` + ctx.request.body.fields.openId, `upload/` + ctx.request.body.fields.openId + "-" + option[0].id, function (err) {
-          if (err) {
-            console.log("将文件名修改为openid+parkid失败");
-          }
-        })
       })
     }
   }
