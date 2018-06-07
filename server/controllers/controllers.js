@@ -239,7 +239,7 @@ exports.userparks = async (ctx, next) => {
           ctx.request.body.startDay + "."
           + ctx.request.body.startTime.replace(/:/g, ".")
           + "-" + ctx.request.body.endDay + "."
-          + ctx.request.body.endTime.replace(/:/g, "."), null, null, 0,ofc.income)
+          + ctx.request.body.endTime.replace(/:/g, "."), ctx.request.body.price, null, 0,ofc.income)
           
       }
       else if (ctx.request.body.openType == "once") {
@@ -247,7 +247,7 @@ exports.userparks = async (ctx, next) => {
           + "." + month + "." + day + "."
           + ctx.request.body.startTime.replace(/:/g, ".")
           + "-" + year + "." + month + "." + day + "."
-          + ctx.request.body.endTime.replace(/:/g, "."), null, null, 1,ofc.income)
+          + ctx.request.body.endTime.replace(/:/g, "."), ctx.request.body.price, null, 1,ofc.income)
           ofc.income(ctx.request.body.parkId)
       }
       else if (ctx.request.body.openType == "date") {
@@ -255,7 +255,7 @@ exports.userparks = async (ctx, next) => {
           ctx.request.body.startDay.replace(/-/g, ".") + "."
           + ctx.request.body.startTime.replace(/:/g, ".")
           + "-" + ctx.request.body.endDay.replace(/-/g, ".") + "."
-          + ctx.request.body.endTime.replace(/:/g, "."), null, null, 1,ofc.income)
+          + ctx.request.body.endTime.replace(/:/g, "."),ctx.request.body.price, null, 1,ofc.income)
           ofc.income(ctx.request.body.parkId)
       }
     }
