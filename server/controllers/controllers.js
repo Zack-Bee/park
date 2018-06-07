@@ -76,6 +76,7 @@ exports.userparks = async (ctx, next) => {
   ctx.response.status = 200;
   var userparkserr
   if (ctx.request.body.type == "get") {
+    console.log("get")
     var all = []
     var parking
     var parkingtime = []
@@ -106,6 +107,7 @@ exports.userparks = async (ctx, next) => {
     }
 
     await fc.selectParkingByopenId(ctx.request.body.openId, function (option) {
+      console.log(option)
       parking = option
       if (option != '') {
         let t
@@ -141,7 +143,10 @@ exports.userparks = async (ctx, next) => {
         }
       }
     })
-    if (userparkserr == 1) { return }
+    if (userparkserr == 1) { 
+      return
+      console.log("err")
+     }
     var m = 0
     while (m < parking.length) {
       await fc.selectparkingtime("parking", parking[m].id, function (option) {
