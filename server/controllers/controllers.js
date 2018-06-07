@@ -188,6 +188,7 @@ exports.userparks = async (ctx, next) => {
     })
   }
   else if (ctx.request.body.type == "open") {
+    console.log(ctx.request.body.price)
     fc.changeparking("parking", ctx.request.body.parkId, "isOpen", 1)
     await fc.selectparkingtime("parking", ctx.request.body.parkId, function (option) {
       if (option != '') {
