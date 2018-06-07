@@ -46,7 +46,6 @@ exports.parks = async (ctx, next) => {
       await ofc.getFlatternDistance(la, lo, la1, lo1, function (o) {
         distance = o
       })
-      console.log(i,distance)
       if (distance < 1000 * range) {
         await fc.selectparkingtime("parking", option[i].id, function (op) {
           if (op != '') {
@@ -64,14 +63,12 @@ exports.parks = async (ctx, next) => {
             t.allPark = option[i].number
             t.rentNumber = op[0].rentNumber
             all.push(t)
-            console.log(all)
           }
         })
       }
     }
     i = i + 1
   }
-  console.log("all",all)
   ctx.response.body = all
 }
 
@@ -154,7 +151,7 @@ exports.userparks = async (ctx, next) => {
         if (option != '') {
           using = ofc.using(option)
           if (using == 0) {
-            fc.changeparking("parking", all[m].parkId, "isOpen", 0)
+            //fc.changeparking("parking", all[m].parkId, "isOpen", 0)
             all[m].status = 0
             all[m].rentPark = 0
             all[m].expectedRevenue = 0
@@ -166,7 +163,7 @@ exports.userparks = async (ctx, next) => {
           }
         }
         else {
-          fc.changeparking("parking", all[m].parkId, "isOpen", 0)
+         // fc.changeparking("parking", all[m].parkId, "isOpen", 0)
           all[m].status = 0
           all[m].rentPark = 0
           all[m].expectedRevenue = 0
