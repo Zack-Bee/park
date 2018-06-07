@@ -82,7 +82,7 @@ exports.addparking = function (openId, kind, name, location, lola, number, lease
   })
 }
 
-exports.addparkingtime = function (parking, time, price, rentNumber, kind) {
+exports.addparkingtime = function (parking, time, price, rentNumber, kind,callback=function(a){console.log(a)}) {
   var bb = parking
   var cc = "'" + time + "'"
   var dd = "'" + price + "'"
@@ -93,6 +93,7 @@ exports.addparkingtime = function (parking, time, price, rentNumber, kind) {
     if (err) throw err;
     console.log(result);
   })
+  callback(parking)
 }
 exports.addhistory = function (parking, time, pay, carNumber, parkLocation, openId, location, kind, unitPrice) {
   var bb = parking
