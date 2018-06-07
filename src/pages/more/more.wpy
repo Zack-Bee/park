@@ -21,6 +21,15 @@
             </view>
         </view>
         <view class="padding" />
+        <view class="item" @tap="navigateToGuide">
+            <view class="item-icon-wrapper">
+                <image src="./guideIcon.png" style="width: 100%; height: 100%" />
+            </view>
+            <view class="item-text-wrapper">
+                <text>使用指南</text>
+            </view>
+        </view>
+        <view class="padding" />
         <Parks :parks.sync="parks" />
     </view>
 </template>
@@ -141,18 +150,29 @@ export default class Index extends wepy.page {
             openId: this.$parent.globalData.openId
         }).then(
             (res) => {
+                if (res.statusCode !== 200) {
+                    wx.showModal({
+                        title: '抱歉',
+                        content: '服务器出现异常, 管理员正在抢修',
+                        success: function(res) {},
+                        showCancel: false
+                    })
+                    return
+                }
                 wx.hideNavigationBarLoading()
                 console.log(res)
-                // this.parks = res.data
-                // this.$apply()
+                this.parks = res.data
+                console.log(typeof res.data[0].parkName)
+                console.log(res.data[0])
+                console.log(res.data[0].parkName)
+                this.$apply()
             },
             (err) => {
                 console.log(err)
                 wx.showModal({
                     title: '抱歉',
                     content: '服务器出现异常, 管理员正在抢修',
-                    success: function(res) {
-                    },
+                    success: function(res) {},
                     showCancel: false
                 })
             }
@@ -170,18 +190,26 @@ export default class Index extends wepy.page {
             openId: this.$parent.globalData.openId
         }).then(
             (res) => {
+                if (res.statusCode !== 200) {
+                    wx.showModal({
+                        title: '抱歉',
+                        content: '服务器出现异常, 管理员正在抢修',
+                        success: function(res) {},
+                        showCancel: false
+                    })
+                    return
+                }
                 wx.hideNavigationBarLoading()
                 console.log(res)
-                // this.parks = res.data
-                // this.$apply()
+                this.parks = res.data
+                this.$apply()
             },
             (err) => {
                 console.log(err)
                 wx.showModal({
                     title: '抱歉',
                     content: '服务器出现异常, 管理员正在抢修',
-                    success: function(res) {
-                    },
+                    success: function(res) {},
                     showCancel: false
                 })
             }
@@ -203,6 +231,17 @@ export default class Index extends wepy.page {
         navigateToHistory() {
             wx.navigateTo({
                 url: `../history/history`,
+                success: (res) => {
+                    console.log(res)
+                },
+                fail: (err) => {
+                    console.log(err)
+                }
+            })
+        },
+        navigateToGuide() {
+            wx.navigateTo({
+                url: `../guide/guide`,
                 success: (res) => {
                     console.log(res)
                 },

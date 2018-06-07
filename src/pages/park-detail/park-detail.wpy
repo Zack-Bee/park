@@ -8,33 +8,37 @@
             <view class="park-detail-desc">类别:</view>
             <view class="park-detail-value">{{kind === 3 ? "企业类停车场" : "个人类停车位"}}</view>
         </view>
-        <view class="park-detail">
-            <view class="park-detail-desc">经纬度:</view>
-            <view class="park-detail-value">{{location}}</view>
-        </view>
-        <view wx:if="{{startDate}}" class="park-detail">
+        <!-- <view class="park-detail"> -->
+            <!-- <view class="park-detail-desc">经纬度:</view> -->
+            <!-- <view class="park-detail-value">{{location}}</view> -->
+        <!-- </view> -->
+        <view wx:if="{{status === 1 && startDate}}" class="park-detail">
             <view class="park-detail-desc">开始日期</view>
             <view class="park-detail-value">{{startDate}}</view>
         </view>
-        <view wx:if="{{endDate}}" class="park-detail">
+        <view wx:if="{{status === 1 && endDate}}" class="park-detail">
             <view class="park-detail-desc">截止日期</view>
             <view class="park-detail-value">{{endDate}}</view>
         </view>
-        <view wx:if="{{startDay}}" class="park-detail">
+        <view wx:if="{{status === 1 && startDay}}" class="park-detail">
             <view class="park-detail-desc">开始日期</view>
-            <view class="park-detail-value">{{weeks[startDay - 1]}}</view>
+            <view class="park-detail-value">{{startDay}}</view>
         </view>
-        <view wx:if="{{endDay}}" class="park-detail">
+        <view wx:if="{{status === 1 && endDay}}" class="park-detail">
             <view class="park-detail-desc">截止日期</view>
-            <view class="park-detail-value">{{weeks[endDay - 1]}}</view>
+            <view class="park-detail-value">{{endDay}}</view>
         </view>
-        <view wx:if="{{startTime}}" class="park-detail">
+        <view wx:if="{{status === 1 && startTime}}" class="park-detail">
             <view class="park-detail-desc">开始时间</view>
             <view class="park-detail-value">{{startTime}}</view>
         </view>
-        <view wx:if="{{endTime}}" class="park-detail">
+        <view wx:if="{{status === 1 && endTime}}" class="park-detail">
             <view class="park-detail-desc">截止时间</view>
             <view class="park-detail-value">{{endTime}}</view>
+        </view>
+        <view class="park-detail">
+            <view class="park-detail-desc">本周预计收入</view>
+            <view class="park-detail-value">{{revenue == null ? "0" : revenue}}</view>
         </view>
         <view class="padding" />
         <Button type="danger" :loading.sync="isButtonLoading" :bindTap="showDialog">
@@ -81,6 +85,9 @@ export default class ParkDetail extends wepy.page {
     }
 
     data = {
+        latitude: "",
+        longitude: "",
+        revenue: "0",
         isButtonLoading: false,
         isDialogShow: false,
         dialogMessage: '删除后再次添加该停车位需要重新审核, 确认删除?',
@@ -144,12 +151,16 @@ export default class ParkDetail extends wepy.page {
                     }, 1000)
                 })
             }
-        }
+        },
+        status: 0,
+        weeks: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"]
     }
 
     onLoad(option) {
         console.log(option)
         this.parkId = option.parkId
+        this.latitude = option.latitude
+        this.longitude = option.longitude
         console.log(this.$parent.globalData.openId)
         this.$apply()
         wx.showLoading({
@@ -162,17 +173,23 @@ export default class ParkDetail extends wepy.page {
         post(`${config.host}/user/parks`, {
             type: 'detail',
             openId: this.$parent.globalData.openId,
-            parkId: option.parkId
+            parkId: option.parkId,
+            latitude: this.latitude,
+            longitude: this.longitude
         }).then(
             (res) => {
                 console.log('success')
                 console.log(res)
                 for (let prop in res.data) {
                     this[prop] = res.data[prop]
-                    this.kind = parseInt(res.data.kind)
-                    this.$apply()
-                    wx.hideLoading()
                 }
+                this.kind = parseInt(res.data.kind)
+                this.startDay = this.weeks[parseInt(res.data.startDay) - 1]
+                this.endDay = this.weeks[parseInt(res.data.endDay) - 1]
+                console.log(this.startDay)
+                console.log(this.endDay)
+                this.$apply()
+                wx.hideLoading()
             },
             (err) => {
                 console.log(err)

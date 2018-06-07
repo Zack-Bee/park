@@ -179,6 +179,7 @@ export default class Index extends wepy.page {
                         }
                     }))
                     this.$apply()
+                    console.log(this.markers)
                     break
                 }
                 case '企业': {
@@ -207,6 +208,7 @@ export default class Index extends wepy.page {
                         }
                     }))
                     this.$apply()
+                    console.log(this.markers)
                     break
                 }
                 case '个人': {
@@ -235,6 +237,7 @@ export default class Index extends wepy.page {
                         }
                     }))
                     this.$apply()
+                    console.log(this.markers)
                     break
                 }
             }
@@ -252,11 +255,11 @@ export default class Index extends wepy.page {
         ]).then((allRes) => {
             let ownPark = allRes[0].data,
                 publicPark = allRes[1].data
-
+            console.log(allRes)
             publicPark = publicPark.map((park) => ({
                 parkName: park.title,
                 parkId: park.id,
-                distance: formatDistance(park._distance),
+                distance: park._distance,
                 kind: 5,
                 latitude: park.location.lat,
                 longitude: park.location.lng,
@@ -265,7 +268,7 @@ export default class Index extends wepy.page {
 
             if (typeof ownPark === 'object') {
                 for (let i = 0, len = ownPark.length; i < len; i++) {
-                    ownPark[i].distance = formatDistance(ownPark[i].distance)
+                    ownPark[i].distance = ownPark[i].distance
                 }
                 this.parks = publicPark.concat(ownPark)
             } else {
@@ -275,6 +278,20 @@ export default class Index extends wepy.page {
             this.parks.sort(
                 (prevPark, nextPark) => prevPark.distance - nextPark.distance
             )
+            this.parks = this.parks.slice(0, 50)
+            for (let i = 0, len = this.parks.length; i < len; i++) {
+                this.parks[i].distance = formatDistance(this.parks[i].distance)
+            }
+            console.log("\n\nsorted\n\n", this.parks)
+
+            if (allRes[0].statusCode !== 200) {
+                wx.showModal({
+                    title: '抱歉',
+                    content: '服务器出现异常, 管理员正在抢修',
+                    success: function(res) {},
+                    showCancel: false
+                })
+            }
 
             console.log(this.parks)
             this.$apply()
@@ -304,14 +321,7 @@ export default class Index extends wepy.page {
                         wx.hideLoading()
                         wx.hideNavigationBarLoading()
                     },
-                    () => {
-                        wx.showModal({
-                            title: '抱歉',
-                            content: '服务器出现异常, 管理员正在抢修',
-                            success: function(res) {},
-                            showCancel: false
-                        })
-                    }
+                    () => {}
                 )
             }
         })
@@ -333,16 +343,20 @@ export default class Index extends wepy.page {
                 type: 'gcj02',
                 success: (res) => {
                     // 三分钟无变化则依旧刷新
-                    if (this.sameTime > 3 * 60 / 5) {
+                    if (this.sameTime > 36) {
+                        console.log(this.sameTime)
                         this.getParks()
                         this.sameTime = 0
                         this.$apply()
                         return
                     }
                     if (
-                        res.longitude !== this.longitude ||
-                        this.latitude !== res.latitude
+                        res.longitude.toFixed(8) !== this.longitude.toFixed(8) ||
+                        this.latitude.toFixed(8) !== res.latitude.toFixed(8)
                     ) {
+                        console.log(res.longitude, res.latitude)
+                        console.log(this.longitude, this.latitude)
+                        console.log("not same")
                         this.getParks(
                             () => {},
                             () => {
@@ -354,6 +368,9 @@ export default class Index extends wepy.page {
                                 })
                             }
                         )
+                        this.longitude = res.longitude
+                        this.latitude = res.latitude
+                        this.$apply()
                     }
                     console.log('\nsame location\n')
                     this.sameTime++

@@ -1,6 +1,6 @@
 <template>
     <view>
-        <view wx:if="{{kind === 3}}">
+        <view>
             <view class="steps-wrapper">
                 <Steps3 :steps.sync="steps3" />
             </view>
@@ -26,32 +26,6 @@
                             {{currentStepsIndex3 === 2 ? "发布" : "下一步"}}
                         </nextButton>
                     </view>
-                </view>
-            </view>
-        </view>
-        <view wx:if="{{kind === 4}}">
-            <view class="steps-wrapper">
-                <Steps4 type="vertical" :steps.sync="steps4" />
-            </view>
-            <view class="publish-form">
-                <view wx:if="{{currentStepsIndex4 === 0}}">
-                    <parkNameInput :handleFieldChange="onParkNameChanege" :value.sync="parkName" title="车位名" placeholder="仅用于自己辨识不同车位" />
-                </view>
-                <view wx:if="{{currentStepsIndex4 === 1}}">
-                    <Select :items="frequenceSelect" :checkedValue.sync="selectedValue" :handleSelectChange="changeSelect" activeColor="#09bb07" />
-                    <TimePicker :frequence.sync="selectedValue" :weeks="weeks" :startDay.sync="startDay" :endDay.sync="endDay" :startDate.sync="startDate" :endDate.sync="endDate" :startTime.sync="startTime" :endTime.sync="endTime" :startDateLimit.sync="startDateLimit" :endDateLimit.sync="endDateLimit" :onStartDayChange="onStartDayChange" :onEndDayChange="onEndDayChange" :onStartDateChange="onStartDateChange" :onEndDateChange="onEndDateChange" :onStartTimeChange="onStartTimeChange" :onEndTimeChange="onEndTimeChange" />
-                </view>
-            </view>
-            <view class="buttons-wrapper">
-                <view class="left-button" wx:if="{{currentStepsIndex4 !== 0}}">
-                    <prevButton size="small" :bindTap="prevStep">
-                        上一步
-                    </prevButton>
-                </view>
-                <view class="right-button">
-                    <nextButton size="small" type="primary" :bindTap="netxStep">
-                        {{currentStepsIndex4 === 1 ? "发布" : "下一步"}}
-                    </nextButton>
                 </view>
             </view>
         </view>
@@ -102,6 +76,8 @@ import Steps from '../../components/steps/steps'
 import Button from '../../components/button/button'
 import Select from '../../components/select/select'
 import TimePicker from '../../components/time-picker/time-picker'
+import config from '../../config.js'
+import post from '../../common/post.js'
 
 export default class Index extends wepy.page {
     components = {
@@ -118,9 +94,11 @@ export default class Index extends wepy.page {
 
     data = {
         parkId: '',
-        parkName: "",
+        parkName: '',
         kind: 3,
         price: '',
+        longitude: "",
+        latitude: "",
         steps3: [
             {
                 // 此步骤是否当前完成状态
@@ -145,24 +123,6 @@ export default class Index extends wepy.page {
                 desc: '选择时间'
             }
         ],
-        steps4: [
-            {
-                // 此步骤是否当前完成状态
-                current: true,
-                // 此步骤是否已经完成
-                done: false,
-                // 此步骤显示文案
-                text: '步骤一',
-                // 此步骤描述语
-                desc: '填写名字'
-            },
-            {
-                done: false,
-                current: false,
-                text: '步骤二',
-                desc: '选择时间'
-            }
-        ],
         currentStepsIndex3: 0,
         currentStepsIndex4: 0,
         frequenceSelect: [
@@ -172,7 +132,7 @@ export default class Index extends wepy.page {
                 name: '每周'
             },
             {
-                value: 'onece',
+                value: 'once',
                 name: '一次'
             },
             {
@@ -181,66 +141,79 @@ export default class Index extends wepy.page {
             }
         ],
         selectedValue: 'weekly',
-        changeSelect: event => {
+        changeSelect: (event) => {
             this.selectedValue = event.detail.value
             this.$apply()
         },
         prevStep: () => {
-            if (this.kind === 3) {
-                this.steps3[this.currentStepsIndex3].current = false
-                this.steps3[this.currentStepsIndex3 - 1].done = false
-                this.steps3[this.currentStepsIndex3 - 1].current = true
-                this.currentStepsIndex3--
-            } else {
-                this.steps4[this.currentStepsIndex4].current = false
-                this.steps4[this.currentStepsIndex4 - 1].done = false
-                this.steps4[this.currentStepsIndex4 - 1].current = true
-                this.currentStepsIndex4--
-            }
+            this.steps3[this.currentStepsIndex3].current = false
+            this.steps3[this.currentStepsIndex3 - 1].done = false
+            this.steps3[this.currentStepsIndex3 - 1].current = true
+            this.currentStepsIndex3--
             this.$apply()
         },
         netxStep: () => {
-            if (this.kind === 3) {
-                if (this.currentStepsIndex3 === 2) {
-                    // 提交到服务器
-                    let option = {
-                        type: 'open',
-                        parkId: this.parkId,
-                        openId: this.$parent.globalData.openId,
-                        openType: this.selectedValue,
-                        price: this.price,
-                        kind: 3,
-                        startTime: this.startTime,
-                        endTime: this.endTime
-                    }
+            if (this.currentStepsIndex3 === 2) {
+                // 提交到服务器
+                let option = {
+                    type: 'open',
+                    parkId: this.parkId,
+                    openId: this.$parent.globalData.openId,
+                    openType: this.selectedValue,
+                    price: this.price,
+                    kind: this.kind,
+                    startTime: this.startTime,
+                    endTime: this.endTime,
+                    latitude: this.latitude,
+                    longitude: this.longitude
+                }
 
-                    switch (this.selectedValue) {
-                        case 'weekly': {
-                            option.startDay = this.startDay
-                            option.endDay = this.endDay
-                        }
-                        case 'date': {
-                            option.startDate = this.startDate
-                            option.endDate = this.endDate
-                        }
+                switch (this.selectedValue) {
+                    case 'weekly': {
+                        option.startDay = this.startDay
+                        option.endDay = this.endDay
                     }
-                } else {
-                    this.steps3[this.currentStepsIndex3].done = true
-                    this.steps3[this.currentStepsIndex3].current = false
-                    this.steps3[this.currentStepsIndex3 + 1].current = true
-                    this.currentStepsIndex3++
-                    this.$apply()
+                    case 'date': {
+                        option.startDate = this.startDate
+                        option.endDate = this.endDate
+                    }
                 }
+                wx.showLoading({
+                    title: '正在上传',
+                    mask: true
+                })
+                post(`${config.host}/user/parks`, option).then(
+                    (res) => {
+                        wx.hideLoading()
+                        console.log(res)
+                        wx.showToast({
+                            title: '发布成功',
+                            icon: 'success',
+                            duration: 1000
+                        })
+                        setTimeout(() => {
+                            wx.navigateBack({
+                                delta: 1
+                            })
+                        }, 1000)
+                    },
+                    (err) => {
+                        wx.hideLoading()
+                        console.log(err)
+                        wx.showModal({
+                            title: '抱歉',
+                            content: '服务器出现异常, 管理员正在抢修',
+                            success: function(res) {},
+                            showCancel: false
+                        })
+                    }
+                )
             } else {
-                if (this.currentStepsIndex4 === 1) {
-                    // 提交到服务器
-                } else {
-                    this.steps4[this.currentStepsIndex4].done = true
-                    this.steps4[this.currentStepsIndex4].current = false
-                    this.steps4[this.currentStepsIndex4 + 1].current = true
-                    this.currentStepsIndex4++
-                    this.$apply()
-                }
+                this.steps3[this.currentStepsIndex3].done = true
+                this.steps3[this.currentStepsIndex3].current = false
+                this.steps3[this.currentStepsIndex3 + 1].current = true
+                this.currentStepsIndex3++
+                this.$apply()
             }
         },
         weeks: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
@@ -252,27 +225,27 @@ export default class Index extends wepy.page {
         endDay: 6,
         startDateLimit: '',
         endDateLimit: '',
-        onStartDayChange: event => {
+        onStartDayChange: (event) => {
             this.startDay = event.detail.value
             this.$apply()
         },
-        onEndDayChange: event => {
+        onEndDayChange: (event) => {
             this.endDay = event.detail.value
             this.$apply()
         },
-        onStartDateChange: event => {
+        onStartDateChange: (event) => {
             this.startDate = event.detail.value
             this.$apply()
         },
-        onEndDateChange: event => {
+        onEndDateChange: (event) => {
             this.endDate = event.detail.value
             this.$apply()
         },
-        onStartTimeChange: event => {
+        onStartTimeChange: (event) => {
             this.startTime = event.detail.value
             this.$apply()
         },
-        onEndTimeChange: event => {
+        onEndTimeChange: (event) => {
             this.endTime = event.detail.value
             this.$apply()
         },
@@ -290,6 +263,8 @@ export default class Index extends wepy.page {
         console.log('\n')
         console.log(option)
         console.log('\n')
+        this.longitude = option.longitude
+        this.latitude = option.latitude
         let today = new Date(),
             year = today.getFullYear(),
             month = today.getMonth() + 1,

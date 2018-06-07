@@ -15,7 +15,8 @@ export default class extends wepy.app {
             'pages/plate-number/plate-number',
             'pages/park-detail/park-detail',
             'pages/history/history',
-            'pages/navigation/navigation'
+            'pages/navigation/navigation',
+            "pages/guide/guide"
         ],
         window: {
             backgroundTextStyle: 'light',
@@ -40,7 +41,7 @@ export default class extends wepy.app {
             ],
             selectedColor: '#09bb07'
         },
-        debug: true
+        debug: false
     }
 
     globalData = {
@@ -72,7 +73,8 @@ export default class extends wepy.app {
             }
         })
 
-        let openId = wx.getStorageSync('openId')
+        let openId = wx.getStorageSync('openId'),
+            isNew = wx.getStorageSync("isNew")
         if (!openId) {
             wx.login({
                 success: (res) => {
@@ -90,6 +92,14 @@ export default class extends wepy.app {
             })
         } else {
             this.globalData.openId = openId
+        }
+
+        console.log(isNew)
+        if (isNew === "" || isNew === true) {
+            this.globalData.isNew = true
+            wx.setStorageSync("isNew", false)
+        } else {
+            this.globalData.isNew = false
         }
     }
 }
