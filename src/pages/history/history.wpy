@@ -20,7 +20,7 @@
                         <leftTimeIcon wx:if="{{item.status === 1}}" type="underway" style="line-height:40rpx; color:#ffd835; font-size: 24rpx" />
                         <view wx:if="{{item.status === 1}}" class="text">
                             <view style="display: inline">
-                                添加时间: {{item.startDate + "-" + item.startTime}}
+                                添加时间:{{item.startDate + "-" + item.startTime}}
                             </view>
                         </view>
                     </view>
