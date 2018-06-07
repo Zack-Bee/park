@@ -1,26 +1,124 @@
 <template>
     <view>
-        <Select :items.sync="type" :handleSelectChange="changeType" activeColor="#09bb07" :checkedValue.sync="selectedType"/>
+        <Select :items.sync="type" :handleSelectChange="changeType" activeColor="#09bb07" :checkedValue.sync="selectedType" />
         <view wx:if="{{selectedType === '1'}}" class="guide-group">
-            <view class="steps-number">1. 选择停车位</view>
-            <view class="image-wrapper"><image/></view>
-            <view class="steps-number">2. 选择车牌号</view>
-            <view class="image-wrapper"><image/></view>
+            <view class="steps">
+                <view class="steps-number-wrapper">
+                    <view class="steps-number">1</view>
+                </view>
+                <view class="steps-desc">
+                    点击你想停车的停车场图标
+                </view>
+                <view class="image-wrapper">
+                    <image style="height:1138rpx; width:640rpx;" src="./park1.png" lazy-load="{{true}}" mode="scaleToFill" />
+                </view>
+                <view class="steps-info">
+                    <view class="info-item">
+                        <image style="height:13px; width:13px" src="./parking3.png" />
+                        <view style="display: inline;"> 企业类停车场 </view>
+                    </view>
+                    <view class="info-item">
+                        <image style="height:13px; width:13px" src="./parking4.png" />
+                        <view style="display: inline;"> 个人类停车场 </view>
+                    </view>
+                    <view class="info-item">
+                        <image style="height:13px; width:13px" src="./parking5.png" />
+                        <view style="display: inline;"> 未签订合约的停车场 </view>
+                    </view>
+                </view>
+            </view>
+            <view class="steps">
+                <view class="steps-number-wrapper">
+                    <view class="steps-number">2</view>
+                </view>
+                <view class="steps-desc">
+                    点击现在停车
+                </view>
+                <view class="image-wrapper">
+                    <image style="height:1138rpx; width:640rpx;" src="./park1.png" lazy-load="{{true}}" mode="scaleToFill" />
+                </view>
+            </view>
+            <view class="steps">
+                <view class="steps-number-wrapper">
+                    <view class="steps-number">3</view>
+                </view>
+                <view class="steps-desc">
+                    在行程中可以查看您停车从详细情况
+                </view>
+                <view class="image-wrapper">
+                    <image style="height:1138rpx; width:640rpx;" src="./park1.png" lazy-load="{{true}}" mode="scaleToFill" />
+                </view>
+                <view class="steps-info">
+                    <view class="info-item">
+                        <image style="height:13px; width:13px" src="./parking3.png" />
+                        <view style="display: inline;"> 企业类停车场 直接停车即可 </view>
+                    </view>
+                    <view class="info-item">
+                        <image style="height:13px; width:13px" src="./parking4.png" />
+                        <view style="display: inline;"> 个人类停车场 到达后点击降下停车桩即可 </view>
+                    </view>
+                </view>
+            </view>
+            <view class="steps">
+                <view class="steps-number-wrapper">
+                    <view class="steps-number">4</view>
+                </view>
+                <view class="steps-desc">
+                    离开停车位后点击支付完成停车
+                </view>
+                <view class="image-wrapper">
+                    <image style="height:1138rpx; width:640rpx;" src="./park1.png" lazy-load="{{true}}" mode="scaleToFill" />
+                </view>
+            </view>
         </view>
         <view wx:if="{{selectedType === '2'}}" class="guide-group">
-            <view class="steps-number">1. 发布表单</view>
-            <view class="image-wrapper"><image/></view>
-            <view class="steps-number">2. 审核通过</view>
-            <view class="image-wrapper"><image/></view>
-            <view class="steps-number">3. 签订合同</view>
-            <view class="image-wrapper"><image/></view>
-            <view class="steps-number">4. 发布停车位</view>
-            <view class="image-wrapper"><image/></view>
+
         </view>
     </view>
 </template>
 
 <style scoped>
+.steps {
+    margin: 20px 0;
+}
+
+.steps-number-wrapper {
+    text-align: center;
+}
+
+.steps-number {
+    display: inline-block;
+    width: 50rpx;
+    height: 50rpx;
+    font-size: 40rpx;
+    line-height: 50rpx;
+    color: #fff;
+    background-color: #09bb07;
+    border-radius: 50rpx;
+    border: solid;
+}
+
+.steps-desc {
+    padding: 15px 54rpx;
+    color: #888;
+    font-size: 16px;
+    text-align: center;
+}
+
+.image-wrapper {
+    text-align: center;
+}
+
+.steps-info {
+    padding: 15px 54rpx;
+    font-size: 13px;
+    line-height: 13px;
+    color: #aaa;
+}
+
+.info-item {
+    margin: 4px 0;
+}
 </style>
 
 <script>
@@ -36,18 +134,30 @@ export default class Guide extends wepy.page {
         type: [
             {
                 name: '停车指南',
-                value: "1"
+                value: '1'
             },
             {
-                name: "出租停车位指南",
-                value: "2"
+                name: '出租停车位指南',
+                value: '2'
             }
         ],
-        selectedType: "1",
+        selectedType: '1',
         changeType: (event) => {
             this.selectedType = event.detail.value
             this.$apply()
+        },
+        navigateToFind: () => {
+            wx.switchTab({
+                url: '../find/find'
+            })
+        },
+        navigateToAdd: () => {
+            wx.navigateTo({
+                url: '../../add-park/add-park'
+            })
         }
     }
+
+    onLoad() {}
 }
 </script>
