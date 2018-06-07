@@ -162,9 +162,9 @@ export default class Index extends wepy.page {
                 wx.hideNavigationBarLoading()
                 console.log(res)
                 this.parks = res.data
-                console.log(typeof res.data[0].parkName)
-                console.log(res.data[0])
-                console.log(res.data[0].parkName)
+                // console.log(typeof res.data[0].parkName)
+                // console.log(res.data[0])
+                // console.log(res.data[0].parkName)
                 this.$apply()
             },
             (err) => {

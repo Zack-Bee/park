@@ -355,7 +355,8 @@ export default class History extends wepy.page {
                 carNumber: dataset.plateNumber
             }).then(
                 (res) => {
-                    console.log(res)
+                    this.delta = 1
+                    this.getMore()
                 },
                 (err) => {
                     console.log(err)
@@ -372,6 +373,8 @@ export default class History extends wepy.page {
             }).then(
                 (res) => {
                     console.log(res)
+                    this.delta = 1
+                    this.getMore()
                 },
                 (err) => {
                     console.log(err)

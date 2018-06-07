@@ -64,7 +64,8 @@ export default class Index extends wepy.page {
         latitude: 0,
         sameTime: 0,
         timer: '',
-        showParks: []
+        showParks: [],
+        isLoading: false
     }
 
     watch = {
@@ -302,6 +303,8 @@ export default class Index extends wepy.page {
         this.mapHeight = this.$parent.globalData.mapHeight
         this.mapWidth = this.$parent.globalData.mapWidth
         console.log(this.mapHeight, this.mapWidth)
+        this.isLoading = true
+        this.$apply()
         wx.showLoading({
             title: '加载停车位信息中',
             mask: true
@@ -320,6 +323,8 @@ export default class Index extends wepy.page {
                     () => {
                         wx.hideLoading()
                         wx.hideNavigationBarLoading()
+                        this.isLoading = false
+                        this.$apply()
                     },
                     () => {}
                 )
@@ -338,6 +343,11 @@ export default class Index extends wepy.page {
         }
 
         this.timer = setInterval(() => {
+            console.log(this.isLoading)
+            if (this.isLoading) {
+                return
+            }
+
             wx.getLocation({
                 //获得用户当前位置
                 type: 'gcj02',
@@ -345,7 +355,10 @@ export default class Index extends wepy.page {
                     // 三分钟无变化则依旧刷新
                     if (this.sameTime > 36) {
                         console.log(this.sameTime)
-                        this.getParks()
+                        this.getParks().then(() => {
+                            this.isLoading = false
+                            this.$apply()
+                        })
                         this.sameTime = 0
                         this.$apply()
                         return
@@ -357,8 +370,13 @@ export default class Index extends wepy.page {
                         console.log(res.longitude, res.latitude)
                         console.log(this.longitude, this.latitude)
                         console.log("not same")
+                        this.isLoading = true
+                        this.$apply()
                         this.getParks(
-                            () => {},
+                            () => {
+                                this.isLoading = false
+                                this.$apply()
+                            },
                             () => {
                                 wx.showModal({
                                     title: '抱歉',
