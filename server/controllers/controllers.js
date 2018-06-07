@@ -254,9 +254,9 @@ exports.userparks = async (ctx, next) => {
           + "-" + ctx.request.body.endDay.replace(/-/g, ".") + "."
           + ctx.request.body.endTime.replace(/:/g, "."), null, null, 1)
       }
-      ofc.income(ctx.request.body.parkId)
     }
     fc.changeparking("parking", ctx.request.body.parkId, "name", ctx.request.body.parkName)
+    ofc.income(ctx.request.body.parkId)
   }
   else if (ctx.request.body.type == "detail") {
     var all
