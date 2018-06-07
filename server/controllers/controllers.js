@@ -239,6 +239,7 @@ exports.userparks = async (ctx, next) => {
           + ctx.request.body.startTime.replace(/:/g, ".")
           + "-" + ctx.request.body.endDay + "."
           + ctx.request.body.endTime.replace(/:/g, "."), null, null, 0)
+          ofc.income(ctx.request.body.parkId)
       }
       else if (ctx.request.body.openType == "once") {
         await fc.addparkingtime(ctx.request.body.parkId, year
@@ -246,6 +247,7 @@ exports.userparks = async (ctx, next) => {
           + ctx.request.body.startTime.replace(/:/g, ".")
           + "-" + year + "." + month + "." + day + "."
           + ctx.request.body.endTime.replace(/:/g, "."), null, null, 1)
+          ofc.income(ctx.request.body.parkId)
       }
       else if (ctx.request.body.openType == "date") {
         await fc.addparkingtime(ctx.request.body.parkId,
@@ -253,10 +255,10 @@ exports.userparks = async (ctx, next) => {
           + ctx.request.body.startTime.replace(/:/g, ".")
           + "-" + ctx.request.body.endDay.replace(/-/g, ".") + "."
           + ctx.request.body.endTime.replace(/:/g, "."), null, null, 1)
+          ofc.income(ctx.request.body.parkId)
       }
     }
     fc.changeparking("parking", ctx.request.body.parkId, "name", ctx.request.body.parkName)
-    ofc.income(ctx.request.body.parkId)
   }
   else if (ctx.request.body.type == "detail") {
     var all
