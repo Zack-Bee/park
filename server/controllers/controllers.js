@@ -369,7 +369,7 @@ exports.upload = async (ctx, next) => {
   if (ctx.request.body.kind) {
     fc.addparking(ctx.request.body.openId,
       ctx.request.body.kind, null, null,
-      ctx.request.body.longitude + "," + ctx.request.body.latitude, null, null)
+      ctx.request.body.latitude + "," +  ctx.request.body.longitude, null, null)
     fc.selectowner("openId", '"' + ctx.request.body.openId + '"', function (option) {
       if (option == "") {
         fc.addowner('"' + ctx.request.body.openId + '"')

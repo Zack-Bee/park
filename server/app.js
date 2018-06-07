@@ -55,6 +55,7 @@ b = async () => {
   }
 }
 //b()
-ofc.addpt()
+//ofc.addpt()
+console.log(ofc.part("123.4631,41.67718"))
 app.use(router.routes());
 app.use(main);
