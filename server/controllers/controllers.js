@@ -410,12 +410,10 @@ exports.upload = async (ctx, next) => {
       }
     })
     if (ctx.request.body.fields.imageNumber == ctx.request.body.fields.index) {
-      await fc.selectparking(ctx.request.body.latitude + "," + ctx.request.body.longitude,"lola","'"+ctx.request.body.latitude + "," + ctx.request.body.longitude+"'", function (option) {
-        console.log(option)
-        cnsole.log(option != "")
+      await fc.selectparking(ctx.request.body.latitude + "," + ctx.request.body.longitude,"openId",ctx.request.body.openId, function (option) {
         if (option != "") {
-          ctx.body = { parkId: option[0].id }
-          fs.rename(`upload/` + ctx.request.body.fields.openId, `upload/` + ctx.request.body.fields.openId + "-" + option[0].id, function (err) {
+          ctx.body = { parkId: option[option.length-1].id }
+          fs.rename(`upload/` + ctx.request.body.fields.openId, `upload/` + ctx.request.body.fields.openId + "-" + option[option.length-1].id, function (err) {
             if (err) {
               console.log("将文件名修改为openid+parkid失败");
             }
