@@ -153,19 +153,19 @@ exports.userparks = async (ctx, next) => {
           using = ofc.using(option)
           if (using == 0) {
             //fc.changeparking("parking", all[m].parkId, "isOpen", 0)
-            all[m].status = 0
+            //all[m].status = 0
             all[m].rentPark = 0
             all[m].expectedRevenue = 0
           }
           else {
-            all[m].status = 1
+            //all[m].status = 1
             all[m].rentPark = using.rentNumber
             all[m].expectedRevenue = option[0].income
           }
         }
         else {
          // fc.changeparking("parking", all[m].parkId, "isOpen", 0)
-          all[m].status = 0
+          //all[m].status = 0
           all[m].rentPark = 0
           all[m].expectedRevenue = 0
         }
