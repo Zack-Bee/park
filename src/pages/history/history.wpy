@@ -394,7 +394,7 @@ export default class History extends wepy.page {
                 console.log(res)
                 this.delta++
                 this.isLoading = false
-                if (res.data.length === 0) {
+                if (res.data.length < 10) {
                     this.isNoMore = true
                 }
                 this.history.push(...res.data)

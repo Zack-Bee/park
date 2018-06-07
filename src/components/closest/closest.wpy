@@ -227,20 +227,56 @@ export default class Closest extends wepy.component {
                 carNumber: this.numberArray[event.detail.value],
                 longitude: this.parks[index].longitude,
                 latitude: this.parks[index].latitude,
-                parkId: this.parks[index].parkId
+                parkId: this.parks[index].parkId,
+                price: this.parks[index].price
             }).then(
                 (res) => {
                     console.log(res)
-                    //点击进入停车选择
-                    // wx.navigateTo({
-                        // url: '../history/history',
-                        // success: (res) => {
-                            // console.log(res)
-                        // },
-                        // fail: (err) => {
-                            // console.log(err)
-                        // }
-                    // })
+                    if (res.data.message === '请结束本次停车并支付') {
+                        wx.showModal({
+                            title: '您的停车未完成',
+                            content: '请结束本次停车并支付',
+                            success: function(res) {
+                                if (res.confirm) {
+                                    console.log('')
+                                } else if (res.cancel) {
+                                    console.log('用户点击取消')
+                                }
+                            },
+                            showCancel: false
+                        })
+                    } else if (res.data.message === '上一单未支付') {
+                        wx.showModal({
+                            title: '上一单未支付',
+                            content: '去我的行程支付?',
+                            success: function(res) {
+                                if (res.confirm) {
+                                    wx.navigateTo({
+                                        url: '../history/history',
+                                        success: (res) => {
+                                            console.log(res)
+                                        },
+                                        fail: (err) => {
+                                            console.log(err)
+                                        }
+                                    })
+                                } else if (res.cancel) {
+                                    console.log('用户点击取消')
+                                }
+                            },
+                            showCancel: true
+                        })
+                    } else {
+                        wx.navigateTo({
+                            url: '../history/history',
+                            success: (res) => {
+                                console.log(res)
+                            },
+                            fail: (err) => {
+                                console.log(err)
+                            }
+                        })
+                    }
                 },
                 (err) => {}
             )

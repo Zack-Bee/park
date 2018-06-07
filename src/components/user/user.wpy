@@ -6,7 +6,7 @@
         </view>
         <view class="user-info">
             <open-data type="userNickName" class="user-nickName"></open-data>
-            <view class="user-code">我的邀请码: 123456789</view>
+            <view class="user-code">尚无消息</view>
         </view>
     </view>
 </view>

@@ -1,0 +1,53 @@
+<template>
+    <view>
+        <Select :items.sync="type" :handleSelectChange="changeType" activeColor="#09bb07" :checkedValue.sync="selectedType"/>
+        <view wx:if="{{selectedType === '1'}}" class="guide-group">
+            <view class="steps-number">1. 选择停车位</view>
+            <view class="image-wrapper"><image/></view>
+            <view class="steps-number">2. 选择车牌号</view>
+            <view class="image-wrapper"><image/></view>
+        </view>
+        <view wx:if="{{selectedType === '2'}}" class="guide-group">
+            <view class="steps-number">1. 发布表单</view>
+            <view class="image-wrapper"><image/></view>
+            <view class="steps-number">2. 审核通过</view>
+            <view class="image-wrapper"><image/></view>
+            <view class="steps-number">3. 签订合同</view>
+            <view class="image-wrapper"><image/></view>
+            <view class="steps-number">4. 发布停车位</view>
+            <view class="image-wrapper"><image/></view>
+        </view>
+    </view>
+</template>
+
+<style scoped>
+</style>
+
+<script>
+import wepy from 'wepy'
+import Select from '../../components/select/select'
+
+export default class Guide extends wepy.page {
+    components = {
+        Select
+    }
+
+    data = {
+        type: [
+            {
+                name: '停车指南',
+                value: "1"
+            },
+            {
+                name: "出租停车位指南",
+                value: "2"
+            }
+        ],
+        selectedType: "1",
+        changeType: (event) => {
+            this.selectedType = event.detail.value
+            this.$apply()
+        }
+    }
+}
+</script>
