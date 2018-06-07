@@ -138,6 +138,7 @@ exports.userparks = async (ctx, next) => {
             userparkserr = 1
           }
           all.push(t)
+          console.log(all)
         }
       }
     })
