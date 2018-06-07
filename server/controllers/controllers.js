@@ -152,7 +152,7 @@ exports.userparks = async (ctx, next) => {
         if (option != '') {
           using = ofc.using(option)
           if (using == 0) {
-            fc.changeparking("parking", all[m].parkId, "isOpen", 0)
+            //fc.changeparking("parking", all[m].parkId, "isOpen", 0)
             //all[m].status = 0
             all[m].rentPark = 0
             all[m].expectedRevenue = 0
