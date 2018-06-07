@@ -71,8 +71,9 @@ exports.addparking = function (openId, kind, name, location, lola, number, lease
     var gg = number
     var ii = "'" + lease + "'"
     console.log(data)
-    console.log(part)
+    
     part = ofc.part(lola)
+    console.log(part)
     sql = 'insert into ' + part + ' (id,openId, kind, name, location, lola, number, lease) values(' + aa + ',' + bb + ',' + cc + ',' + dd + ',' + ee + ',' + ff + ',' + gg + ',' + ii + ')'
     conn.query(sql, function (err, result) {
       if (err) throw err;
