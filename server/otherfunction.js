@@ -580,27 +580,27 @@ exports.GetDateDiff = function (startTime, endTime, diffType = "minute") {
 }
 exports.income = async (parkingId) => {
   let parkingtime
-  function c(option) {
+  await fc.selectparkingtime("parking", parkingId, function(option){
     parkingtime = option[0]
-  }
-  await fc.selectparkingtime("parking", parkingId, c)
-  if (parkingtime.kind == 0) {
-    let t = parkingtime.time.split("-")
-    t = t[0].split(".").concat(t[1].split("."))
-    let hour = parseInt(t[4]) - parseInt(t[1])
-    let minute = parseInt(t[5]) - parseInt(t[2])
-    let income = (hour * parkingtime.price + minute / 60 * parkingtime.price) * 7
-    income = income.toFixed(1)
-    fc.changeparking("parking", parkingtime.parking, "income", income)
-  }
-  else if (parkingtime.kind == 1) {
-    let t = parkingtime.time.split("-")
-    t = t[0].split(".").concat(t[1].split("."))
-    let hour = parseInt(t[8]) - parseInt(t[3])
-    let minute = parseInt(t[9]) - parseInt(t[4])
-    let income = (hour * parkingtime.price + minute / 60 * parkingtime.price) * 7
-    income = income.toFixed(1)
-    fc.changeparking("parking", parkingtime.parking, "income", income)
-  }
+    if (parkingtime.kind == 0) {
+      let t = parkingtime.time.split("-")
+      t = t[0].split(".").concat(t[1].split("."))
+      let hour = parseInt(t[4]) - parseInt(t[1])
+      let minute = parseInt(t[5]) - parseInt(t[2])
+      let income = (hour * parkingtime.price + minute / 60 * parkingtime.price) * 7
+      income = income.toFixed(1)
+      fc.changeparking("parking", parkingtime.parking, "income", income)
+    }
+    else if (parkingtime.kind == 1) {
+      let t = parkingtime.time.split("-")
+      t = t[0].split(".").concat(t[1].split("."))
+      let hour = parseInt(t[8]) - parseInt(t[3])
+      let minute = parseInt(t[9]) - parseInt(t[4])
+      let income = (hour * parkingtime.price + minute / 60 * parkingtime.price) * 7
+      income = income.toFixed(1)
+      fc.changeparking("parking", parkingtime.parking, "income", income)
+    }
+  })
+  
 
 }
