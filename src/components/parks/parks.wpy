@@ -5,7 +5,7 @@
                 增加停车位
             </Button>
         </view>
-        <view class="park" wx:for="{{parks}}" data-park-id="{{item.parkId}}" wx:key="parkId-{{item.parkId}}" @tap="navigateToParkDetail">
+        <view class="park" wx:for="{{parks}}" data-latitude="{{item.latitude}}" data-longitude="{{item.longitude}}" data-park-id="{{item.parkId}}" wx:key="parkId-{{item.parkId}}" @tap="navigateToParkDetail">
             <view class="park-left">
                 <view class="park-icon-wrapper">
                     <image src="{{(item.kind === 3) ? '../../components/parks/company.png' : '../../components/parks/person.png'}}" style="height: 100%; width: 100%;" />
@@ -326,12 +326,10 @@ export default class Parks extends wepy.component {
             }
         },
         navigateToParkDetail(event) {
-            let parkId = event.currentTarget.dataset.parkId
-            console.log(parkId)
+            let data = event.currentTarget.dataset
+            console.log(data)
             wx.navigateTo({
-                url: `../park-detail/park-detail?parkId=${parkId}&latitude=${
-                    this.latitude
-                }&longitude=${this.longitude}`,
+                url: `../park-detail/park-detail?parkId=${data.parkId}&latitude=${data.latitude}&longitude=${data.longitude}`,
                 success: (res) => {
                     console.log(res)
                 },
