@@ -581,6 +581,7 @@ exports.GetDateDiff = function (startTime, endTime, diffType = "minute") {
 exports.income = async (parkingId) => {
   let parkingtime
   await fc.selectparkingtime("parking", parkingId, function(option){
+    if(option!=""){
     console.log(option)
     parkingtime = option[0]
     if (parkingtime.kind == 0) {
@@ -601,6 +602,7 @@ exports.income = async (parkingId) => {
       income = income.toFixed(1)
       fc.changeparking("parking", parkingtime.parking, "income", income)
     }
+  }
   })
   
 
