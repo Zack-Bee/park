@@ -124,7 +124,34 @@ exports.changeone = function (pph, id, what, value) {
     }
   })
 }
-
+exports.idGetTableName= function (partId,callback) {
+  return new Promise(function (resolve, reject) {
+    var op = new Array();
+    sql1='select tableName from allparking where id='+ partId
+    query(sql1, [1], function (err, rows, fields) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(rows);
+          op.push({ 'tableName': rows[0].tableName });
+        callback(op)
+      }
+    })
+  })
+}
+exports.changeparking = function (pph, id, what, value) {
+  fc.idGetTableName(40,function(option){
+    tableName=option[0].tableName
+    var modSql = 'UPDATE '+tableName+' SET ' + what + ' = ?' + ' WHERE id = ?';
+  var modSqlParams = [value, id];
+  conn.query(modSql, modSqlParams, function (err, result) {
+    if (err) {
+      console.log('[UPDATE ERROR] - ', err.message);
+    }
+  })
+  })
+  
+}
 exports.changeou = function (ou, openId, what, value) {
   var modSql = 'UPDATE ' + ou + ' SET ' + what + ' = ?' + ' WHERE openId = ?';
   var modSqlParams = [value, openId];

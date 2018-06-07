@@ -89,6 +89,8 @@ exports.userparks = async (ctx, next) => {
       this.rentPark = "return err"
       this.parkId = "return err"
       this.status = "return err"
+      this.latitude= "return err"
+      this.longitude= "return err"
     }
 
     function KIND4() {
@@ -99,9 +101,11 @@ exports.userparks = async (ctx, next) => {
       this.allPark = "return err"
       this.rentPark = "return err"
       this.expectedRevenue = "return err"
+      this.latitude= "return err"
+      this.longitude= "return err"
     }
 
-    await fc.selectparking(ctx.request.body.lola,"openId", "'" + ctx.request.body.openId + "'", function (option) {
+    await fc.selectparking("openId", "'" + ctx.request.body.openId + "'", function (option) {
       parking = option
       if (option != '') {
         let t
@@ -114,6 +118,8 @@ exports.userparks = async (ctx, next) => {
             t.rentPark = "waiting"
             t.parkId = option[i].id
             t.status = option[i].isOpen
+            t.latitude= option[i].lola.split(",")[0]
+            t.longitude= option[i].lola.split(",")[1]
           }
           else if (option[i].kind == 4) {
             t = new KIND4
@@ -124,6 +130,8 @@ exports.userparks = async (ctx, next) => {
             t.allPark = option[i].number
             t.rentPark = "waiting"
             t.expectedRevenue = "waiting"
+            t.latitude= option[i].lola.split(",")[0]
+            t.longitude= option[i].lola.split(",")[1]
           }
           else {
             ctx.body = { err: "kind不是3也不是4" }
@@ -252,7 +260,8 @@ exports.userparks = async (ctx, next) => {
       this.endTime = "return err"
       this.revenue = "return err"
     }
-    await fc.selectparking("id", ctx.request.body.parkId, function (option) {
+    let lola=ctx.request.body.latitude+","+ctx.request.body.longitude
+    await fc.selectparking(lola,"id", ctx.request.body.parkId, function (option) {
       parking = option
       if (option != '') {
         let t
@@ -675,7 +684,7 @@ exports.gethistory = async (ctx, next) => {
         else if (response.statusCode == 200) {
           if (JSON.parse(body).result != null) {
             if (JSON.parse(body).result.pois != "") {
-              fc.selectparking("id", ctx.request.body.parkId, function (o) {
+              fc.selectparking(ctx.request.body.latitude + "," + ctx.request.body.longitude,"id", ctx.request.body.parkId, function (o) {
                 if (o != '') {
                   fc.addhistory(ctx.request.body.parkId, year + "." + month + "." + day + "." + hour + "." + minute, null, ctx.request.body.carNumber, ctx.request.body.longitude + "," + ctx.request.body.latitude, ctx.request.body.openId, JSON.parse(body).result.formatted_addresses.recommend, o[0].kind, ctx.request.body.price)
                   ctx.body = { result: "ok" }

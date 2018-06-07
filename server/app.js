@@ -62,10 +62,11 @@ b = async () => {
   }
 }
 //b()
-var aa
 
-
-fc.selectParkingByopenId(function(option){
+// fc.selectParkingByopenId(function(option){
+//   console.log(option)
+// })
+fc.idGetTableName(40,function(option){
   console.log(option)
 })
 //ofc.addpt()
