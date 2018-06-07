@@ -148,7 +148,7 @@ exports.userparks = async (ctx, next) => {
         if (option != '') {
           using = ofc.using(option)
           if (using == 0) {
-            fc.changeparking("parking", all[m].parkId, "status", 0)
+            fc.changeparking("parking", all[m].parkId, "isOpen", 0)
             all[m].status = 0
             all[m].rentPark = 0
             all[m].expectedRevenue = 0
@@ -413,10 +413,11 @@ exports.upload = async (ctx, next) => {
     if (ctx.request.body.fields.imageNumber == ctx.request.body.fields.index) {
       await fc.selectparking(ctx.request.body.latitude + "," + ctx.request.body.longitude,"lola","'"+ctx.request.body.latitude + "," + ctx.request.body.longitude+"'", function (option) {
         if (option != "") {
-          ctx.body = { parkId: option[option.length - 1].id }
+          ctx.body = { parkId: option[0].id }
         }
         else { ctx.body = { err: "该用户停车场上传失败" } }
-        fs.rename(`upload/` + ctx.request.body.fields.openId, `upload/` + ctx.request.body.fields.openId + "-" + option[option.length - 1].id, function (err) {
+        console.log(option)
+        fs.rename(`upload/` + ctx.request.body.fields.openId, `upload/` + ctx.request.body.fields.openId + "-" + option[0].id, function (err) {
           if (err) {
             console.log("将文件名修改为openid+parkid失败");
           }
