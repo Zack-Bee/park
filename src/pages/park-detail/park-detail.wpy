@@ -2,7 +2,7 @@
     <view>
         <view class="park-detail">
             <view class="park-detail-desc">车位名:</view>
-            <view class="park-detail-value">{{parkName}}</view>
+            <view class="park-detail-value">{{parkName == null ? "新增停车位" : parkName}}</view>
         </view>
         <view class="park-detail">
             <view class="park-detail-desc">类别:</view>
@@ -158,6 +158,7 @@ export default class ParkDetail extends wepy.page {
 
     onLoad(option) {
         console.log(option)
+
         this.parkId = option.parkId
         this.latitude = option.latitude
         this.longitude = option.longitude

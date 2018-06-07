@@ -34,10 +34,20 @@
         <Button type="primary" :bindTap="submit" :loading.sync="isButtonLoading">
             提交信息审核
         </Button>
+        <view class="info">
+            当您提交正确的车位凭证后, 我们会三个工作日内, 跟您进行联络, 商讨进一步合同的签署和停车桩(免费)的安装时间
+        </view>
     </view>
 </template>
 
 <style scoped>
+.info {
+    padding: 20rpx;
+    font-size: 14px;
+    color: #999;
+    margin-top: 30px;
+}
+
 .select-desc {
     font-size: 14px;
     color: #353535;
