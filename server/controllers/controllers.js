@@ -33,10 +33,8 @@ exports.parks = async (ctx, next) => {
     this.rentNumber = "return err"
   }
   await fc.selectoneparking(ofc.part(ctx.request.body.latitude + "," + ctx.request.body.longitude), function (opt) {
-    console.log(opt)
     if (opt != '') {
       option = opt
-      console.log("里面",option)
     }
   })
   console.log("外面",option)
