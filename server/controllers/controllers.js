@@ -35,8 +35,10 @@ exports.parks = async (ctx, next) => {
   await fc.selectoneparking(ofc.part(ctx.request.body.latitude + "," + ctx.request.body.longitude), function (opt) {
     if (opt != '') {
       option = opt
+      console.log("里面",option)
     }
   })
+  console.log("外面",option)
   let i = 0
   while (i < option.length) {
     if (option[i].isOpen == 1) {
@@ -69,6 +71,7 @@ exports.parks = async (ctx, next) => {
     }
     i = i + 1
   }
+  console.log("all",all)
   ctx.response.body = all
 }
 
@@ -76,7 +79,6 @@ exports.userparks = async (ctx, next) => {
   ctx.response.status = 200;
   var userparkserr
   if (ctx.request.body.type == "get") {
-    console.log("get")
     var all = []
     var parking
     var parkingtime = []
@@ -107,7 +109,6 @@ exports.userparks = async (ctx, next) => {
     }
 
     await fc.selectParkingByopenId(ctx.request.body.openId, function (option) {
-      console.log(option)
       parking = option
       if (option != '') {
         let t
@@ -150,7 +151,6 @@ exports.userparks = async (ctx, next) => {
     var m = 0
     while (m < parking.length) {
       await fc.selectparkingtime("parking", parking[m].id, function (option) {
-        console.log(option)
         if (option != '') {
           using = ofc.using(option)
           if (using == 0) {
@@ -419,9 +419,7 @@ exports.upload = async (ctx, next) => {
       }
     })
     if (ctx.request.body.fields.imageNumber == ctx.request.body.fields.index) {
-      console.log(ctx.request.body.fields)
       await fc.selectparking(ctx.request.body.fields.latitude + "," + ctx.request.body.fields.longitude, "openId", "'" + ctx.request.body.fields.openId + "'", function (option) {
-        console.log(option)
         if (option != "") {
           ctx.body = { parkId: option[option.length - 1].id }
           fs.rename(`upload/` + ctx.request.body.fields.openId, `upload/` + ctx.request.body.fields.openId + "-" + option[option.length - 1].id, function (err) {
