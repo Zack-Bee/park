@@ -746,10 +746,10 @@ exports.gethistory = async (ctx, next) => {
               fc.selectparking(ctx.request.body.latitude + "," + ctx.request.body.longitude, "id", ctx.request.body.parkId, function (o) {
                 if (o != '') {
                   fc.addhistory(ctx.request.body.parkId, year + "." + month + "." + day + "." + hour + "." + minute, null, ctx.request.body.carNumber, ctx.request.body.longitude + "," + ctx.request.body.latitude, ctx.request.body.openId, JSON.parse(body).result.formatted_addresses.recommend, o[0].kind, ctx.request.body.price)
-                  fc.selectparkingtime("parking",ctx.request.body.parkId,function(option){
-                    fc.changeone("parkingtime",option[0].id,"rentNumber",1)
+                  fc.selectparkingtime("parking", ctx.request.body.parkId, function (option) {
+                    fc.changeone("parkingtime", option[0].id, "rentNumber", 1)
                   })
-                  
+
                   ctx.body = { result: "ok" }
                 }
               })
@@ -782,6 +782,7 @@ exports.gethistory = async (ctx, next) => {
     })
   }
   else if (ctx.request.body.type == "cancel") {
+    console.log(ctx.request.body.openId, ctx.request.body.parkId)
     await fc.selecthistory("openid", "'" + ctx.request.body.openId + "'", function (option) {
       if (option != '') {
         for (let i = option.length - 1; i >= 0; i--) {
@@ -791,9 +792,11 @@ exports.gethistory = async (ctx, next) => {
               nt = year + "." + month + "." + day + "." + hour + "." + minute
               fc.changeone("history", option[i].id, "time", option[i].time + "-" + nt)
               ctx.body = { 1: "ok" }
-              fc.selectparkingtime("parking",ctx.request.body.parkId,function(option){
-                fc.changeone("parkingtime",option[0].id,"rentNumber",0)
-              })
+              if (ctx.request.body.kind == 4) {
+                fc.selectparkingtime("parking", ctx.request.body.parkId, function (option) {
+                  fc.changeone("parkingtime", option[0].id, "rentNumber", 0)
+                })
+              }
             }
             else if (option[i].status == 0) {
               ctx.body = { message: "没有可取消的行程" }
@@ -825,8 +828,8 @@ exports.gethistory = async (ctx, next) => {
             nt = ft + "-" + time[0] + "." + time[1] + "." + time[2] + "." + time[3] + "." + time[4]
             fc.changeone("history", option[i].id, "time", nt)
             fc.changeone("history", option[i].id, "status", 3)
-            fc.selectparkingtime("parking",ctx.request.body.parkId,function(option){
-              fc.changeone("parkingtime",option[0].id,"rentNumber",0)
+            fc.selectparkingtime("parking", ctx.request.body.parkId, function (option) {
+              fc.changeone("parkingtime", option[0].id, "rentNumber", 0)
             })
             break
           }
