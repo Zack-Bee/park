@@ -549,16 +549,16 @@ exports.gethistory = async (ctx, next) => {
               }
               if (e == undefined) { var e = [] }
               if (s == undefined) { var s = [] }
-              if (e[0] == undefined) { e[0] = null }
-              if (e[1] == undefined) { e[1] = null }
-              if (e[2] == undefined) { e[2] = null }
-              if (e[3] == undefined) { e[3] = null }
-              if (e[4] == undefined) { e[4] = null }
-              if (s[0] == undefined) { s[0] = null }
-              if (s[1] == undefined) { s[1] = null }
-              if (s[2] == undefined) { s[2] = null }
-              if (s[3] == undefined) { s[3] = null }
-              if (s[4] == undefined) { s[4] = null }
+              if (e[0] == undefined) { e[0] = year }
+              if (e[1] == undefined) { e[1] = month }
+              if (e[2] == undefined) { e[2] = day }
+              if (e[3] == undefined) { e[3] = hour }
+              if (e[4] == undefined) { e[4] = minute }
+              if (s[0] == undefined) { s[0] = year }
+              if (s[1] == undefined) { s[1] = month }
+              if (s[2] == undefined) { s[2] = day }
+              if (s[3] == undefined) { s[3] = hour }
+              if (s[4] == undefined) { s[4] = minute }
               t.startTime = s[3] + ":" + s[4]
               t.startDate = s[0] + "-" + s[1] + "-" + s[2]
               t.endTime = e[3] + ":" + e[4]
