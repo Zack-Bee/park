@@ -1,5 +1,7 @@
 const path = require('path');
-var prod = process.env.NODE_ENV === 'production';
+
+// var prod = process.env.NODE_ENV === 'production';
+var prod = true;
 
 module.exports = {
     target: "client",
@@ -29,7 +31,7 @@ module.exports = {
       outputStyle: 'compressed'
     },
     babel: {
-      sourceMap: true,
+      sourceMap: false,
       presets: [
         'env'
       ],
