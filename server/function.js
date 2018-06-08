@@ -259,7 +259,6 @@ exports.selectoneparking = function (which, callback) {
         resolve(rows);
         for (var i = 0; i < rows.length; i++) {
           option.push({ 'id': rows[i].id, 'openId': rows[i].openId, 'kind': rows[i].kind, 'name': rows[i].name, 'location': rows[i].location, "lola": rows[i].lola, 'number': rows[i].number, 'lease': rows[i].lease, 'income': rows[i].income, 'isOpen': rows[i].isOpen });
-        console.log(option)
         }
         callback(option)
       }
