@@ -185,7 +185,7 @@ exports.userparks = async (ctx, next) => {
                   money = money + option[i].pay
                 }
               }
-              all[n].expectedRevenue = money
+              all[n].expectedRevenue = money*0.95
               console.log(n,money)
             }
             else {
@@ -308,10 +308,27 @@ exports.userparks = async (ctx, next) => {
         t.endDate = "waiting"
         t.startTime = "waiting"
         t.endTime = "waiting"
-        t.revenue = option[0].income
+        t.revenue = "waiting"
         all = t
       }
     })
+    
+      await fc.selecthistory("parking",ctx.request.body.parkId, function (option) {
+        if (option != "") {
+          let money = 0
+          for (let i = 0; i < option.length; i++) {
+            if (option[i].status == 4) {
+              money = money + option[i].pay
+            }
+          }
+          t.revenue = money*0.95
+          console.log(n,money)
+        }
+        else {
+          t.revenue = 0
+        }
+      })
+    
     await fc.selectparkingtime("parking", parking[0].id, function (option) {
       if (option != '') {
         let time = option[0].time
