@@ -149,27 +149,42 @@ exports.userparks = async (ctx, next) => {
     while (m < parking.length) {
       await fc.selectparkingtime("parking", parking[m].id, function (option) {
         if (option != '') {
-          using = ofc.using(option)
-          if (using == 0) {
-            //fc.changeparking("parking", all[m].parkId, "isOpen", 0)
-            //all[m].status = 0
-            all[m].rentPark = 0
-            all[m].expectedRevenue = 0
-          }
-          else {
+          //using = ofc.using(option)
+          // if (using == 0) {
+          //   //fc.changeparking("parking", all[m].parkId, "isOpen", 0)
+          //   //all[m].status = 0
+          //   all[m].rentPark = 0
+          //   all[m].expectedRevenue = 0
+          // }
+          // else {
             //all[m].status = 1
             all[m].rentPark = using.rentNumber
-            all[m].expectedRevenue = option[0].income
+            all[m].expectedRevenue = 'WAITING'
           }
-        }
+        //}
         else {
           // fc.changeparking("parking", all[m].parkId, "isOpen", 0)
           //all[m].status = 0
           all[m].rentPark = 0
           all[m].expectedRevenue = 0
         }
-        m = m + 1
+        
       })
+      if(all[m].expectedRevenue == 'WAITING'){
+        await fc.selecthistory("parking",all[m].parkId,function(option){
+          let money=0
+          for(let i=0;i<option.length;i++){
+            if(option[i].status==4){
+              money=money+option[i].pay
+            }
+          }
+          all[m].expectedRevenue = money
+        })
+        m = m + 1
+      }
+      else{
+        m = m + 1
+      }
     }
     ctx.response.body = all
   }
