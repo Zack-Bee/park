@@ -157,10 +157,10 @@ exports.userparks = async (ctx, next) => {
           //   all[m].expectedRevenue = 0
           // }
           // else {
-            //all[m].status = 1
-            all[m].rentPark = using.rentNumber
-            all[m].expectedRevenue = 'WAITING'
-          }
+          //all[m].status = 1
+          all[m].rentPark = using.rentNumber
+          all[m].expectedRevenue = 'WAITING'
+        }
         //}
         else {
           // fc.changeparking("parking", all[m].parkId, "isOpen", 0)
@@ -168,22 +168,30 @@ exports.userparks = async (ctx, next) => {
           all[m].rentPark = 0
           all[m].expectedRevenue = 0
         }
-        
+        m = m + 1
       })
-      if(all[m].expectedRevenue == 'WAITING'){
-        await fc.selecthistory("parking",all[m].parkId,function(option){
-          let money=0
-          for(let i=0;i<option.length;i++){
-            if(option[i].status==4){
-              money=money+option[i].pay
+      var n = 0
+      while (n < parking.length) {
+        if (all[n].expectedRevenue == 'WAITING') {
+          await fc.selecthistory("parking", all[n].parkId, function (option) {
+            if (option != "") {
+              let money = 0
+              for (let i = 0; i < option.length; i++) {
+                if (option[i].status == 4) {
+                  money = money + option[i].pay
+                }
+              }
+              all[n].expectedRevenue = money
             }
-          }
-          all[m].expectedRevenue = money
-        })
-        m = m + 1
-      }
-      else{
-        m = m + 1
+            else {
+              all[n].expectedRevenue = 0
+            }
+          })
+          n = n + 1
+        }
+        else {
+          n = n + 1
+        }
       }
     }
     ctx.response.body = all
@@ -248,24 +256,24 @@ exports.userparks = async (ctx, next) => {
           ctx.request.body.startDay + "."
           + ctx.request.body.startTime.replace(/:/g, ".")
           + "-" + ctx.request.body.endDay + "."
-          + ctx.request.body.endTime.replace(/:/g, "."), ctx.request.body.price, null, 0,ofc.income)
-          
+          + ctx.request.body.endTime.replace(/:/g, "."), ctx.request.body.price, null, 0, ofc.income)
+
       }
       else if (ctx.request.body.openType == "once") {
         await fc.addparkingtime(ctx.request.body.parkId, year
           + "." + month + "." + day + "."
           + ctx.request.body.startTime.replace(/:/g, ".")
           + "-" + year + "." + month + "." + day + "."
-          + ctx.request.body.endTime.replace(/:/g, "."), ctx.request.body.price, null, 1,ofc.income)
-          ofc.income(ctx.request.body.parkId)
+          + ctx.request.body.endTime.replace(/:/g, "."), ctx.request.body.price, null, 1, ofc.income)
+        ofc.income(ctx.request.body.parkId)
       }
       else if (ctx.request.body.openType == "date") {
         await fc.addparkingtime(ctx.request.body.parkId,
           ctx.request.body.startDay.replace(/-/g, ".") + "."
           + ctx.request.body.startTime.replace(/:/g, ".")
           + "-" + ctx.request.body.endDay.replace(/-/g, ".") + "."
-          + ctx.request.body.endTime.replace(/:/g, "."),ctx.request.body.price, null, 1,ofc.income)
-          ofc.income(ctx.request.body.parkId)
+          + ctx.request.body.endTime.replace(/:/g, "."), ctx.request.body.price, null, 1, ofc.income)
+        ofc.income(ctx.request.body.parkId)
       }
     }
     fc.changeparking("parking", ctx.request.body.parkId, "name", ctx.request.body.parkName)
