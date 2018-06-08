@@ -35,7 +35,7 @@
                     点击现在停车
                 </view>
                 <view class="image-wrapper">
-                    <image style="height:1138rpx; width:640rpx;" src="./park1.png" lazy-load="{{true}}" mode="scaleToFill" />
+                    <image style="height:1138rpx; width:640rpx;" src="./park2.jpg" lazy-load="{{true}}" mode="scaleToFill" />
                 </view>
             </view>
             <view class="steps">
@@ -46,7 +46,7 @@
                     在行程中可以查看您停车从详细情况
                 </view>
                 <view class="image-wrapper">
-                    <image style="height:1138rpx; width:640rpx;" src="./park1.png" lazy-load="{{true}}" mode="scaleToFill" />
+                    <image style="height:1138rpx; width:640rpx;" src="./park2.png" lazy-load="{{true}}" mode="scaleToFill" />
                 </view>
                 <view class="steps-info">
                     <view class="info-item">
@@ -67,12 +67,54 @@
                     离开停车位后点击支付完成停车
                 </view>
                 <view class="image-wrapper">
-                    <image style="height:1138rpx; width:640rpx;" src="./park1.png" lazy-load="{{true}}" mode="scaleToFill" />
+                    <image style="height:1138rpx; width:640rpx;" src="./park4.jpg" lazy-load="{{true}}" mode="scaleToFill" />
                 </view>
+            </view>
+            <view class="button-wrapper">
+                <guide1 type="primary" :bindTap="navigateToFind">
+                    现在去停车
+                </guide1>
             </view>
         </view>
         <view wx:if="{{selectedType === '2'}}" class="guide-group">
-
+            <view class="steps">
+                <view class="steps-number-wrapper">
+                    <view class="steps-number">1</view>
+                </view>
+                <view class="steps-desc">
+                    新增停车位
+                </view>
+                <view class="image-wrapper">
+                    <image style="height:1138rpx; width:640rpx;" src="./parks1.png" lazy-load="{{true}}" mode="scaleToFill" />
+                </view>
+            </view>
+            <view class="steps">
+                <view class="steps-number-wrapper">
+                    <view class="steps-number">2</view>
+                </view>
+                <view class="steps-desc">
+                    发布停车位
+                </view>
+                <view class="image-wrapper">
+                    <image style="height:1138rpx; width:640rpx;" src="./parks2.png" lazy-load="{{true}}" mode="scaleToFill" />
+                </view>
+            </view>
+            <view class="steps">
+                <view class="steps-number-wrapper">
+                    <view class="steps-number">3</view>
+                </view>
+                <view class="steps-desc">
+                    管理停车位
+                </view>
+                <view class="image-wrapper">
+                    <image style="height:1138rpx; width:640rpx;" src="./parks3.png" lazy-load="{{true}}" mode="scaleToFill" />
+                </view>
+            </view>
+            <view class="button-wrapper">
+                <guide2 type="primary" :bindTap="navigateToAdd">
+                    现在去增加车位
+                </guide2>
+            </view>
         </view>
     </view>
 </template>
@@ -119,15 +161,23 @@
 .info-item {
     margin: 4px 0;
 }
+
+.button-wrapper {
+    padding: 30rpx;
+    margin-top: 20px;
+}
 </style>
 
 <script>
 import wepy from 'wepy'
 import Select from '../../components/select/select'
+import Button from '../../components/button/button'
 
 export default class Guide extends wepy.page {
     components = {
-        Select
+        Select,
+        guide1: Button,
+        guide2: Button
     }
 
     data = {
@@ -152,12 +202,16 @@ export default class Guide extends wepy.page {
             })
         },
         navigateToAdd: () => {
-            wx.navigateTo({
-                url: '../../add-park/add-park'
+            wx.redirectTo({
+                url: '../add-park/add-park'
             })
         }
     }
 
     onLoad() {}
+
+    config = {
+        navigationBarTitleText: '使用指南'
+    }
 }
 </script>

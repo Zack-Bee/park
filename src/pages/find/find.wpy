@@ -73,7 +73,7 @@ export default class Index extends wepy.page {
             let MapScreenW = wx.getStorageSync('MapScreenW')
             switch (this.filter) {
                 case '综合': {
-                    this.showParks = newValue
+                    this.showParks = newValue.slice(0, 30)
                     this.markers = newValue.map((park) => ({
                         title: park.parkName,
                         latitude: park.latitude,
@@ -99,7 +99,7 @@ export default class Index extends wepy.page {
                     break
                 }
                 case '企业': {
-                    this.showParks = newValue.filter((park) => park.kind !== 4)
+                    this.showParks = newValue.filter((park) => park.kind !== 4).slice(0, 30)
                     this.markers = this.showParks.map((park) => ({
                         title: park.parkName,
                         latitude: park.latitude,
@@ -125,7 +125,7 @@ export default class Index extends wepy.page {
                     break
                 }
                 case '个人': {
-                    this.showParks = newValue.filter((park) => park.kind === 4)
+                    this.showParks = newValue.filter((park) => park.kind === 4).slice(0, 30)
                     this.markers = this.showParks.map((park) => ({
                         title: park.parkName,
                         latitude: park.latitude,
@@ -147,6 +147,7 @@ export default class Index extends wepy.page {
                             display: 'BYCLICK'
                         }
                     }))
+                    console.log(this.markers)
                     this.$apply()
                     break
                 }
@@ -157,7 +158,7 @@ export default class Index extends wepy.page {
             let MapScreenW = wx.getStorageSync('MapScreenW')
             switch (newValue) {
                 case '综合': {
-                    this.showParks = this.parks
+                    this.showParks = this.parks.slice(0, 30)
                     this.markers = this.parks.map((park) => ({
                         title: park.parkName,
                         latitude: park.latitude,
@@ -186,7 +187,7 @@ export default class Index extends wepy.page {
                 case '企业': {
                     this.showParks = this.parks.filter(
                         (park) => park.kind !== 4
-                    )
+                    ).slice(0, 30)
                     this.markers = this.showParks.map((park) => ({
                         title: park.parkName,
                         latitude: park.latitude,
@@ -215,7 +216,7 @@ export default class Index extends wepy.page {
                 case '个人': {
                     this.showParks = this.parks.filter(
                         (park) => park.kind === 4
-                    )
+                    ).slice(0, 30)
                     this.markers = this.showParks.map((park) => ({
                         title: park.parkName,
                         latitude: park.latitude,
@@ -283,7 +284,7 @@ export default class Index extends wepy.page {
             for (let i = 0, len = this.parks.length; i < len; i++) {
                 this.parks[i].distance = formatDistance(this.parks[i].distance)
             }
-            console.log("\n\nsorted\n\n", this.parks)
+            console.log('\n\nsorted\n\n', this.parks)
 
             if (allRes[0].statusCode !== 200) {
                 wx.showModal({
@@ -323,6 +324,21 @@ export default class Index extends wepy.page {
                     () => {
                         wx.hideLoading()
                         wx.hideNavigationBarLoading()
+                        if (this.$parent.globalData.isNew) {
+                            wx.showModal({
+                                title: '新人指引',
+                                content: '是否要先去看看使用指南',
+                                success: function(res) {
+                                    if (res.confirm) {
+                                        wx.navigateTo({
+                                            url: '../guide/guide'
+                                        })
+                                    }
+                                },
+                                showCancel: true,
+                                confirmText: '现在就去'
+                            })
+                        }
                         this.isLoading = false
                         this.$apply()
                     },
@@ -364,12 +380,13 @@ export default class Index extends wepy.page {
                         return
                     }
                     if (
-                        res.longitude.toFixed(8) !== this.longitude.toFixed(8) ||
+                        res.longitude.toFixed(8) !==
+                            this.longitude.toFixed(8) ||
                         this.latitude.toFixed(8) !== res.latitude.toFixed(8)
                     ) {
                         console.log(res.longitude, res.latitude)
                         console.log(this.longitude, this.latitude)
-                        console.log("not same")
+                        console.log('not same')
                         this.isLoading = true
                         this.$apply()
                         this.getParks(

@@ -55,7 +55,7 @@
                     </view>
                     <view wx:if="{{item.status === 1}}">
                         <view class="history-padding1"></view>
-                        <view @tap="cancel" data-park-id="{{item.parkId}}" data-plate-number="{{item.plateNumber}}">
+                        <view @tap="cancel" data-park-id="{{item.parkId}}" data-kind="{{item.kind}}" data-plate-number="{{item.plateNumber}}">
                             <cancelButton type="danger" size="mini">
                                 取消行程
                             </cancelButton>
@@ -203,96 +203,96 @@ export default class History extends wepy.page {
     data = {
         delta: 1,
         history: [
-            {
-                status: 0,
-                parkLocation: '东北大学', // 表示停车场的大致位置
-                startTime: '12:00', // 表示开始停车的时间,
-                startDate: '08-27', // 开始停车的日期,
-                endTime: '23:00', // 停车结束的事件,
-                endDate: '08-28', // 停车结束的日期 // 如果行程未完成则是当前的日期, 当前的时间
-                fee: 19.8, // 停车的费用
-                recordId: '1929292', // 这条记录的编号,
-                parkId: '31232', // 停车场的编号,
-                parkLatitude: 41.685102,
-                parkLongitude: 123.426872,
-                plateNumber: '辽A-12345',
-                kind: 3
-            },
-            {
-                status: 1,
-                parkLocation: '东北大学', // 表示停车场的大致位置
-                startTime: '12:00', // 表示开始停车的时间,
-                startDate: '08-27', // 开始停车的日期,
-                endTime: '23:00', // 停车结束的事件,
-                endDate: '08-28', // 停车结束的日期 // 如果行程未完成则是当前的日期, 当前的时间
-                fee: 19.8, // 停车的费用
-                recordId: '1929292', // 这条记录的编号,
-                parkId: '31232', // 停车场的编号,
-                parkLatitude: 41.685102,
-                parkLongitude: 123.426872,
-                plateNumber: '辽A-12345',
-                kind: 3
-            },
-            {
-                status: 1,
-                parkLocation: '东北大学', // 表示停车场的大致位置
-                startTime: '12:00', // 表示开始停车的时间,
-                startDate: '08-27', // 开始停车的日期,
-                endTime: '23:00', // 停车结束的事件,
-                endDate: '08-28', // 停车结束的日期 // 如果行程未完成则是当前的日期, 当前的时间
-                fee: 19.8, // 停车的费用
-                recordId: '1929292', // 这条记录的编号,
-                parkId: '31232', // 停车场的编号,
-                parkLatitude: 41.685102,
-                parkLongitude: 123.426872,
-                plateNumber: '辽A-12345',
-                kind: 4
-            },
-            {
-                status: 2,
-                parkLocation: '东北大学', // 表示停车场的大致位置
-                startTime: '12:00', // 表示开始停车的时间,
-                startDate: '08-27', // 开始停车的日期,
-                endTime: '23:00', // 停车结束的事件,
-                endDate: '08-28', // 停车结束的日期 // 如果行程未完成则是当前的日期, 当前的时间
-                fee: 19.8, // 停车的费用
-                recordId: '1929292', // 这条记录的编号,
-                parkId: '31232', // 停车场的编号,
-                parkLatitude: 41.685102,
-                parkLongitude: 123.426872,
-                plateNumber: '辽A-12345',
-                kind: 3
-            },
-            {
-                status: 3,
-                parkLocation: '东北大学', // 表示停车场的大致位置
-                startTime: '12:00', // 表示开始停车的时间,
-                startDate: '08-27', // 开始停车的日期,
-                endTime: '23:00', // 停车结束的事件,
-                endDate: '08-28', // 停车结束的日期 // 如果行程未完成则是当前的日期, 当前的时间
-                fee: 19.8, // 停车的费用
-                recordId: '1929292', // 这条记录的编号,
-                parkId: '31232', // 停车场的编号,
-                parkLatitude: 41.685102,
-                parkLongitude: 123.426872,
-                plateNumber: '辽A-12345',
-                kind: 3
-            },
-            {
-                status: 4,
-                parkLocation: '东北大学', // 表示停车场的大致位置
-                startTime: '12:00', // 表示开始停车的时间,
-                startDate: '08-27', // 开始停车的日期,
-                endTime: '23:00', // 停车结束的事件,
-                endDate: '08-28', // 停车结束的日期 // 如果行程未完成则是当前的日期, 当前的时间
-                fee: 19.8, // 停车的费用
-                recordId: '1929292', // 这条记录的编号,
-                parkId: '31232', // 停车场的编号,
-                parkLatitude: 41.685102,
-                parkLongitude: 123.426872,
-                plateNumber: '辽A-12345',
-                kind: 3
-            }
+            // {
+            //     status: 0,
+            //     parkLocation: '东北大学', // 表示停车场的大致位置
+            //     startTime: '12:00', // 表示开始停车的时间,
+            //     startDate: '08-27', // 开始停车的日期,
+            //     endTime: '23:00', // 停车结束的事件,
+            //     endDate: '08-28', // 停车结束的日期 // 如果行程未完成则是当前的日期, 当前的时间
+            //     fee: 19.8, // 停车的费用
+            //     recordId: '1929292', // 这条记录的编号,
+            //     parkId: '31232', // 停车场的编号,
+            //     parkLatitude: 41.685102,
+            //     parkLongitude: 123.426872,
+            //     plateNumber: '辽A-12345',
+            //     kind: 3
+            // },
+            // {
+            //     status: 1,
+            //     parkLocation: '东北大学', // 表示停车场的大致位置
+            //     startTime: '12:00', // 表示开始停车的时间,
+            //     startDate: '08-27', // 开始停车的日期,
+            // endTime: '23:00', // 停车结束的事件,
+            // endDate: '08-28', // 停车结束的日期 // 如果行程未完成则是当前的日期, 当前的时间
+            // fee: 19.8, // 停车的费用
+            // recordId: '1929292', // 这条记录的编号,
+            // parkId: '31232', // 停车场的编号,
+            // parkLatitude: 41.685102,
+            // parkLongitude: 123.426872,
+            // plateNumber: '辽A-12345',
+            // kind: 3
+            // },
+            // {
+            // status: 1,
+            // parkLocation: '东北大学', // 表示停车场的大致位置
+            // startTime: '12:00', // 表示开始停车的时间,
+            // startDate: '08-27', // 开始停车的日期,
+            // endTime: '23:00', // 停车结束的事件,
+            // endDate: '08-28', // 停车结束的日期 // 如果行程未完成则是当前的日期, 当前的时间
+            // fee: 19.8, // 停车的费用
+            // recordId: '1929292', // 这条记录的编号,
+            // parkId: '31232', // 停车场的编号,
+            // parkLatitude: 41.685102,
+            // parkLongitude: 123.426872,
+            // plateNumber: '辽A-12345',
+            // kind: 4
+            // },
+            // {
+            // status: 2,
+            // parkLocation: '东北大学', // 表示停车场的大致位置
+            // startTime: '12:00', // 表示开始停车的时间,
+            // startDate: '08-27', // 开始停车的日期,
+            // endTime: '23:00', // 停车结束的事件,
+            // endDate: '08-28', // 停车结束的日期 // 如果行程未完成则是当前的日期, 当前的时间
+            // fee: 19.8, // 停车的费用
+            // recordId: '1929292', // 这条记录的编号,
+            // parkId: '31232', // 停车场的编号,
+            // parkLatitude: 41.685102,
+            // parkLongitude: 123.426872,
+            // plateNumber: '辽A-12345',
+            // kind: 3
+            // },
+            // {
+            // status: 3,
+            // parkLocation: '东北大学', // 表示停车场的大致位置
+            // startTime: '12:00', // 表示开始停车的时间,
+            // startDate: '08-27', // 开始停车的日期,
+            // endTime: '23:00', // 停车结束的事件,
+            // endDate: '08-28', // 停车结束的日期 // 如果行程未完成则是当前的日期, 当前的时间
+            // fee: 19.8, // 停车的费用
+            // recordId: '1929292', // 这条记录的编号,
+            // parkId: '31232', // 停车场的编号,
+            // parkLatitude: 41.685102,
+            // parkLongitude: 123.426872,
+            // plateNumber: '辽A-12345',
+            // kind: 3
+            // },
+            // {
+            // status: 4,
+            // parkLocation: '东北大学', // 表示停车场的大致位置
+            // startTime: '12:00', // 表示开始停车的时间,
+            // startDate: '08-27', // 开始停车的日期,
+            // endTime: '23:00', // 停车结束的事件,
+            // endDate: '08-28', // 停车结束的日期 // 如果行程未完成则是当前的日期, 当前的时间
+            // fee: 19.8, // 停车的费用
+            // recordId: '1929292', // 这条记录的编号,
+            // parkId: '31232', // 停车场的编号,
+            // parkLatitude: 41.685102,
+            // parkLongitude: 123.426872,
+            // plateNumber: '辽A-12345',
+            // kind: 3
+            // }
         ],
         filter: 'all',
         isLoading: true,
@@ -332,7 +332,9 @@ export default class History extends wepy.page {
                     if (res.data.length === 0) {
                         this.isNoMore = true
                     }
-                    this.history.push(...res.data)
+                    let arr = res.data
+                    console.log(arr)
+                    this.history.push(...arr)
                     this.$apply()
                 },
                 (err) => {
@@ -356,7 +358,28 @@ export default class History extends wepy.page {
             }).then(
                 (res) => {
                     this.delta = 1
-                    this.getMore()
+                    post(`${config.host}/user/history`, {
+                        openId: this.$parent.globalData.openId,
+                        type: 'get',
+                        filter: 'all',
+                        delta: this.delta
+                    }).then(
+                        (res) => {
+                            console.log(res)
+                            this.delta++
+                            this.isLoading = false
+                            if (res.data.length === 0) {
+                                this.isNoMore = true
+                            }
+                            let arr = res.data
+                            console.log(arr)
+                            this.history = res.data
+                            this.$apply()
+                        },
+                        (err) => {
+                            console.log(err)
+                        }
+                    )
                 },
                 (err) => {
                     console.log(err)
@@ -369,12 +392,34 @@ export default class History extends wepy.page {
             post(`${config.host}/user/history`, {
                 type: 'cancel',
                 openId: this.$parent.globalData.openId,
-                carNumber: dataset.plateNumber
+                carNumber: dataset.plateNumber,
+                parkId: dataset.parkId,
+                kind: dataset.kind
             }).then(
                 (res) => {
-                    console.log(res)
                     this.delta = 1
-                    this.getMore()
+                    post(`${config.host}/user/history`, {
+                        openId: this.$parent.globalData.openId,
+                        type: 'get',
+                        filter: 'all',
+                        delta: this.delta
+                    }).then(
+                        (res) => {
+                            console.log(res)
+                            this.delta++
+                            this.isLoading = false
+                            if (res.data.length === 0) {
+                                this.isNoMore = true
+                            }
+                            let arr = res.data
+                            console.log(arr)
+                            this.history = res.data
+                            this.$apply()
+                        },
+                        (err) => {
+                            console.log(err)
+                        }
+                    )
                 },
                 (err) => {
                     console.log(err)
@@ -400,13 +445,19 @@ export default class History extends wepy.page {
                 if (res.data.length < 10) {
                     this.isNoMore = true
                 }
-                this.history.push(...res.data)
+
+                this.history = this.history.concat(res.data)
+                console.log(this.history)
                 this.$apply()
             },
             (err) => {
                 console.log(err)
             }
         )
+    }
+
+    config = {
+        navigationBarTitleText: '我的行程'
     }
 }
 </script>

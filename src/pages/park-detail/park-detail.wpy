@@ -136,7 +136,9 @@ export default class ParkDetail extends wepy.page {
                 post(`${config.host}/user/parks`, {
                     type: 'delete',
                     openId: this.$parent.globalData.openId,
-                    parkId: this.parkId
+                    parkId: this.parkId,
+                    longitude: this.longitude,
+                    latitude: this.latitude
                 }).then((res) => {
                     console.log(res)
                     wx.showToast({
@@ -187,8 +189,6 @@ export default class ParkDetail extends wepy.page {
                 this.kind = parseInt(res.data.kind)
                 this.startDay = this.weeks[parseInt(res.data.startDay) - 1]
                 this.endDay = this.weeks[parseInt(res.data.endDay) - 1]
-                console.log(this.startDay)
-                console.log(this.endDay)
                 this.$apply()
                 wx.hideLoading()
             },

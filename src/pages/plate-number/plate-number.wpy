@@ -98,7 +98,7 @@ export default class PlateNumber extends wepy.page {
         isToptipsShow: false,
         toptipsContent: "",
         plateNumber: ['鄂A66666'],
-        extraInfo: '',
+        extraInfo: '暂时没有车牌号, 快点添加吧',
         number: '',
         placeArray: [
             [
@@ -850,6 +850,10 @@ export default class PlateNumber extends wepy.page {
             this.extraInfo = '暂时没有车牌号, 快点添加吧'
         }
         this.$apply()
+    }
+
+    config = {
+        navigationBarTitleText: '我的车牌号'
     }
 }
 </script>
