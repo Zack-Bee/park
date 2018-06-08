@@ -321,11 +321,11 @@ exports.userparks = async (ctx, next) => {
               money = money + option[i].pay
             }
           }
-          t.revenue = money*0.95
+          all.revenue = money*0.95
           console.log(n,money)
         }
         else {
-          t.revenue = 0
+          all.revenue = 0
         }
       })
     
