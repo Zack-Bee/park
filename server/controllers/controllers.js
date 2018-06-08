@@ -33,12 +33,14 @@ exports.parks = async (ctx, next) => {
     this.rentNumber = "return err"
   }
   await fc.selectoneparking(ofc.part(ctx.request.body.latitude + "," + ctx.request.body.longitude), function (opt) {
+    console.log("???????")
     if (opt != '') {
       option = opt
     }
   })
   let i = 0
   while (i < option.length) {
+    console.log(123)
     if (option[i].isOpen == 1) {
       let la1 = option[i].lola.split(",")[0]
       let lo1 = option[i].lola.split(",")[1]
@@ -47,6 +49,7 @@ exports.parks = async (ctx, next) => {
         distance = o
       })
       if (distance < 1000 * range) {
+        console.log(get)
         await fc.selectparkingtime("parking", option[i].id, function (op) {
           if (op != '') {
             t = new message
