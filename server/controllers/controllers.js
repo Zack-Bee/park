@@ -12,7 +12,6 @@ exports.login = async (ctx, next) => {
   var res = await ofc.xcxlogin(code, c);
 }
 exports.parks = async (ctx, next) => {
-  console.log("!!!!!!!!!")
   ctx.response.status = 200;
   let all = []
   let lo = ctx.request.body.longitude
@@ -33,16 +32,13 @@ exports.parks = async (ctx, next) => {
     this.allPark = "return err"
     this.rentNumber = "return err"
   }
-  console.log(ofc.part(ctx.request.body.latitude + "," + ctx.request.body.longitude))
   await fc.selectoneparking(ofc.part(ctx.request.body.latitude + "," + ctx.request.body.longitude), function (opt) {
-    console.log("???????")
     if (opt != '') {
       option = opt
     }
   })
   let i = 0
   while (i < option.length) {
-    console.log(123)
     if (option[i].isOpen == 1) {
       let la1 = option[i].lola.split(",")[0]
       let lo1 = option[i].lola.split(",")[1]
