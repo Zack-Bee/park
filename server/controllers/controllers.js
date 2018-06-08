@@ -51,7 +51,6 @@ exports.parks = async (ctx, next) => {
         distance = o
       })
       if (distance < 1000 * range) {
-        console.log(get)
         await fc.selectparkingtime("parking", option[i].id, function (op) {
           if (op != '') {
             t = new message
@@ -163,7 +162,7 @@ exports.userparks = async (ctx, next) => {
           // }
           // else {
           //all[m].status = 1
-          all[m].rentPark = using.rentNumber
+          all[m].rentPark = option[0].rentNumber
           all[m].expectedRevenue = 'WAITING'
         }
         //}
