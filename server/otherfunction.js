@@ -323,7 +323,7 @@ exports.addtest = function (a, b, c, d, city,num) {
       else if (response.statusCode == 200) {
         resolve(body);
         if (JSON.parse(body).result.pois != "") {
-          fc.addparking(city + "-test", Math.random()>0.7?3:4, city + "测试停车场", JSON.parse(body).result.formatted_addresses.recommend, aa + "," + bb, 1, "/upload/odpVJ5Lutx-arHao6e2yZXr_tUOs")
+          fc.addparking(city + "-test", Math.random()>0.5?3:4, city + "测试停车场", JSON.parse(body).result.formatted_addresses.recommend, aa + "," + bb, 1, "/upload/odpVJ5Lutx-arHao6e2yZXr_tUOs")
         }
       }
       else {
