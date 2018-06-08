@@ -251,7 +251,6 @@ exports.selectoneparking = function (which, callback) {
   return new Promise(function (resolve, reject) {
     var option = new Array();
     var sql = 'select * from ' + which
-    console.log(sql)
     query(sql, [1], function (err, rows, fields) {
       if (err) {
         reject(err);

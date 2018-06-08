@@ -181,8 +181,8 @@ exports.userparks = async (ctx, next) => {
                   money = money + option[i].pay
                 }
               }
-              all[n].expectedRevenue = money*0.95
-              console.log(n,money)
+              all[n].expectedRevenue = money * 0.95
+              console.log(n, money)
             }
             else {
               all[n].expectedRevenue = 0
@@ -308,23 +308,23 @@ exports.userparks = async (ctx, next) => {
         all = t
       }
     })
-    
-      await fc.selecthistory("parking",ctx.request.body.parkId, function (option) {
-        if (option != "") {
-          let money = 0
-          for (let i = 0; i < option.length; i++) {
-            if (option[i].status == 4) {
-              money = money + option[i].pay
-            }
+
+    await fc.selecthistory("parking", ctx.request.body.parkId, function (option) {
+      if (option != "") {
+        let money = 0
+        for (let i = 0; i < option.length; i++) {
+          if (option[i].status == 4) {
+            money = money + option[i].pay
           }
-          all.revenue = money*0.95
-          console.log(n,money)
         }
-        else {
-          all.revenue = 0
-        }
-      })
-    
+        all.revenue = money * 0.95
+        console.log(n, money)
+      }
+      else {
+        all.revenue = 0
+      }
+    })
+
     await fc.selectparkingtime("parking", parking[0].id, function (option) {
       if (option != '') {
         let time = option[0].time
@@ -412,14 +412,26 @@ exports.userplatenumber = async (ctx, next) => {
 exports.upload = async (ctx, next) => {
   ctx.response.status = 200;
   if (ctx.request.body.kind) {
-    fc.addparking(ctx.request.body.openId,
-      ctx.request.body.kind, null, null,
-      ctx.request.body.latitude + "," + ctx.request.body.longitude, null, null)
-    fc.selectowner("openId", '"' + ctx.request.body.openId + '"', function (option) {
-      if (option == "") {
-        fc.addowner('"' + ctx.request.body.openId + '"')
-      }
-    })
+    if (ctx.request.body.kind == 3) {
+      fc.addparking(ctx.request.body.openId,
+        ctx.request.body.kind, null, null,
+        ctx.request.body.latitude + "," + ctx.request.body.longitude, null, null)
+      fc.selectowner("openId", '"' + ctx.request.body.openId + '"', function (option) {
+        if (option == "") {
+          fc.addowner('"' + ctx.request.body.openId + '"')
+        }
+      })
+    }
+    else if (ctx.request.body.kind == 4) {
+      fc.addparking(ctx.request.body.openId,
+        ctx.request.body.kind, null, null,
+        ctx.request.body.latitude + "," + ctx.request.body.longitude, 1, null)
+      fc.selectowner("openId", '"' + ctx.request.body.openId + '"', function (option) {
+        if (option == "") {
+          fc.addowner('"' + ctx.request.body.openId + '"')
+        }
+      })
+    }
   }
   if (ctx.request.body.files) {
     await fs.exists(`upload/` + ctx.request.body.fields.openId, function (exists) {
@@ -734,6 +746,10 @@ exports.gethistory = async (ctx, next) => {
               fc.selectparking(ctx.request.body.latitude + "," + ctx.request.body.longitude, "id", ctx.request.body.parkId, function (o) {
                 if (o != '') {
                   fc.addhistory(ctx.request.body.parkId, year + "." + month + "." + day + "." + hour + "." + minute, null, ctx.request.body.carNumber, ctx.request.body.longitude + "," + ctx.request.body.latitude, ctx.request.body.openId, JSON.parse(body).result.formatted_addresses.recommend, o[0].kind, ctx.request.body.price)
+                  fc.selectparkingtime("parking",ctx.request.body.parkId,function(option){
+                    fc.changeone("parkingtime",option[0].id,"rentNumber",1)
+                  })
+                  
                   ctx.body = { result: "ok" }
                 }
               })
@@ -775,6 +791,9 @@ exports.gethistory = async (ctx, next) => {
               nt = year + "." + month + "." + day + "." + hour + "." + minute
               fc.changeone("history", option[i].id, "time", option[i].time + "-" + nt)
               ctx.body = { 1: "ok" }
+              fc.selectparkingtime("parking",ctx.request.body.parkId,function(option){
+                fc.changeone("parkingtime",option[0].id,"rentNumber",0)
+              })
             }
             else if (option[i].status == 0) {
               ctx.body = { message: "没有可取消的行程" }
@@ -806,6 +825,9 @@ exports.gethistory = async (ctx, next) => {
             nt = ft + "-" + time[0] + "." + time[1] + "." + time[2] + "." + time[3] + "." + time[4]
             fc.changeone("history", option[i].id, "time", nt)
             fc.changeone("history", option[i].id, "status", 3)
+            fc.selectparkingtime("parking",ctx.request.body.parkId,function(option){
+              fc.changeone("parkingtime",option[0].id,"rentNumber",0)
+            })
             break
           }
         }
