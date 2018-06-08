@@ -224,11 +224,14 @@ export default class Parks extends wepy.component {
                     (res) => {
                         console.log('has close')
                         console.log(res)
+                        console.log(currentParkId)
                         this.parks.forEach((park) => {
                             if (currentParkId === park.parkId) {
                                 park.status = 0
+                                console.log(park)
                             }
                         })
+                        this.$apply()
                     },
                     (err) => {
                         console.log(err)
@@ -305,7 +308,9 @@ export default class Parks extends wepy.component {
                         parkName = park.parkName
                     }
                 })
-                this.dialogMessage = `你确定要停止发布<${parkName}>吗?`
+                console.log(typeof parkName)
+                console.log(parkName)
+                this.dialogMessage = `你确定要停止发布<${(parkName === "null" || parkName === null) ? "新增停车位" : parkName}>吗?`
                 this.$apply()
                 this.isDialogShow = true
                 this.$apply()

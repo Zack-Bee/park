@@ -4,13 +4,13 @@
             <picker bindchange="bindStartDayChange" value="{{startDay}}" range="{{weeks}}">
                 <view class="publish-time">
                     <view class="publish-time-desc">开始日期:</view>
-                    <view class="publish-time-value">{{weeks[startDay - 1]}}</view>
+                    <view class="publish-time-value">{{weeks[startDay]}}</view>
                 </view>
             </picker>
             <picker bindchange="bindEndDayChange" value="{{endDay}}" range="{{weeks}}">
                 <view class="publish-time">
                     <view class="publish-time-desc">截止日期:</view>
-                    <view class="publish-time-value">{{weeks[endDay - 1]}}</view>
+                    <view class="publish-time-value">{{weeks[endDay]}}</view>
                 </view>
             </picker>
         </view>

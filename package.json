@@ -50,7 +50,9 @@
     "wepy-cli": "^1.7.1",
     "wepy-compiler-babel": "^1.5.1",
     "wepy-compiler-less": "^1.3.10",
-    "wepy-compiler-sass": "^1.3.12"
+    "wepy-compiler-sass": "^1.3.12",
+    "wepy-plugin-imagemin": "^1.5.3",
+    "wepy-plugin-uglifyjs": "^1.3.7"
   },
   "wepy": {
     "module-a": false,

@@ -91,55 +91,55 @@ export default class Index extends wepy.page {
         nickName: '',
         avatarUrl: '',
         parks: [
-            {
-                parkName: '王邦铮的停车场',
-                kind: 3,
-                allPark: 100,
-                rentPark: 60,
-                parkId: 10086,
-                status: 2
-            },
-            {
-                parkName: 'zackbee',
-                kind: 4,
-                parkId: 10087,
-                rentPark: 0,
-                allPark: 1,
-                status: 2
-            },
-            {
-                parkName: '王邦铮的停车场',
-                kind: 3,
-                allPark: 100,
-                rentPark: 60,
-                parkId: 10086,
-                status: 0
-            },
-            {
-                parkName: 'zackbee',
-                kind: 4,
-                parkId: 10087,
-                rentPark: 1,
-                allPark: 1,
-                status: 0
-            },
-            {
-                parkName: '王邦铮的停车场',
-                kind: 3,
-                allPark: 100,
-                rentPark: 60,
-                parkId: 10086,
-                status: 1
-            },
-            {
-                parkName: 'zackbee',
-                kind: 4,
-                parkId: 10087,
-                rentPark: 1,
-                allPark: 1,
-                status: 1,
-                expectedRevenue: 105
-            }
+            // {
+            //     parkName: '王邦铮的停车场',
+            //     kind: 3,
+            //     allPark: 100,
+            //     rentPark: 60,
+            //     parkId: 10086,
+            //     status: 2
+            // },
+            // {
+            //     parkName: 'zackbee',
+            //     kind: 4,
+            //     parkId: 10087,
+            //     rentPark: 0,
+            //     allPark: 1,
+            //     status: 2
+            // },
+            // {
+            //     parkName: '王邦铮的停车场',
+            //     kind: 3,
+            //     allPark: 100,
+            //     rentPark: 60,
+            //     parkId: 10086,
+            //     status: 0
+            // },
+            // {
+            //     parkName: 'zackbee',
+            //     kind: 4,
+            //     parkId: 10087,
+            //     rentPark: 1,
+            //     allPark: 1,
+            //     status: 0
+            // },
+            // {
+            //     parkName: '王邦铮的停车场',
+            //     kind: 3,
+            //     allPark: 100,
+            //     rentPark: 60,
+            //     parkId: 10086,
+            //     status: 1
+            // },
+            // {
+            //     parkName: 'zackbee',
+            //     kind: 4,
+            //     parkId: 10087,
+            //     rentPark: 1,
+            //     allPark: 1,
+            //     status: 1,
+            //     expectedRevenue: 105
+            // }
         ]
     }
 

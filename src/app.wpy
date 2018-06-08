@@ -75,6 +75,7 @@ export default class extends wepy.app {
 
         let openId = wx.getStorageSync('openId'),
             isNew = wx.getStorageSync("isNew")
+        console.log(openId)
         if (!openId) {
             wx.login({
                 success: (res) => {

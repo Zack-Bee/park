@@ -198,7 +198,7 @@ export default class Filed extends wepy.component {
         },
         onFieldChange: (event) => {
             if (this.handleFieldChange) {
-                this.handleFieldChange(event)
+                return this.handleFieldChange(event)
             }
         },
         onFieldFocus: (event) => {

@@ -198,8 +198,8 @@ export default class Closest extends wepy.component {
     methods = {
         emptynumber() {
             wx.showModal({
-                title: '哎呀！',
-                content: '貌似还没有绑定车牌号\n要现在绑定吗？',
+                title: '没有存储车牌号',
+                content: '还没有存储车牌号\n要现在添加吗？',
                 cancelText: '我再看看',
                 confirmText: '现在就去',
                 success: (res) => {
