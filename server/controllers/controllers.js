@@ -182,16 +182,14 @@ exports.userparks = async (ctx, next) => {
                 }
               }
               all[n].expectedRevenue = money
+              console.log(n,money)
             }
             else {
               all[n].expectedRevenue = 0
             }
           })
-          n = n + 1
         }
-        else {
-          n = n + 1
-        }
+        n = n + 1
       }
     }
     ctx.response.body = all
