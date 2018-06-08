@@ -149,19 +149,19 @@ exports.userparks = async (ctx, next) => {
     while (m < parking.length) {
       await fc.selectparkingtime("parking", parking[m].id, function (option) {
         if (option != '') {
-          using = ofc.using(option)
-          if (using == 0) {
-            //fc.changeparking("parking", all[m].parkId, "isOpen", 0)
-            //all[m].status = 0
-            all[m].rentPark = 0
-            all[m].expectedRevenue = 0
-          }
-          else {
-            //all[m].status = 1
-            all[m].rentPark = using.rentNumber
-            all[m].expectedRevenue = option[0].income
-          }
+          //using = ofc.using(option)
+          // if (using == 0) {
+          //   //fc.changeparking("parking", all[m].parkId, "isOpen", 0)
+          //   //all[m].status = 0
+          //   all[m].rentPark = 0
+          //   all[m].expectedRevenue = 0
+          // }
+          // else {
+          //all[m].status = 1
+          all[m].rentPark = option[0].rentNumber
+          all[m].expectedRevenue = 'WAITING'
         }
+        //}
         else {
           // fc.changeparking("parking", all[m].parkId, "isOpen", 0)
           //all[m].status = 0
@@ -170,6 +170,27 @@ exports.userparks = async (ctx, next) => {
         }
         m = m + 1
       })
+      var n = 0
+      while (n < parking.length) {
+        if (all[n].expectedRevenue == 'WAITING') {
+          await fc.selecthistory("parking", all[n].parkId, function (option) {
+            if (option != "") {
+              let money = 0
+              for (let i = 0; i < option.length; i++) {
+                if (option[i].status == 4) {
+                  money = money + option[i].pay
+                }
+              }
+              all[n].expectedRevenue = money * 0.95
+              console.log(n, money)
+            }
+            else {
+              all[n].expectedRevenue = 0
+            }
+          })
+        }
+        n = n + 1
+      }
     }
     ctx.response.body = all
   }
@@ -233,24 +254,24 @@ exports.userparks = async (ctx, next) => {
           ctx.request.body.startDay + "."
           + ctx.request.body.startTime.replace(/:/g, ".")
           + "-" + ctx.request.body.endDay + "."
-          + ctx.request.body.endTime.replace(/:/g, "."), ctx.request.body.price, null, 0,ofc.income)
-          
+          + ctx.request.body.endTime.replace(/:/g, "."), ctx.request.body.price, null, 0, ofc.income)
+
       }
       else if (ctx.request.body.openType == "once") {
         await fc.addparkingtime(ctx.request.body.parkId, year
           + "." + month + "." + day + "."
           + ctx.request.body.startTime.replace(/:/g, ".")
           + "-" + year + "." + month + "." + day + "."
-          + ctx.request.body.endTime.replace(/:/g, "."), ctx.request.body.price, null, 1,ofc.income)
-          ofc.income(ctx.request.body.parkId)
+          + ctx.request.body.endTime.replace(/:/g, "."), ctx.request.body.price, null, 1, ofc.income)
+        ofc.income(ctx.request.body.parkId)
       }
       else if (ctx.request.body.openType == "date") {
         await fc.addparkingtime(ctx.request.body.parkId,
           ctx.request.body.startDay.replace(/-/g, ".") + "."
           + ctx.request.body.startTime.replace(/:/g, ".")
           + "-" + ctx.request.body.endDay.replace(/-/g, ".") + "."
-          + ctx.request.body.endTime.replace(/:/g, "."),ctx.request.body.price, null, 1,ofc.income)
-          ofc.income(ctx.request.body.parkId)
+          + ctx.request.body.endTime.replace(/:/g, "."), ctx.request.body.price, null, 1, ofc.income)
+        ofc.income(ctx.request.body.parkId)
       }
     }
     fc.changeparking("parking", ctx.request.body.parkId, "name", ctx.request.body.parkName)
@@ -283,10 +304,27 @@ exports.userparks = async (ctx, next) => {
         t.endDate = "waiting"
         t.startTime = "waiting"
         t.endTime = "waiting"
-        t.revenue = option[0].income
+        t.revenue = "waiting"
         all = t
       }
     })
+
+    await fc.selecthistory("parking", ctx.request.body.parkId, function (option) {
+      if (option != "") {
+        let money = 0
+        for (let i = 0; i < option.length; i++) {
+          if (option[i].status == 4) {
+            money = money + option[i].pay
+          }
+        }
+        all.revenue = money * 0.95
+        console.log(n, money)
+      }
+      else {
+        all.revenue = 0
+      }
+    })
+
     await fc.selectparkingtime("parking", parking[0].id, function (option) {
       if (option != '') {
         let time = option[0].time
@@ -374,14 +412,26 @@ exports.userplatenumber = async (ctx, next) => {
 exports.upload = async (ctx, next) => {
   ctx.response.status = 200;
   if (ctx.request.body.kind) {
-    fc.addparking(ctx.request.body.openId,
-      ctx.request.body.kind, null, null,
-      ctx.request.body.latitude + "," + ctx.request.body.longitude, null, null)
-    fc.selectowner("openId", '"' + ctx.request.body.openId + '"', function (option) {
-      if (option == "") {
-        fc.addowner('"' + ctx.request.body.openId + '"')
-      }
-    })
+    if (ctx.request.body.kind == 3) {
+      fc.addparking(ctx.request.body.openId,
+        ctx.request.body.kind, null, null,
+        ctx.request.body.latitude + "," + ctx.request.body.longitude, null, null)
+      fc.selectowner("openId", '"' + ctx.request.body.openId + '"', function (option) {
+        if (option == "") {
+          fc.addowner('"' + ctx.request.body.openId + '"')
+        }
+      })
+    }
+    else if (ctx.request.body.kind == 4) {
+      fc.addparking(ctx.request.body.openId,
+        ctx.request.body.kind, null, null,
+        ctx.request.body.latitude + "," + ctx.request.body.longitude, 1, null)
+      fc.selectowner("openId", '"' + ctx.request.body.openId + '"', function (option) {
+        if (option == "") {
+          fc.addowner('"' + ctx.request.body.openId + '"')
+        }
+      })
+    }
   }
   if (ctx.request.body.files) {
     await fs.exists(`upload/` + ctx.request.body.fields.openId, function (exists) {
@@ -499,16 +549,16 @@ exports.gethistory = async (ctx, next) => {
               }
               if (e == undefined) { var e = [] }
               if (s == undefined) { var s = [] }
-              if (e[0] == undefined) { e[0] = null }
-              if (e[1] == undefined) { e[1] = null }
-              if (e[2] == undefined) { e[2] = null }
-              if (e[3] == undefined) { e[3] = null }
-              if (e[4] == undefined) { e[4] = null }
-              if (s[0] == undefined) { s[0] = null }
-              if (s[1] == undefined) { s[1] = null }
-              if (s[2] == undefined) { s[2] = null }
-              if (s[3] == undefined) { s[3] = null }
-              if (s[4] == undefined) { s[4] = null }
+              if (e[0] == undefined) { e[0] = year }
+              if (e[1] == undefined) { e[1] = month }
+              if (e[2] == undefined) { e[2] = day }
+              if (e[3] == undefined) { e[3] = hour }
+              if (e[4] == undefined) { e[4] = minute }
+              if (s[0] == undefined) { s[0] = year }
+              if (s[1] == undefined) { s[1] = month }
+              if (s[2] == undefined) { s[2] = day }
+              if (s[3] == undefined) { s[3] = hour }
+              if (s[4] == undefined) { s[4] = minute }
               t.startTime = s[3] + ":" + s[4]
               t.startDate = s[0] + "-" + s[1] + "-" + s[2]
               t.endTime = e[3] + ":" + e[4]
@@ -696,6 +746,10 @@ exports.gethistory = async (ctx, next) => {
               fc.selectparking(ctx.request.body.latitude + "," + ctx.request.body.longitude, "id", ctx.request.body.parkId, function (o) {
                 if (o != '') {
                   fc.addhistory(ctx.request.body.parkId, year + "." + month + "." + day + "." + hour + "." + minute, null, ctx.request.body.carNumber, ctx.request.body.longitude + "," + ctx.request.body.latitude, ctx.request.body.openId, JSON.parse(body).result.formatted_addresses.recommend, o[0].kind, ctx.request.body.price)
+                  fc.selectparkingtime("parking", ctx.request.body.parkId, function (option) {
+                    fc.changeone("parkingtime", option[0].id, "rentNumber", 1)
+                  })
+
                   ctx.body = { result: "ok" }
                 }
               })
@@ -728,6 +782,7 @@ exports.gethistory = async (ctx, next) => {
     })
   }
   else if (ctx.request.body.type == "cancel") {
+    console.log(ctx.request.body.openId, ctx.request.body.parkId)
     await fc.selecthistory("openid", "'" + ctx.request.body.openId + "'", function (option) {
       if (option != '') {
         for (let i = option.length - 1; i >= 0; i--) {
@@ -737,6 +792,11 @@ exports.gethistory = async (ctx, next) => {
               nt = year + "." + month + "." + day + "." + hour + "." + minute
               fc.changeone("history", option[i].id, "time", option[i].time + "-" + nt)
               ctx.body = { 1: "ok" }
+              if (ctx.request.body.kind == 4) {
+                fc.selectparkingtime("parking", ctx.request.body.parkId, function (option) {
+                  fc.changeone("parkingtime", option[0].id, "rentNumber", 0)
+                })
+              }
             }
             else if (option[i].status == 0) {
               ctx.body = { message: "没有可取消的行程" }
@@ -768,6 +828,9 @@ exports.gethistory = async (ctx, next) => {
             nt = ft + "-" + time[0] + "." + time[1] + "." + time[2] + "." + time[3] + "." + time[4]
             fc.changeone("history", option[i].id, "time", nt)
             fc.changeone("history", option[i].id, "status", 3)
+            fc.selectparkingtime("parking", ctx.request.body.parkId, function (option) {
+              fc.changeone("parkingtime", option[0].id, "rentNumber", 0)
+            })
             break
           }
         }

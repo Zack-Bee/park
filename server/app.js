@@ -57,7 +57,8 @@ b = async () => {
   }
   }
 }
-b()
-ofc.addpt()
+//b()
+//ofc.addpt()
+
 app.use(router.routes());
 app.use(main);
