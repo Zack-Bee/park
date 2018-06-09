@@ -822,6 +822,7 @@ exports.gethistory = async (ctx, next) => {
             let et = ctx.request.body.endDate + " " + ctx.request.body.endTime + ":00"
             let mi = ofc.GetDateDiff(st, et)
             let pay = option[i].unitPrice * mi / 60
+            pay=pay.toFixed(2)
             fc.changeone("history", option[i].id, "pay", pay)
 
             let time = ctx.request.body.endDate.split("-").concat(ctx.request.body.endTime.split(":"))
