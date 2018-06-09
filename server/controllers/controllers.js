@@ -529,7 +529,7 @@ exports.gethistory = async (ctx, next) => {
                 let et = year + "-" + month + "-" + day + " " + hour + ":" + minute + ":00"
                 let mi = ofc.GetDateDiff(st, et)
                 if (mi < 30) { mi = 30 }
-                t.fee = option[i].unitPrice * mi / 60
+                t.fee = (option[i].unitPrice * mi / 60).toFixed(2)
               }
               else {
                 t.fee = option[i].pay
@@ -612,7 +612,7 @@ exports.gethistory = async (ctx, next) => {
                   let et = year + "-" + month + "-" + day + " " + hour + ":" + minute + ":00"
                   let mi = ofc.GetDateDiff(st, et)
                   if (mi < 30) { mi = 30 }
-                  t.fee = option[i].unitPrice * mi / 60
+                  t.fee = (option[i].unitPrice * mi / 60).toFixed(2)
                 }
                 else {
                   t.fee = option[i].pay
@@ -673,7 +673,7 @@ exports.gethistory = async (ctx, next) => {
               let et = year + "-" + month + "-" + day + " " + hour + ":" + minute + ":00"
               let mi = ofc.GetDateDiff(st, et)
               if (mi < 30) { mi = 30 }
-              t.fee = option[i].unitPrice * mi / 60
+              t.fee = (option[i].unitPrice * mi / 60).toFixed(2)
             }
             else {
               t.fee = option[i].pay
