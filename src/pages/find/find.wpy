@@ -99,7 +99,9 @@ export default class Index extends wepy.page {
                     break
                 }
                 case '企业': {
-                    this.showParks = newValue.filter((park) => park.kind !== 4).slice(0, 30)
+                    this.showParks = newValue
+                        .filter((park) => park.kind !== 4)
+                        .slice(0, 30)
                     this.markers = this.showParks.map((park) => ({
                         title: park.parkName,
                         latitude: park.latitude,
@@ -125,7 +127,9 @@ export default class Index extends wepy.page {
                     break
                 }
                 case '个人': {
-                    this.showParks = newValue.filter((park) => park.kind === 4).slice(0, 30)
+                    this.showParks = newValue
+                        .filter((park) => park.kind === 4)
+                        .slice(0, 30)
                     this.markers = this.showParks.map((park) => ({
                         title: park.parkName,
                         latitude: park.latitude,
@@ -185,9 +189,9 @@ export default class Index extends wepy.page {
                     break
                 }
                 case '企业': {
-                    this.showParks = this.parks.filter(
-                        (park) => park.kind !== 4
-                    ).slice(0, 30)
+                    this.showParks = this.parks
+                        .filter((park) => park.kind !== 4)
+                        .slice(0, 30)
                     this.markers = this.showParks.map((park) => ({
                         title: park.parkName,
                         latitude: park.latitude,
@@ -214,9 +218,9 @@ export default class Index extends wepy.page {
                     break
                 }
                 case '个人': {
-                    this.showParks = this.parks.filter(
-                        (park) => park.kind === 4
-                    ).slice(0, 30)
+                    this.showParks = this.parks
+                        .filter((park) => park.kind === 4)
+                        .slice(0, 30)
                     this.markers = this.showParks.map((park) => ({
                         title: park.parkName,
                         latitude: park.latitude,
@@ -344,6 +348,25 @@ export default class Index extends wepy.page {
                     },
                     () => {}
                 )
+            },
+            fail: () => {
+                wx.hideLoading()
+                wx.hideNavigationBarLoading()
+                wx.showModal({
+                    title: '未打开地理位置',
+                    content: '请允许地理位置的授权后再使用相关功能',
+                    success: function(res) {
+                        if (res.confirm) {
+                            wx.showLoading({
+                                title: '加载停车位信息中',
+                                mask: true
+                            })
+                            wx.showNavigationBarLoading()
+                        }
+                    },
+                    showCancel: false,
+                    confirmText: '知道了'
+                })
             }
         })
     }
