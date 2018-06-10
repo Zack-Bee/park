@@ -74,7 +74,7 @@ export default class Index extends wepy.page {
             switch (this.filter) {
                 case '综合': {
                     this.showParks = newValue.slice(0, 30)
-                    this.markers = newValue.map((park) => ({
+                    this.markers = this.showParks.map((park) => ({
                         title: park.parkName,
                         latitude: park.latitude,
                         longitude: park.longitude,
@@ -163,7 +163,7 @@ export default class Index extends wepy.page {
             switch (newValue) {
                 case '综合': {
                     this.showParks = this.parks.slice(0, 30)
-                    this.markers = this.parks.map((park) => ({
+                    this.markers = this.showParks.map((park) => ({
                         title: park.parkName,
                         latitude: park.latitude,
                         longitude: park.longitude,
